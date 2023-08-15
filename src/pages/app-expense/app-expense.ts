@@ -10,8 +10,24 @@ import '@shoelace-style/shoelace/dist/components/card/card.js';
 type Currency = {
   text: string,
   sign: string,
-  selected: boolean,
 }
+
+type Category = {
+  text: string,
+}
+
+class Expense {
+  constructor(
+    public currency: Currency,
+    public value: number,
+    public category: Category
+  ) {
+    this.currency = currency;
+    this.value = value;
+    this.category = category;
+  }
+}
+
 @customElement('app-expense')
 export class AppExpense extends LitElement {
   static styles = [
@@ -19,28 +35,36 @@ export class AppExpense extends LitElement {
     styles,
   ]
 
-
   @state()
-  private _listCategories = [
-    { text: 'Services' },
+  private _listCategories: Category[] = [
+    { text: 'Services'},
     { text: 'Enterprise' },
-    { text: 'Alcohol' },
+    { text: 'Alcohol'},
     { text: 'Groceries' },
     { text: 'Trips' },
   ];
 
   @state()
   private _listCurrencies: Currency[] = [
-    { sign: '$', text: 'US Dollar', selected: true },
-    { sign: '€', text: 'Euro', selected: false },
+    { sign: '$', text: 'US Dollar' },
+    { sign: '€', text: 'Euro' },
   ];
+
+  @state()
+  private _category?: Category;
+  @state()
+  private _currency?: Currency;
+  @state()
+  private _value?: number;
 
   constructor() {
     super();
   }
 
   @query('#newcategory')
-  input!: HTMLInputElement;
+  inputCategory!: HTMLInputElement;
+  @query('#newvalue')
+  inputValue!: HTMLInputElement;
 
   @property()
   hideAddCategory = true;
@@ -85,7 +109,7 @@ export class AppExpense extends LitElement {
         html`
           <button
               @click=${() => this.selectCurrency(item)}
-              class=${item.selected ? 'selected' : ''}
+              class=${item.sign == this._currency?.sign ? 'selected' : ''}
               >
             ${item.sign}
           </button>
@@ -95,7 +119,16 @@ export class AppExpense extends LitElement {
     `;
 
     const values = html`
-        ${currencies}
+      <input id="newvalue"
+        aria-label="New value"
+        type="number"
+      >
+      ${currencies}
+      <button
+        @click=${() => this.addExpense()}
+      >
+        Add
+      </button>
     `;
 
     const categoriesOrValue = this.hideCategories
@@ -114,13 +147,14 @@ export class AppExpense extends LitElement {
   selectCategory(item) {
     // next page
     console.log(item.text);
+    this._category = item;
     this.toggleAddValue();
   }
 
   addCategory() {
     this._listCategories = [...this._listCategories,
-      {text: this.input.value}];
-    this.input.value = '';
+      {text: this.inputCategory.value}];
+    this.inputCategory.value = '';
     this.toggleAddCategory();
   }
 
@@ -137,16 +171,24 @@ export class AppExpense extends LitElement {
   }
 
   selectCurrency(item: Currency) {
-    let newCurrencyList: Currency[] = [];
-    this._listCurrencies.forEach(function(value, idx) {
-      let el = value;
-      el.selected = false;
-      if (el.sign == item.sign) {
-        el.selected = true;
+    let self = this;
+    this._listCurrencies.forEach(function(value) {
+      if (value.sign == item.sign) {
+        self._currency = value;
       }
-      newCurrencyList.push(el);
     });
-    this._listCurrencies = newCurrencyList;
+  }
+
+  addExpense() {
+    // todo
+    if (!this.inputValue.value) {
+      // do nothing
+      return
+    }
+    this._value = this.inputValue.value as any;
+    var msg = `${this._value} ${this._currency?.sign} ${this._category?.text}`;
+    // let expense: Expense = new Expense(this.currency, this.inputValue.value, );
+    console.log("Added " + msg);
   }
 
 }
