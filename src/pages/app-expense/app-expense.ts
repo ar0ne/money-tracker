@@ -77,15 +77,15 @@ export class AppExpense extends LitElement {
   render() {
     const listCategories = html`
       <ul>
-        ${map(this._listCategories, (item) =>
-          html`
-            <button
-                @click=${() => this.selectCategory(item)}>
-              ${item.text}
-            </button>
-            </br>
-          `
-        )}
+      ${map(this._listCategories, (item) =>
+        html`
+          <button
+              @click=${() => this.selectCategory(item)}>
+            ${item.text}
+          </button>
+          </br>
+        `
+      )}
       </ul>
       <button
         @click=${() => this.toggleAddCategory()}
@@ -119,10 +119,11 @@ export class AppExpense extends LitElement {
       </ul>
     `;
 
-    const addExpense = html`
+    const addExpenseValue = html`
       <input id="newvalue"
         aria-label="New value"
         type="number"
+        @change=${this._onExpenseValueChanged}
       >
       ${listCurrencies}
       <button
@@ -132,15 +133,14 @@ export class AppExpense extends LitElement {
       </button>
     `;
 
-    const categoriesOrValue = this.hideCategories
-        ? addExpense
-        : listOrAddCategory
+    const categoriesOrAddExpenseValue = this.hideCategories
+      ? addExpenseValue
+      : listOrAddCategory
 
     return html`
       <app-header ?enableBack="${true}"></app-header>
-
       <main>
-        ${categoriesOrValue}
+        ${categoriesOrAddExpenseValue}
       </main>
     `;
   }
@@ -180,16 +180,19 @@ export class AppExpense extends LitElement {
     });
   }
 
+  _onExpenseValueChanged(e: Event) {
+    this._value = this.inputValue.value as any;
+  }
+
   createNewExpense() {
-    // todo
-    if (!this.inputValue.value) {
+    if (!(this._currency || this._value || this._category)) {
       // do nothing
       return
     }
-    this._value = this.inputValue.value as any;
     var msg = `${this._value} ${this._currency?.sign} ${this._category?.text}`;
-    // let expense: Expense = new Expense(this.currency, this.inputValue.value, );
+    let expense: Expense = new Expense(this._currency as Currency, this._value as number, this._category as Category);
     console.log("Added " + msg);
+    console.log(expense);
   }
 
 }
