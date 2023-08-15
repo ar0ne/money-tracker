@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement, state, property, query} from 'lit/decorators.js';
+import {map} from 'lit/directives/map.js';
 
 import { styles } from './expense-styles';
 
@@ -74,24 +75,25 @@ export class AppExpense extends LitElement {
   hideCategories = false;
 
   render() {
-    const categories = html`
-    <ul>
-      ${this._listCategories.map((item) =>
-        html`
-          <button
-              @click=${() => this.selectCategory(item)}>
-            ${item.text}
-          </button>
-          </br>
-        `
-      )}
-    </ul>
-    <button
-      @click=${() => this.toggleAddCategory()}>+
-    </button>
+    const listCategories = html`
+      <ul>
+        ${map(this._listCategories, (item) =>
+          html`
+            <button
+                @click=${() => this.selectCategory(item)}>
+              ${item.text}
+            </button>
+            </br>
+          `
+        )}
+      </ul>
+      <button
+        @click=${() => this.toggleAddCategory()}
+        >+
+      </button>
     `;
 
-    const addnewcategory = html`
+    const addNewCategory = html`
       <h2>Add Expense</h2>
       <input id="newcategory" aria-label="New item">
       <button @click=${this.addCategory}>Add</button>
@@ -99,40 +101,39 @@ export class AppExpense extends LitElement {
     `;
 
     const listOrAddCategory = this.hideAddCategory
-        ? categories
-        : addnewcategory;
+      ? listCategories
+      : addNewCategory;
 
-
-    const currencies = html`
+    const listCurrencies = html`
       <ul>
-      ${this._listCurrencies.map((item) =>
+      ${map(this._listCurrencies, (item) =>
         html`
           <button
-              @click=${() => this.selectCurrency(item)}
-              class=${item.sign == this._currency?.sign ? 'selected' : ''}
-              >
+            @click=${() => this.selectCurrency(item)}
+            class=${item.sign == this._currency?.sign ? 'selected' : ''}
+            >
             ${item.sign}
           </button>
         `
       )}
-    </ul>
+      </ul>
     `;
 
-    const values = html`
+    const addExpense = html`
       <input id="newvalue"
         aria-label="New value"
         type="number"
       >
-      ${currencies}
+      ${listCurrencies}
       <button
-        @click=${() => this.addExpense()}
-      >
+        @click=${() => this.createNewExpense()}
+        >
         Add
       </button>
     `;
 
     const categoriesOrValue = this.hideCategories
-        ? values
+        ? addExpense
         : listOrAddCategory
 
     return html`
@@ -144,7 +145,7 @@ export class AppExpense extends LitElement {
     `;
   }
 
-  selectCategory(item) {
+  selectCategory(item: Category) {
     // next page
     console.log(item.text);
     this._category = item;
@@ -172,14 +173,14 @@ export class AppExpense extends LitElement {
 
   selectCurrency(item: Currency) {
     let self = this;
-    this._listCurrencies.forEach(function(value) {
-      if (value.sign == item.sign) {
+    this._listCurrencies.forEach((value) => {
+      if (value == item) {
         self._currency = value;
       }
     });
   }
 
-  addExpense() {
+  createNewExpense() {
     // todo
     if (!this.inputValue.value) {
       // do nothing
