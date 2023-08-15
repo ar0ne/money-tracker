@@ -11,6 +11,13 @@ export const styles = css`
     color: red;
   }
 
+  .disabled {
+    color: grey;
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: #ffffff;
+  }
+
   main {
     margin-left: 25px;
   }

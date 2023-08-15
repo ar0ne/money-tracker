@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, PropertyValues } from 'lit';
 import { customElement, state, property, query} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 
@@ -60,6 +60,7 @@ export class AppExpense extends LitElement {
 
   constructor() {
     super();
+    this._currency = this._listCurrencies[0];
   }
 
   @query('#newcategory')
@@ -73,6 +74,8 @@ export class AppExpense extends LitElement {
   hideValue = true;
   @property()
   hideCategories = false;
+  @property()
+  disableAddExpense = true;
 
   render() {
     const listCategories = html`
@@ -110,7 +113,7 @@ export class AppExpense extends LitElement {
         html`
           <button
             @click=${() => this.selectCurrency(item)}
-            class=${item.sign == this._currency?.sign ? 'selected' : ''}
+            class=${item === this._currency ? 'selected' : ''}
             >
             ${item.sign}
           </button>
@@ -123,11 +126,12 @@ export class AppExpense extends LitElement {
       <input id="newvalue"
         aria-label="New value"
         type="number"
-        @change=${this._onExpenseValueChanged}
+        @keyup=${this._onExpenseValueChanged}
       >
       ${listCurrencies}
       <button
         @click=${() => this.createNewExpense()}
+        class=${this.disableAddExpense ? 'disabled': ''}
         >
         Add
       </button>
@@ -150,6 +154,7 @@ export class AppExpense extends LitElement {
     console.log(item.text);
     this._category = item;
     this.toggleAddValue();
+    this.toggleDisableAddExpenseValue();
   }
 
   addCategory() {
@@ -171,6 +176,10 @@ export class AppExpense extends LitElement {
     this.hideCategories = !this.hideCategories;
   }
 
+  toggleDisableAddExpenseValue() {
+    this.disableAddExpense = !(this._value && this._currency && this._category);
+  }
+
   selectCurrency(item: Currency) {
     let self = this;
     this._listCurrencies.forEach((value) => {
@@ -178,15 +187,21 @@ export class AppExpense extends LitElement {
         self._currency = value;
       }
     });
+    this.toggleDisableAddExpenseValue();
   }
 
   _onExpenseValueChanged(e: Event) {
-    this._value = this.inputValue.value as any;
+    if (this._value !== +this.inputValue.value){
+      this._value = +this.inputValue.value;
+      // updated doesn't work for onChange
+      this.toggleDisableAddExpenseValue();
+    }
   }
 
   createNewExpense() {
-    if (!(this._currency || this._value || this._category)) {
+    if (!(this._currency && this._value && this._category)) {
       // do nothing
+      this.toggleDisableAddExpenseValue();
       return
     }
     var msg = `${this._value} ${this._currency?.sign} ${this._category?.text}`;
