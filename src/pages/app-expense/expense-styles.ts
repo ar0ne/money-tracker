@@ -7,6 +7,10 @@ export const styles = css`
     }
   }
 
+  .selected {
+    color: red;
+  }
+
   main {
     margin-left: 25px;
   }
