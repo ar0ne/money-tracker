@@ -1,12 +1,11 @@
 import { LitElement, html } from 'lit';
-import { animate } from '@lit-labs/motion';
-import { classMap } from 'lit/directives/class-map.js';
 import { customElement, state, property, query} from 'lit/decorators.js';
 import { Category, Currency } from '../../model'
 import { styles } from './expense-styles';
 import { styles as sharedStyles } from '../../styles/shared-styles'
 import { categories, currencies } from '../../data';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import { initDB } from '../../db';
 
 
 @customElement('app-expense-page')
@@ -46,6 +45,7 @@ export class AppExpensePage extends LitElement {
     this._listCategories = await this.getCategories();
     this._listCurrencies = await this.getCurrencies();
     this._currency = this._listCurrencies[0];
+    // await initDB();
   }
 
   toggleDisableAddExpenseValue() {

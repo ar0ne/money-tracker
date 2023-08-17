@@ -2,7 +2,7 @@ import {LitElement, css, html} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Expense} from '../model';
-import {expenses} from '../data';
+import { initDB, getStoreData, Stores } from '../db';
 
 @customElement('app-history')
 class AppHistory extends LitElement {
@@ -19,18 +19,14 @@ class AppHistory extends LitElement {
 
     async connectedCallback() {
         super.connectedCallback();
+        await initDB();
+
         // todo: load only X last or for this month?
-        this._expenses = await this.getExpenses();
+        this._expenses = await getStoreData<Expense>(Stores.Expenses);
     }
 
-
-    private getExpenses() {
-        return new Promise<Expense[]>((resolve, reject) => resolve(expenses));
-      }
-
     render() {
-        return html`
-            <h4>History</h4>
+        const listExpenses = html`
             <ul>
             ${map(this._expenses, (item) =>
                 html`
@@ -41,6 +37,15 @@ class AppHistory extends LitElement {
                 `
             )}
             </ul>
+        `;
+
+        const history = this._expenses?.length
+            ? listExpenses
+            : html`<p>No records yet.</p>`;
+
+        return html`
+            <h4>History</h4>
+            ${history}
         `;
     }
 }

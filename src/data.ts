@@ -2,33 +2,33 @@
 import { Category, Currency, Expense } from "./model";
 
 export const categories: Category[] = [
-    { name: 'Services'},
-    { name: 'Enterprise' },
-    { name: 'Alcohol'},
-    { name: 'Groceries' },
-    { name: 'Trips' },
+    { id: "1", name: 'Services'},
+    { id: "2", name: 'Enterprise' },
+    { id: "3", name: 'Alcohol'},
+    { id: "4", name: 'Groceries' },
+    { id: "5", name: 'Trips' },
 ];
 
 export const currencies: Currency[] = [
-    { sign: '$', name: 'US Dollar' },
-    { sign: '€', name: 'Euro' },
+    { id: "1", sign: '$', name: 'US Dollar' },
+    { id: "2", sign: '€', name: 'Euro' },
 ]
 
 
 export const expenses: Expense[] = [
     new Expense(
-        { sign: '$', name: 'US Dollar' },
+        { id: "1", sign: '$', name: 'US Dollar' },
         21.42,
-        { name: 'Services'}
+        { id: "1", name: 'Services'}
     ),
     new Expense(
-        { sign: '$', name: 'US Dollar' },
+        { id: "1", sign: '$', name: 'US Dollar' },
         4.1,
-        { name: 'Trips'}
+        { id: "5", name: 'Trips'}
     ),
     new Expense(
-        { sign: '€', name: 'Euro' },
+        { id: "2", sign: '€', name: 'Euro' },
         100.01,
-        { name: 'Trips'}
+        { id: "5", name: 'Trips'}
     ),
 ]

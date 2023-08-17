@@ -1,20 +1,24 @@
 export interface Category {
+  id: string,
   name: string,
 }
 
 export interface Currency {
+  id: string,
   name: string,
   sign: string,
 }
 
 
 export class Expense {
+  id: string;
   created: number;
   constructor(
     public currency: Currency,
     public value: number,
     public category: Category
   ) {
+    this.id = "";
     this.currency = currency;
     this.value = value;
     this.category = category;
