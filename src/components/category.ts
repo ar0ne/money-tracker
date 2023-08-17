@@ -10,7 +10,6 @@ export interface Category {
 class AppCategory extends LitElement {
     static styles =
     css`
-
     `
 
     @state()
@@ -20,8 +19,6 @@ class AppCategory extends LitElement {
     categories: Category[] = [];
     @property()
     hideAddCategory = true;
-    @property()
-    hideCategories = false;
 
     @query('#newcategory')
     inputCategory!: HTMLInputElement;

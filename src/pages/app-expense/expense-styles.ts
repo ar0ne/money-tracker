@@ -7,10 +7,6 @@ export const styles = css`
     }
   }
 
-  .selected {
-    color: red;
-  }
-
   .disabled {
     color: grey;
     cursor: not-allowed;

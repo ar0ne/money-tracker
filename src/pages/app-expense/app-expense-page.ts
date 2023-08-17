@@ -65,6 +65,7 @@ export class AppExpensePage extends LitElement {
   render() {
 
     const addExpenseValue = html`
+      <label for="newvalue">Total</label>
       <input id="newvalue"
         aria-label="New value"
         type="number"
@@ -81,9 +82,9 @@ export class AppExpensePage extends LitElement {
     return html`
       <app-header ?enableBack="${true}"></app-header>
       <main>
-        ${addExpenseValue}
         <app-category .categories=${this._listCategories}></app-category>
         <app-currency .currencies=${this._listCurrencies}></app-currency>
+        ${addExpenseValue}
       </main>
     `;
   }

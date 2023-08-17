@@ -10,7 +10,11 @@ export interface Currency {
 @customElement('app-currency')
 class AppCurrency extends LitElement {
     static styles =
-    css``
+    css`
+        .selected {
+            color: red;
+        }
+    `
 
     @query('#newcurrencysign')
     inputCurrencySign!: HTMLInputElement;
@@ -25,11 +29,7 @@ class AppCurrency extends LitElement {
 
     constructor() {
         super();
-        this._currency = this.currencies[0];
-    }
-
-    toggleAddCurrency() {
-        this.hideAddCurrency = !this.hideAddCurrency;
+        this._currency ??= this.currencies[0];
     }
 
     selectCurrency(item: Currency) {
@@ -37,9 +37,9 @@ class AppCurrency extends LitElement {
         this.currencies.forEach((value) => {
             if (value == item) {
                 self._currency = value;
+                return
             }
         });
-        // this.toggleDisableAddExpenseValue();
     }
 
     addCurrency() {
@@ -50,24 +50,28 @@ class AppCurrency extends LitElement {
             }
         ];
         this.inputCurrencyName.value = this.inputCurrencySign.value = '';
-        this.toggleAddCurrency();
+        this.toggleAddNewCurrency();
+    }
+
+    toggleAddNewCurrency() {
+        this.hideAddCurrency = !this.hideAddCurrency;
     }
 
     render() {
         const listCurrencies = html`
             <ul>
             ${map(this.currencies, (item) =>
-            html`
-                <button
-                @click=${() => this.selectCurrency(item)}
-                class=${item === this._currency ? 'selected' : ''}
-                >
-                ${item.sign}
-                </button>
-            `
+                html`
+                    <button
+                        @click=${() => this.selectCurrency(item)}
+                        class=${item === this._currency ? 'selected' : ''}
+                    >
+                    ${item.sign}
+                    </button>
+                `
             )}
             <button
-                @click=${() => this.addCurrency()}
+                @click=${() => this.toggleAddNewCurrency()}
                 >
                 +
             </button>
@@ -75,15 +79,23 @@ class AppCurrency extends LitElement {
         `;
 
         const addNewCurrency = html`
-            <input id="newcurrencyname"
-                aria-label="Currency name"
-                type="text"
-            >
-            <input id="newcurrencysign"
-                aria-label="Currency sign"
-                type="text"
-            >
-            <button @click=${this.addCurrency}>Add</button>
+            <p>
+                <h5>Add new currency</h5>
+                <label for="newcurrencyname">Name</label>
+                <input id="newcurrencyname"
+                    aria-label="Currency name"
+                    type="text"
+                >
+                <br>
+                <label for="newcurrencysign">Sign</label>
+                <input id="newcurrencysign"
+                    aria-label="Currency sign"
+                    type="text"
+                >
+                <br>
+                <button @click=${this.addCurrency}>Add</button>
+                <button @click=${() => this.toggleAddNewCurrency()}>X</button>
+            </p>
         `;
 
         const listOrAddCurrency = this.hideAddCurrency
