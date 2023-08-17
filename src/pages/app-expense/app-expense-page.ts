@@ -3,9 +3,7 @@ import { customElement, state, property, query} from 'lit/decorators.js';
 import { Category, Currency } from '../../model'
 import { styles } from './expense-styles';
 import { styles as sharedStyles } from '../../styles/shared-styles'
-import { categories, currencies } from '../../data';
-import '@shoelace-style/shoelace/dist/components/card/card.js';
-import { initDB } from '../../db';
+import { addData, initDB, getStoreData, Stores } from '../../db';
 
 
 @customElement('app-expense-page')
@@ -25,6 +23,8 @@ export class AppExpensePage extends LitElement {
   private _category?: Category;
   @state()
   private _value?: number;
+  @state()
+  private _message: string = '';
 
   @query('#newvalue')
   inputValue!: HTMLInputElement;
@@ -41,11 +41,10 @@ export class AppExpensePage extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
-    // this.users = await this.getUsers();
-    this._listCategories = await this.getCategories();
-    this._listCurrencies = await this.getCurrencies();
-    this._currency = this._listCurrencies[0];
-    // await initDB();
+    await initDB();
+    await this.handleGetCurrencies()
+    await this.handleGetCategories();
+    // this._currency = this._listCurrencies[0];
   }
 
   toggleDisableAddExpenseValue() {
@@ -62,12 +61,30 @@ export class AppExpensePage extends LitElement {
     this._currency = e.detail.currency;
   }
 
-  addCurrency(e: CustomEvent) {
-    this._listCurrencies = [...this._listCurrencies, e.detail.currency];
+  async addCurrency(e: CustomEvent) {
+    try {
+      const res = await addData(Stores.Currencies, e.detail.currency);
+      this.handleGetCurrencies();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        this._message = err.message;
+      } else {
+        this._message = 'Something went wrong';
+      }
+    }
   }
 
-  addCategory(e: CustomEvent) {
-    this._listCategories = [...this._listCategories, e.detail.category];
+  async addCategory(e: CustomEvent) {
+    try {
+      const res = await addData(Stores.Categories, e.detail.category);
+      this.handleGetCategories();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        this._message = err.message;
+      } else {
+        this._message = 'Something went wrong';
+      }
+    }
   }
 
   selectCategory(e: CustomEvent) {
@@ -82,7 +99,7 @@ export class AppExpensePage extends LitElement {
     }
   }
 
-  createNewExpense() {
+  async createNewExpense() {
     if (!(this._value && this._currency && this._category)) {
       // do nothing
       this.toggleDisableAddExpenseValue();
@@ -100,12 +117,13 @@ export class AppExpensePage extends LitElement {
     }, 2000);
   }
 
-  private getCurrencies() {
-    return new Promise<Currency[]>((resolve, reject) => resolve(currencies));
+  async handleGetCurrencies() {
+    this._listCurrencies = await getStoreData<Currency>(Stores.Currencies);
   }
 
-  private getCategories() {
-    return new Promise<Category[]>((resolve, reject) => resolve(categories));
+  async handleGetCategories() {
+    // return new Promise<Category[]>((resolve, reject) => resolve(categories));
+    this._listCategories = await getStoreData<Currency>(Stores.Categories);
   }
 
   render() {

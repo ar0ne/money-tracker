@@ -1,12 +1,20 @@
-export interface Category {
-  id: string,
-  name: string,
+import {v4 as uuidv4} from 'uuid';
+
+export class Category {
+  id: string;
+  constructor(public name: string) {
+    this.id = uuidv4();
+    this.name = name;
+  }
 }
 
-export interface Currency {
-  id: string,
-  name: string,
-  sign: string,
+export class Currency {
+  id: string;
+  constructor(public name: string, public sign: string) {
+    this.id = uuidv4();
+    this.name = name;
+    this.sign = sign;
+  }
 }
 
 
@@ -18,7 +26,7 @@ export class Expense {
     public value: number,
     public category: Category
   ) {
-    this.id = "";
+    this.id = uuidv4();
     this.currency = currency;
     this.value = value;
     this.category = category;

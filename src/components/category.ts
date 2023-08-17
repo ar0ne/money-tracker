@@ -32,7 +32,7 @@ class AppCategory extends LitElement {
     }
 
     addCategory() {
-        let newCategory = {name: this.inputCategory.value};
+        let newCategory = new Category(this.inputCategory.value);
         this.inputCategory.value = '';
         const options = {
             detail: {category: newCategory},
