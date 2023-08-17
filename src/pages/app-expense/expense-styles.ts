@@ -21,4 +21,18 @@ export const styles = css`
   main {
     margin-left: 25px;
   }
+
+  app-currency {
+    display: block;
+    border: 1px;
+    border-style: solid;
+    border-color: black;
+  }
+
+  app-category {
+    display: block;
+    border: 1px;
+    border-style: solid;
+    border-color: black;
+  }
 `;
