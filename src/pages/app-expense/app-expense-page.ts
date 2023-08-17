@@ -1,26 +1,13 @@
 import { LitElement, html } from 'lit';
 import { customElement, state, property, query} from 'lit/decorators.js';
-
-import { Category } from '../../components/category';
-import { Currency } from '../../components/currency';
+import { Category, Currency } from '../../model'
 import { styles } from './expense-styles';
 
 import { styles as sharedStyles } from '../../styles/shared-styles'
 
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import { categories, currencies } from '../../data';
 
-
-class Expense {
-  constructor(
-    public currency: Currency,
-    public value: number,
-    public category: Category
-  ) {
-    this.currency = currency;
-    this.value = value;
-    this.category = category;
-  }
-}
 
 @customElement('app-expense-page')
 export class AppExpensePage extends LitElement {
@@ -33,6 +20,10 @@ export class AppExpensePage extends LitElement {
   private _listCategories: Category[] = [];
   @state()
   private _listCurrencies: Currency[] = [];
+  @property()
+  private _currency?: Currency;
+  @property()
+  private _category?: Category;
 
 
   @state()
@@ -40,17 +31,14 @@ export class AppExpensePage extends LitElement {
 
   constructor() {
     super();
-    this._listCategories = [
-      { name: 'Services'},
-      { name: 'Enterprise' },
-      { name: 'Alcohol'},
-      { name: 'Groceries' },
-      { name: 'Trips' },
-    ];
-    this._listCurrencies = [
-      { sign: '$', name: 'US Dollar' },
-      { sign: '€', name: 'Euro' },
-    ];
+  }
+
+  async connectedCallback() {
+    super.connectedCallback();
+    // this.users = await this.getUsers();
+    this._listCategories = await this.getCategories();
+    this._listCurrencies = await this.getCurrencies();
+    this._currency = this._listCurrencies[0];
   }
 
 
@@ -60,7 +48,7 @@ export class AppExpensePage extends LitElement {
   @property()
   hideValue = true;
   @property()
-  disableAddExpense = true;
+  disableAddExpense = false;
 
   render() {
 
@@ -82,8 +70,8 @@ export class AppExpensePage extends LitElement {
     return html`
       <app-header ?enableBack="${true}"></app-header>
       <main>
-        <app-category .categories=${this._listCategories}></app-category>
-        <app-currency .currencies=${this._listCurrencies}></app-currency>
+        <app-category .categories=${this._listCategories} .category=${this._category}></app-category>
+        <app-currency .currencies=${this._listCurrencies} .currency=${this._currency}></app-currency>
         ${addExpenseValue}
       </main>
     `;
@@ -107,12 +95,21 @@ export class AppExpensePage extends LitElement {
   }
 
   createNewExpense() {
+    console.log(this._currency.name);
     if (!(this._value)) {
       // do nothing
       this.toggleDisableAddExpenseValue();
       return
     }
     console.log("added");
+  }
+
+  private getCurrencies() {
+    return new Promise<Currency[]>((resolve, reject) => resolve(currencies));
+  }
+
+  private getCategories() {
+    return new Promise<Category[]>((resolve, reject) => resolve(categories));
   }
 
 }

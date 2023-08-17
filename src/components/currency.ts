@@ -1,11 +1,7 @@
 import {LitElement, css, html} from 'lit';
 import {customElement, state, property, query} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
-
-export interface Currency {
-    name: string,
-    sign: string,
-  }
+import { Currency } from '../model';
 
 @customElement('app-currency')
 class AppCurrency extends LitElement {
@@ -24,19 +20,14 @@ class AppCurrency extends LitElement {
     currencies: Currency[] = [];
     @property()
     hideAddCurrency = true;
-    @state()
-    private _currency?: Currency;
 
-    constructor() {
-        super();
-        this._currency ??= this.currencies[0];
-    }
+    @property() currency?: Currency;
 
     selectCurrency(item: Currency) {
         let self = this;
         this.currencies.forEach((value) => {
             if (value == item) {
-                self._currency = value;
+                self.currency = value;
                 return
             }
         });
@@ -64,7 +55,7 @@ class AppCurrency extends LitElement {
                 html`
                     <button
                         @click=${() => this.selectCurrency(item)}
-                        class=${item === this._currency ? 'selected' : ''}
+                        class=${item === this.currency ? 'selected' : ''}
                     >
                     ${item.sign}
                     </button>

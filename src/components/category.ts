@@ -1,10 +1,7 @@
 import {LitElement, css, html} from 'lit';
 import {customElement, state, property, query} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
-
-export interface Category {
-    name: string,
-}
+import {Category} from "../model"
 
 @customElement('app-category')
 class AppCategory extends LitElement {
@@ -12,7 +9,9 @@ class AppCategory extends LitElement {
     css`
     `
 
-    @state()
+    @property()
+    category!: Category;
+
     private _category?: Category;
 
     @property()
