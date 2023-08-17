@@ -33,11 +33,11 @@ export const router = new Router({
       },
       {
         path: resolveRouterPath('expense'),
-        title: 'Expense',
+        title: 'Add Expense',
         plugins: [
-          lazy(() => import('./pages/app-expense/app-expense.js')),
+          lazy(() => import('./pages/app-expense/app-expense-page.js')),
         ],
-        render: () => html`<app-expense></app-expense>`
+        render: () => html`<app-expense-page></app-expense-page>`
       },
     ]
   });
