@@ -36,6 +36,7 @@ class AppHistory extends LitElement {
                 html`
                     <li>
                     ${item.currency.sign} ${item.value} (${item.category.name})
+                    ${item.getTimestamp()}
                     </li>
                 `
             )}
