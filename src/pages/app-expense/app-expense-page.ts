@@ -1,4 +1,6 @@
 import { LitElement, html } from 'lit';
+import { animate } from '@lit-labs/motion';
+import { classMap } from 'lit/directives/class-map.js';
 import { customElement, state, property, query} from 'lit/decorators.js';
 import { Category, Currency } from '../../model'
 import { styles } from './expense-styles';
@@ -22,9 +24,17 @@ export class AppExpensePage extends LitElement {
   private _currency?: Currency;
   @property()
   private _category?: Category;
-
   @state()
   private _value?: number;
+
+  @query('#newvalue')
+  inputValue!: HTMLInputElement;
+  @property()
+  hideValue = true;
+  @property()
+  disableAddExpense = true;
+  @property({type: Boolean})
+  hideMessage = true;
 
   constructor() {
     super();
@@ -37,14 +47,6 @@ export class AppExpensePage extends LitElement {
     this._listCurrencies = await this.getCurrencies();
     this._currency = this._listCurrencies[0];
   }
-
-  @query('#newvalue')
-  inputValue!: HTMLInputElement;
-
-  @property()
-  hideValue = true;
-  @property()
-  disableAddExpense = true;
 
   toggleDisableAddExpenseValue() {
     this.disableAddExpense = !(this._value && this._currency && this._category);
@@ -88,6 +90,14 @@ export class AppExpensePage extends LitElement {
     }
     this.inputValue.value = '';
     console.log("added");
+    this.displayMessage();
+  }
+
+  displayMessage() {
+    this.hideMessage = false;
+    setTimeout(() => {
+        this.hideMessage = true;
+    }, 2000);
   }
 
   private getCurrencies() {
@@ -125,6 +135,7 @@ export class AppExpensePage extends LitElement {
     return html`
       <app-header ?enableBack="${true}"></app-header>
       <main>
+        <p class=${this.hideMessage ? "hide": ""}>Added!</p>
         <app-category
           class=${this._category ? "hide": ''}
           .categories=${this._listCategories}
