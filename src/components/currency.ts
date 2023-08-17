@@ -31,6 +31,10 @@ class AppCurrency extends LitElement {
                 return
             }
         });
+        const options = {
+            detail: {currency: this.currency},
+        };
+        this.dispatchEvent(new CustomEvent('currency-changed', options));
     }
 
     addCurrency() {

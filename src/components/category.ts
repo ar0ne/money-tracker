@@ -27,11 +27,11 @@ class AppCategory extends LitElement {
     }
 
     selectCategory(item: Category) {
-        // next page
-        console.log(item.name);
         this._category = item;
-        // this.toggleAddValue();
-        // this.toggleDisableAddExpenseValue();
+        const options = {
+            detail: {category: this._category},
+        };
+        this.dispatchEvent(new CustomEvent('category-selected', options));
     }
 
     addCategory() {

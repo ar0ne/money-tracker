@@ -70,8 +70,15 @@ export class AppExpensePage extends LitElement {
     return html`
       <app-header ?enableBack="${true}"></app-header>
       <main>
-        <app-category .categories=${this._listCategories} .category=${this._category}></app-category>
-        <app-currency .currencies=${this._listCurrencies} .currency=${this._currency}></app-currency>
+        <app-category
+          .categories=${this._listCategories}
+          @category-selected="${this.selectCategory}"
+        ></app-category>
+        <app-currency
+          .currencies=${this._listCurrencies}
+          .currency=${this._currency}
+          @currency-changed="${this.changeCurrency}"
+        ></app-currency>
         ${addExpenseValue}
       </main>
     `;
@@ -85,6 +92,13 @@ export class AppExpensePage extends LitElement {
     // this.disableAddExpense = !(this._value && this._currency && this._category);
   }
 
+  changeCurrency(e: CustomEvent) {
+    this._currency = e.detail.currency;
+  }
+
+  selectCategory(e: CustomEvent) {
+    this._category = e.detail.category;
+  }
 
   _onExpenseValueChanged(e: Event) {
     if (this._value !== +this.inputValue.value){
@@ -95,7 +109,8 @@ export class AppExpensePage extends LitElement {
   }
 
   createNewExpense() {
-    console.log(this._currency.name);
+    console.log(this._currency);
+    console.log(this._category)
     if (!(this._value)) {
       // do nothing
       this.toggleDisableAddExpenseValue();
