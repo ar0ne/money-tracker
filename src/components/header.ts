@@ -3,6 +3,8 @@ import { property, customElement } from 'lit/decorators.js';
 import { resolveRouterPath } from '../router';
 
 import '@shoelace-style/shoelace/dist/components/button/button.js';
+
+
 @customElement('app-header')
 export class AppHeader extends LitElement {
   @property({ type: String }) title = 'Expense Tracker';

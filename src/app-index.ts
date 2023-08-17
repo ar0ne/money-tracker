@@ -3,6 +3,8 @@ import { customElement } from 'lit/decorators.js';
 
 import './pages/app-home';
 import './components/header';
+import './components/category';
+import './components/currency';
 import './styles/global.css';
 import { router } from './router';
 
