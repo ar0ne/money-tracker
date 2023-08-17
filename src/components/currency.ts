@@ -50,7 +50,6 @@ class AppCurrency extends LitElement {
 
     render() {
         const listCurrencies = html`
-            <ul>
             ${map(this.currencies, (item) =>
                 html`
                     <button
@@ -66,7 +65,6 @@ class AppCurrency extends LitElement {
                 >
                 +
             </button>
-            </ul>
         `;
 
         const addNewCurrency = html`

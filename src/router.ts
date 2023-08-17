@@ -24,14 +24,6 @@ export const router = new Router({
         render: () => html`<app-home></app-home>`
       },
       {
-        path: resolveRouterPath('about'),
-        title: 'About',
-        plugins: [
-          lazy(() => import('./pages/app-about/app-about.js')),
-        ],
-        render: () => html`<app-about></app-about>`
-      },
-      {
         path: resolveRouterPath('expense'),
         title: 'Add Expense',
         plugins: [

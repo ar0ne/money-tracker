@@ -33,15 +33,11 @@ export class AppHome extends LitElement {
       <app-header></app-header>
 
       <main>
-        <div id="welcomeBar">
-          <sl-card id="welcomeCard">
-            <div slot="header">
-              <h2>${this.message}</h2>
-            </div>
-
-            <sl-button href="${resolveRouterPath('expense')}" variant="primary">Add expense</sl-button>
-            <sl-button href="${resolveRouterPath('about')}" variant="primary">About Page</sl-button>
+        <div>
+          <sl-button href="${resolveRouterPath('expense')}" variant="primary">Add expense</sl-button>
         </div>
+
+        <app-history></app-history>
       </main>
     `;
   }

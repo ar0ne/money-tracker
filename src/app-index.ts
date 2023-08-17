@@ -5,6 +5,7 @@ import './pages/app-home';
 import './components/header';
 import './components/category';
 import './components/currency';
+import './components/history';
 import './styles/global.css';
 import { router } from './router';
 
