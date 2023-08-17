@@ -1,7 +1,7 @@
 import {LitElement, css, html} from 'lit';
-import {customElement, state, property, query} from 'lit/decorators.js';
+import {customElement, property, query} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
-import { Currency } from '../model';
+import {Currency} from '../model';
 
 @customElement('app-currency')
 class AppCurrency extends LitElement {
@@ -24,13 +24,7 @@ class AppCurrency extends LitElement {
     @property() currency?: Currency;
 
     selectCurrency(item: Currency) {
-        let self = this;
-        this.currencies.forEach((value) => {
-            if (value == item) {
-                self.currency = value;
-                return
-            }
-        });
+        this.currency = item;
         const options = {
             detail: {currency: this.currency},
         };
@@ -38,13 +32,15 @@ class AppCurrency extends LitElement {
     }
 
     addCurrency() {
-        this.currencies = [...this.currencies,
-            {
-                sign: this.inputCurrencySign.value,
-                name: this.inputCurrencyName.value
-            }
-        ];
+        let newCurrency: Currency = {
+            sign: this.inputCurrencySign.value,
+            name: this.inputCurrencyName.value
+        }
         this.inputCurrencyName.value = this.inputCurrencySign.value = '';
+        const options = {
+            detail: {currency: newCurrency},
+        };
+        this.dispatchEvent(new CustomEvent('currency-added', options));
         this.toggleAddNewCurrency();
     }
 

@@ -1,17 +1,14 @@
 import {LitElement, css, html} from 'lit';
-import {customElement, state, property, query} from 'lit/decorators.js';
+import {customElement, property, query} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Category} from "../model"
 
 @customElement('app-category')
 class AppCategory extends LitElement {
     static styles =
-    css`
-    `
+    css``
 
     @property()
-    category!: Category;
-
     private _category?: Category;
 
     @property()

@@ -14,6 +14,10 @@ export const styles = css`
     background-color: #ffffff;
   }
 
+  .hide {
+    display: none;
+  }
+
   main {
     margin-left: 25px;
   }
