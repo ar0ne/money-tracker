@@ -32,9 +32,12 @@ class AppCategory extends LitElement {
     }
 
     addCategory() {
-        this.categories = [...this.categories,
-            {name: this.inputCategory.value}];
+        let newCategory = {name: this.inputCategory.value};
         this.inputCategory.value = '';
+        const options = {
+            detail: {category: newCategory},
+        };
+        this.dispatchEvent(new CustomEvent('category-added', options));
         this.toggleAddCategory();
     }
 
@@ -66,7 +69,7 @@ class AppCategory extends LitElement {
         `;
 
         const addNewCategory = html`
-            <h2>Add Expense</h2>
+            <h5>New category</h5>
             <input id="newcategory" aria-label="New item">
             <button @click=${this.addCategory}>Add</button>
             <button @click=${this.toggleAddCategory}>X</button>

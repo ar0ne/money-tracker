@@ -38,7 +38,6 @@ export class AppExpensePage extends LitElement {
     this._currency = this._listCurrencies[0];
   }
 
-
   @query('#newvalue')
   inputValue!: HTMLInputElement;
 
@@ -63,6 +62,10 @@ export class AppExpensePage extends LitElement {
 
   addCurrency(e: CustomEvent) {
     this._listCurrencies = [...this._listCurrencies, e.detail.currency];
+  }
+
+  addCategory(e: CustomEvent) {
+    this._listCategories = [...this._listCategories, e.detail.category];
   }
 
   selectCategory(e: CustomEvent) {
@@ -126,6 +129,7 @@ export class AppExpensePage extends LitElement {
           class=${this._category ? "hide": ''}
           .categories=${this._listCategories}
           @category-selected="${this.selectCategory}"
+          @category-added="${this.addCategory}"
         ></app-category>
         <app-currency
           class=${!this._category ? "hide": ''}
