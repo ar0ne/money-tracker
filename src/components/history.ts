@@ -1,8 +1,8 @@
-import {LitElement, css, html} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
-import {map} from 'lit/directives/map.js';
-import {Expense} from '../model';
-import { initDB, getStoreData, Stores } from '../db';
+import { LitElement, css, html } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
+import { map } from 'lit/directives/map.js';
+import { ExpenseDTO } from '../model';
+import { dao } from '../dao';
 
 @customElement('app-history')
 class AppHistory extends LitElement {
@@ -11,7 +11,7 @@ class AppHistory extends LitElement {
 
 
     @state()
-    private _expenses: Expense[] = [];
+    private _expenses: ExpenseDTO[] = [];
 
     constructor() {
         super();
@@ -19,11 +19,15 @@ class AppHistory extends LitElement {
 
     async connectedCallback() {
         super.connectedCallback();
-        await initDB();
-
         // todo: load only X last or for this month?
-        this._expenses = await getStoreData<Expense>(Stores.Expenses);
+        this._expenses = await dao.getAllExpenses();
     }
+
+    public formatDateTime(timestamp: number) {
+        let date = new Date();
+        date.setTime(timestamp);
+        return date.toLocaleDateString('en-GB');
+      }
 
     render() {
         const listExpenses = html`
@@ -32,7 +36,7 @@ class AppHistory extends LitElement {
                 html`
                     <li>
                     ${item.currency.sign} ${item.value} (${item.category.name})
-                    ${item.getTimestamp()}
+                    ${this.formatDateTime(item.created)}
                     </li>
                 `
             )}

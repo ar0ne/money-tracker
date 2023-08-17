@@ -20,8 +20,8 @@ class AppCurrency extends LitElement {
     currencies: Currency[] = [];
     @property()
     hideAddCurrency = true;
-
-    @property() currency?: Currency;
+    @property()
+    currency?: Currency;
 
     selectCurrency(item: Currency) {
         this.currency = item;

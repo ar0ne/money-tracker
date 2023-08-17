@@ -22,21 +22,22 @@ export class Expense {
   id: string;
   created: number;
   constructor(
-    public currency: Currency,
+    public currency_id: string,
     public value: number,
-    public category: Category
+    public category_id: string
   ) {
     this.id = uuidv4();
-    this.currency = currency;
+    this.currency_id = currency_id;
     this.value = value;
-    this.category = category;
+    this.category_id = category_id;
     this.created = new Date().getTime();
   }
+}
 
-  public getTimestamp() {
-    let date = new Date();
-    date.setTime(this.created);
-    return date.toLocaleDateString('en-GB');
-  }
-
+export type ExpenseDTO = {
+  id: string;
+  created: number;
+  currency: Currency,
+  value: number,
+  category: Category
 }

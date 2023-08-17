@@ -1,10 +1,9 @@
 import { LitElement, html } from 'lit';
 import { customElement, state, property, query} from 'lit/decorators.js';
-import { Category, Currency } from '../../model'
+import { Category, Currency, Expense } from '../../model'
 import { styles } from './expense-styles';
 import { styles as sharedStyles } from '../../styles/shared-styles'
-import { addData, initDB, getStoreData, Stores } from '../../db';
-
+import { dao } from '../../dao';
 
 @customElement('app-expense-page')
 export class AppExpensePage extends LitElement {
@@ -41,10 +40,9 @@ export class AppExpensePage extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
-    await initDB();
     await this.handleGetCurrencies()
     await this.handleGetCategories();
-    // this._currency = this._listCurrencies[0];
+    // todo: save default category into db
   }
 
   toggleDisableAddExpenseValue() {
@@ -63,7 +61,7 @@ export class AppExpensePage extends LitElement {
 
   async addCurrency(e: CustomEvent) {
     try {
-      const res = await addData(Stores.Currencies, e.detail.currency);
+      await dao.addCurrency(e.detail.currency);
       this.handleGetCurrencies();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -76,7 +74,7 @@ export class AppExpensePage extends LitElement {
 
   async addCategory(e: CustomEvent) {
     try {
-      const res = await addData(Stores.Categories, e.detail.category);
+      await dao.addCategory(e.detail.category);
       this.handleGetCategories();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -85,6 +83,26 @@ export class AppExpensePage extends LitElement {
         this._message = 'Something went wrong';
       }
     }
+  }
+
+  async addExpense() {
+    if (!(this._value && this._currency && this._category)) {
+      // do nothing
+      this.toggleDisableAddExpenseValue();
+      return
+    }
+    let expense = new Expense(this._currency.id, this._value, this._category.id)
+    try {
+      await dao.addExpense(expense);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        this._message = err.message;
+      } else {
+        this._message = 'Something went wrong';
+      }
+    }
+    this.inputValue.value = '';
+    this.displayMessage();
   }
 
   selectCategory(e: CustomEvent) {
@@ -99,17 +117,6 @@ export class AppExpensePage extends LitElement {
     }
   }
 
-  async createNewExpense() {
-    if (!(this._value && this._currency && this._category)) {
-      // do nothing
-      this.toggleDisableAddExpenseValue();
-      return
-    }
-    this.inputValue.value = '';
-    console.log("added");
-    this.displayMessage();
-  }
-
   displayMessage() {
     this.hideMessage = false;
     setTimeout(() => {
@@ -118,12 +125,12 @@ export class AppExpensePage extends LitElement {
   }
 
   async handleGetCurrencies() {
-    this._listCurrencies = await getStoreData<Currency>(Stores.Currencies);
+    this._listCurrencies = await dao.getAllCurrencies();
   }
 
   async handleGetCategories() {
     // return new Promise<Category[]>((resolve, reject) => resolve(categories));
-    this._listCategories = await getStoreData<Currency>(Stores.Categories);
+    this._listCategories = await dao.getAllCategories();
   }
 
   render() {
@@ -135,7 +142,7 @@ export class AppExpensePage extends LitElement {
         @keyup=${this._onExpenseValueChanged}
       >
       <button
-        @click=${() => this.createNewExpense()}
+        @click=${() => this.addExpense()}
         class=${this.disableAddExpense ? 'disabled': ''}
         >
         Add
