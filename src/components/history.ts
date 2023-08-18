@@ -56,13 +56,17 @@ class AppHistory extends LitElement {
         const statistic = html`
             ${map(this._statistic, (stat) =>
                 html`
-                    <div>
+                    <div class=stat-block>
                         <span class="stat-category">${stat[0].name}</span> (
                         ${repeat( stat[1], (item) => item[0].id, (item, index) =>
                             html`
-                                <span class="stat-sign">${item[0].sign}</span>
-                                <span class="stat-value">${item[1]}</span>
-                                ${index + 1 !== stat[1].size ? '/': ''}
+                                ${!!item[1]
+                                    ? html`
+                                        <span class="stat-sign">${item[0].sign}</span>
+                                        <span class="stat-value">${item[1]}</span>
+                                        ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
+                                    `: ''
+                                }
                             `
                         )}
                     )</div>
