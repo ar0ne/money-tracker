@@ -46,6 +46,7 @@ export class AppExpensePage extends LitElement {
     await this.handleGetCurrencies()
     await this.handleGetCategories();
     // todo: save default category into db
+    this._currency = this._listCurrencies?.[0];
   }
 
   toggleDisableAddExpenseValue() {

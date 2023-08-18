@@ -5,7 +5,7 @@ import { Category, Currency, Expense, ExpenseDTO } from "./model";
 export interface Dao {
     getAllCurrencies(): Promise<Currency[]>;
     getAllCategories(): Promise<Category[]>;
-    getAllExpenses(): Promise<ExpenseDTO[]>;
+    getAllExpenses(from_date: Date | undefined, to_date: Date | undefined): Promise<ExpenseDTO[]>;
     addCategory(category: Category): Promise<void>;
     addCurrency(currency: Currency): Promise<void>;
     addExpense(expense: Expense): Promise<void>;
@@ -34,7 +34,8 @@ export class IndexDbDAO implements Dao {
         return categories;
     }
 
-    public getAllExpenses = async () => {
+    public getAllExpenses = async (from_date: Date | undefined, to_date: Date | undefined) => {
+        // todo: limit data
         const expenses = await getStoreData<Expense>(Stores.Expenses);
         const categories = await this.getAllCategories();
         const currencies = await this.getAllCurrencies();
@@ -49,7 +50,14 @@ export class IndexDbDAO implements Dao {
             }),
         );
 
-        return expenses.map(item => {
+        let result = expenses;
+        if (from_date) {
+            result = expenses.filter((expense) => from_date.getTime() > new Date(expense.created).getTime());
+        }
+        if (to_date) {
+            result = expenses.filter((expense) => new Date(expense.created).getTime() < to_date.getTime());
+        }
+        return result.map(item => {
             return {
                 id: item.id,
                 created: item.created,

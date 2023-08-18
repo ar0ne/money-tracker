@@ -19,22 +19,3 @@ export function getStatistic(expenses: ExpenseDTO[]) {
     });
     return statistic;
 }
-
-/**
- *
- * Bill: {
- *    USD: 24,
- *    EUR: 24,
- * },
- *
- * function getStat(expenses: []):
- *
- *    expenses = {}
- *    for cat in categories:
- *        for exp in expenses:
- *            if exp.cat == cat:
- *                expenses[exp.currency] += exp.value
- *
- *
- *
- */

@@ -15,15 +15,17 @@ class AppHistory extends LitElement {
     @state()
     private _dao!: Dao;
     @state()
-    private _today?: Date;
+    private _selectedDate!: Date;
     @state()
     private _expenses: ExpenseDTO[] = [];
     @state()
     private _statistic?: Statistic;
+    @state()
+    private _dateChanged: boolean = false;
 
     constructor() {
         super();
-        this._today = new Date();
+        this._selectedDate = new Date();
     }
 
     async connectedCallback() {
@@ -33,8 +35,19 @@ class AppHistory extends LitElement {
         await this.handleHistory();
     }
 
+    getFirstDayOfMonth(year: number, month: number) {
+        return new Date(year, month, 1);
+    }
+
+    getLastDayOfMonth(year: number, month: number) {
+        // last minute of the month
+        return new Date(new Date(year, month + 1, 0).getTime() - 1);
+    }
+
     async handleHistory() {
-        let expenses = await this._dao.getAllExpenses();
+        const from_date = this.getFirstDayOfMonth(this._selectedDate.getFullYear(), this._selectedDate.getMonth());
+        const to_date = this.getLastDayOfMonth(this._selectedDate.getFullYear(), this._selectedDate.getMonth());
+        let expenses = await this._dao.getAllExpenses(from_date, to_date);
         expenses.sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
         this._expenses = expenses.reverse();
         this._statistic = getStatistic(this._expenses);
@@ -51,8 +64,27 @@ class AppHistory extends LitElement {
         await this.handleHistory();
     }
 
-    render() {
+    getCurrentMonthName() {
+        return this._selectedDate.toLocaleString('default', { month: 'long' });
+    }
 
+    async previousMonth() {
+        this._dateChanged = true;
+        let previousMonth = new Date();
+        previousMonth.setDate(1);
+        previousMonth.setFullYear(this._selectedDate.getFullYear());
+        previousMonth.setMonth(this._selectedDate.getMonth() - 1);
+        this._selectedDate = previousMonth;
+        await this.handleHistory();
+    }
+
+    async resetHistory() {
+        this._dateChanged = false;
+        this._selectedDate = new Date();
+        await this.handleHistory();
+    }
+
+    render() {
         const statistic = html`
             ${map(this._statistic, (stat) =>
                 html`
@@ -97,7 +129,11 @@ class AppHistory extends LitElement {
             : html`<p>No records yet.</p>`;
 
         return html`
-            <h4>History</h4>
+            <h4>Expenses for <i>${this.getCurrentMonthName()}</i></h4>
+            <button @click=${() => this.previousMonth()}>Previous</button>
+            ${this._dateChanged ? html`
+                <button @click=${() => this.resetHistory()}>Reset</button>
+            `: ''}
             ${showStatistic}
             ${history}
         `;
