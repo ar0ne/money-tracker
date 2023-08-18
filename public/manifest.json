@@ -1,6 +1,6 @@
 {
   "id": "/",
-  "scope": "/",
+  "scope": "./",
   "name": "PWA Starter",
   "display": "standalone",
   "start_url": "/",
@@ -51,8 +51,6 @@
   ],
   "categories": [
     "social"
-  ],
-  "shortcuts": [
   ],
   "widgets": [
     {
