@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A simple PWA for money tracking!",
   "main": "index.js",
-  "homepage": "https://ar0ne.github.io/money-tracker",
+  "homepage": "https://ar0ne.github.io/money-tracker/",
   "scripts": {
     "dev-server": "vite --open",
     "dev": "npm run dev-server",
