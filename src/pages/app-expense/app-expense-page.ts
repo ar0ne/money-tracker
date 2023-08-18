@@ -88,6 +88,19 @@ export class AppExpensePage extends LitElement {
     }
   }
 
+  async renameCategory(e: CustomEvent) {
+    try {
+      await this._dao.updateCategory(e.detail.category);
+      this.handleGetCategories();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        this._message = err.message;
+      } else {
+        this._message = 'Something went wrong';
+      }
+    }
+  }
+
   async addExpense() {
     if (!(this._value && this._currency && this._category)) {
       // do nothing
@@ -154,7 +167,7 @@ export class AppExpensePage extends LitElement {
       </button>
       <button
         @click=${() => this.cancelAddExpense()}
-      >X</button>
+      >Close</button>
     `;
 
     const addExpense = this.hideValue
@@ -171,6 +184,7 @@ export class AppExpensePage extends LitElement {
           .categories=${this._listCategories}
           @category-selected="${this.selectCategory}"
           @category-added="${this.addCategory}"
+          @category-renamed="${this.renameCategory}"
         ></app-category>
         <app-currency
           class=${!this._category ? "hide": ''}

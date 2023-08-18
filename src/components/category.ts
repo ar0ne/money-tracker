@@ -15,6 +15,8 @@ class AppCategory extends LitElement {
     categories: Category[] = [];
     @property()
     hideAddCategory = true;
+    @property()
+    hideRenameCategory = true;
 
     @query('#newcategory')
     inputCategory!: HTMLInputElement;
@@ -45,44 +47,92 @@ class AppCategory extends LitElement {
         // todo
     }
 
+    renameCategory(category: Category) {
+        const input = (this.shadowRoot?.getElementById("renamecategory_" + category.id) as HTMLInputElement);
+        category.name = input.value;
+        input.value = '';
+        const options = {
+            detail: {category: category},
+        };
+        this.dispatchEvent(new CustomEvent('category-renamed', options));
+        this.toggleRenameCategory();
+    }
+
     toggleAddCategory() {
         this.hideAddCategory = !this.hideAddCategory;
     }
 
+    toggleRenameCategory() {
+        this.hideRenameCategory = !this.hideRenameCategory;
+    }
+
     render() {
+
+        const renameCategory = html`
+            <div class="rename-category">
+                <h5>Rename category</h5>
+                <ul>
+                ${map(this.categories, (category) =>
+                    html`
+                    <li>
+                        <input id="renamecategory_${category.id}" value="${category.name}" type="text" name="Rename item">
+                        <button @click=${() => this.renameCategory(category)}>Rename</button>
+                    </li>
+                    `
+                )}
+                </ul>
+                <button @click=${this.toggleAddCategory}>Cancel</button>
+            </div>
+        `;
+
         const listCategories = html`
-            <ul>
-            ${map(this.categories, (item) =>
-            html`
-                <button
-                    @click=${() => this.selectCategory(item)}>
-                ${item.name}
-                </button>
-                </br>
-            `
-            )}
-            </ul>
-            <button
-                @click=${() => this.toggleAddCategory()}
-                >+
-            </button>
+            <div class="list-category">
+                <ul>
+                ${map(this.categories, (category) =>
+                    html`
+                        <button
+                            @click=${() => this.selectCategory(category)}>
+                        ${category.name}
+                        </button>
+                        </br>
+                    `
+                )}
+                </ul>
+            </div>
         `;
 
         const addNewCategory = html`
-            <h5>New category</h5>
-            <input id="newcategory" aria-label="New item">
-            <button @click=${this.addCategory}>Add</button>
-            <button @click=${this.toggleAddCategory}>X</button>
+            <div class="add-category">
+                <h5>New category</h5>
+                <input id="newcategory" aria-label="New item">
+                <button @click=${this.addCategory}>Add</button>
+                <button @click=${this.toggleAddCategory}>X</button>
+            </div>
         `;
 
+        const categorySettings = html`
+            <div class="settings-category">
+                <button
+                    @click=${() => this.toggleAddCategory()}
+                    >+
+                </button>
+                <button
+                    @click=${() => this.toggleRenameCategory()}
+                    >Rename
+                </button>
+            </div>
+        `;
 
-        const listOrAddCategory = this.hideAddCategory
-            ? listCategories
-            : addNewCategory;
+        const setupCategory = this.hideAddCategory
+            ? renameCategory
+            : addNewCategory
 
+        const listOrSetupCategory = this.hideAddCategory && this.hideRenameCategory
+            ? html`${listCategories} ${categorySettings}`
+            : setupCategory;
 
         return html`
-            ${listOrAddCategory}
+            ${listOrSetupCategory}
         `;
     }
 }

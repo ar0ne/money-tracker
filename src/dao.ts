@@ -1,4 +1,4 @@
-import { addData, initDB, getStoreData, Stores, deleteData} from './db';
+import { addData, initDB, getStoreData, Stores, deleteData, updateData } from './db';
 import { Category, Currency, Expense, ExpenseDTO } from "./model";
 
 
@@ -10,6 +10,7 @@ export interface Dao {
     addCurrency(currency: Currency): Promise<void>;
     addExpense(expense: Expense): Promise<void>;
     removeExpense(id: string): Promise<void>;
+    updateCategory(category: Category): Promise<void>;
 }
 
 export class IndexDbDAO implements Dao {
@@ -73,6 +74,10 @@ export class IndexDbDAO implements Dao {
 
     public removeExpense = async (id: string) => {
         await deleteData(Stores.Expenses, id);
+    }
+
+    public updateCategory = async (category: Category) => {
+        await updateData(Stores.Categories, category.id, category)
     }
 }
 
