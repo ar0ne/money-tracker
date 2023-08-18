@@ -1,9 +1,9 @@
 {
-  "name": "pwa-starter",
+  "name": "money-tracker",
   "version": "0.0.1",
-  "description": "A starter kit for building PWAs!",
+  "description": "A simple PWA for money tracking!",
   "main": "index.js",
-  "homepage": "https://ar0ne.github.io/money-tracker/",
+  "homepage": "https://ar0ne.github.io/money-tracker",
   "scripts": {
     "dev-server": "vite --open",
     "dev": "npm run dev-server",

@@ -6,7 +6,7 @@
   "start_url": "/",
   "short_name": "starter",
   "theme_color": "#E1477E",
-  "description": "This is a PWA Starter app",
+  "description": "A simple PWA for money tracking",
   "orientation": "any",
   "background_color": "#E1477E",
   "related_applications": [],
