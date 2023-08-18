@@ -1,23 +1,29 @@
-import { addData, initDB, getStoreData, Stores, getStoreDataById } from './db';
-import { Category, Currency, Expense, ExpenseDTO } from "./model";
+import { addData, initDB, getStoreData, Stores, deleteData} from './db';
+import { Category, Currency, Expense } from "./model";
 
 
 export class Dao {
 
-    public getAllCurrencies = async () => {
+    constructor() {
+    }
+
+    public static create = async () => {
+        const dao = new Dao();
         await initDB();
+        return dao;
+    }
+
+    public getAllCurrencies = async () => {
         let currencies: Currency[] = await getStoreData<Currency>(Stores.Currencies);
         return currencies;
     }
 
     public getAllCategories = async () => {
-        await initDB();
         let categories: Category[] = await getStoreData<Currency>(Stores.Categories);
         return categories;
     }
 
     public getAllExpenses = async () => {
-        await initDB();
         const expenses = await getStoreData<Expense>(Stores.Expenses);
         const categories = await this.getAllCategories();
         const currencies = await this.getAllCurrencies();
@@ -43,23 +49,24 @@ export class Dao {
         });
     }
 
-    public addCategory =async (category: Category) => {
-        await initDB();
+    public addCategory = async (category: Category) => {
         await addData(Stores.Categories, category);
     }
 
-    public addCurrency =async (currency: Currency) => {
-        await initDB();
+    public addCurrency = async (currency: Currency) => {
         await addData(Stores.Currencies, currency);
     }
 
-    public addExpense =async (expense: Expense) => {
-        await initDB();
+    public addExpense = async (expense: Expense) => {
         await addData(Stores.Expenses, expense);
+    }
+
+    public removeExpense = async (id: string) => {
+        await deleteData(Stores.Expenses, id);
     }
 }
 
-const dao = new Dao();
+const dao = await Dao.create();
 
 export { dao };
 

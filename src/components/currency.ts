@@ -33,8 +33,8 @@ class AppCurrency extends LitElement {
 
     addCurrency() {
         let newCurrency: Currency = new Currency(
+            this.inputCurrencyName.value,
             this.inputCurrencySign.value,
-            this.inputCurrencyName.value
         )
         this.inputCurrencyName.value = this.inputCurrencySign.value = '';
         const options = {

@@ -102,6 +102,7 @@ export class AppExpensePage extends LitElement {
       }
     }
     this.inputValue.value = '';
+    this._message = 'Added!';
     this.displayMessage();
   }
 
@@ -121,6 +122,7 @@ export class AppExpensePage extends LitElement {
     this.hideMessage = false;
     setTimeout(() => {
         this.hideMessage = true;
+        this._message = '';
     }, 2000);
   }
 
@@ -160,7 +162,7 @@ export class AppExpensePage extends LitElement {
     return html`
       <app-header ?enableBack="${true}"></app-header>
       <main>
-        <p class=${this.hideMessage ? "hide": ""}>Added!</p>
+        <p class=${this.hideMessage ? "hide": ""}>${this._message}</p>
         <app-category
           class=${this._category ? "hide": ''}
           .categories=${this._listCategories}
