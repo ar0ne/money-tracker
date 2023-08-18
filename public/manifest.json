@@ -73,5 +73,15 @@
         }
       ]
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Home",
+      "url": "/"
+    },
+    {
+      "name": "Expenses",
+      "url": "/expense"
+    }
   ]
 }
