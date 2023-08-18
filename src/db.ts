@@ -1,6 +1,7 @@
 let request: IDBOpenDBRequest;
 let db: IDBDatabase;
 let version = 1;
+const DB_NAME = 'expensesDB';
 
 export enum Stores {
   Expenses = 'expenses',
@@ -10,7 +11,7 @@ export enum Stores {
 
 export const initDB = (): Promise<boolean|IDBDatabase> => {
   return new Promise((resolve) => {
-    request = indexedDB.open('myDB');
+    request = indexedDB.open(DB_NAME);
 
     // if the data object store doesn't exist, create it
     request.onupgradeneeded = () => {
@@ -46,7 +47,7 @@ export const initDB = (): Promise<boolean|IDBDatabase> => {
 
 export const addData = <T>(storeName: string, data: T): Promise<T|string|null> => {
   return new Promise((resolve) => {
-    request = indexedDB.open('myDB', version);
+    request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = () => {
       console.log('request.onsuccess - addData', data);
@@ -70,7 +71,7 @@ export const addData = <T>(storeName: string, data: T): Promise<T|string|null> =
 
 export const deleteData = (storeName: string, key: string): Promise<boolean> => {
   return new Promise((resolve) => {
-    request = indexedDB.open('myDB', version);
+    request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = () => {
       console.log('request.onsuccess - deleteData', key);
@@ -90,7 +91,7 @@ export const deleteData = (storeName: string, key: string): Promise<boolean> => 
 
 export const updateData = <T>(storeName: string, key: string, data: T): Promise<T|string|null> => {
   return new Promise((resolve) => {
-    request = indexedDB.open('myDB', version);
+    request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = () => {
       console.log('request.onsuccess - updateData', key);
@@ -112,7 +113,7 @@ export const updateData = <T>(storeName: string, key: string, data: T): Promise<
 
 export const getStoreData = <T>(storeName: Stores): Promise<T[]> => {
   return new Promise((resolve) => {
-    request = indexedDB.open('myDB');
+    request = indexedDB.open(DB_NAME);
 
     request.onsuccess = () => {
       console.log('request.onsuccess - getAllData');
@@ -129,7 +130,7 @@ export const getStoreData = <T>(storeName: Stores): Promise<T[]> => {
 
 export const getStoreDataById = <T>(storeName: Stores, id: string): Promise<T|undefined> => {
     return new Promise((resolve) => {
-      request = indexedDB.open('myDB');
+      request = indexedDB.open(DB_NAME);
 
       request.onsuccess = () => {
         console.log('request.onsuccess - getById');

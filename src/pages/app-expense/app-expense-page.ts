@@ -3,7 +3,7 @@ import { customElement, state, property, query} from 'lit/decorators.js';
 import { Category, Currency, Expense } from '../../model'
 import { styles } from './expense-styles';
 import { styles as sharedStyles } from '../../styles/shared-styles'
-import { dao } from '../../dao';
+import { Dao, IndexDbDAO } from '../../dao';
 
 @customElement('app-expense-page')
 export class AppExpensePage extends LitElement {
@@ -24,6 +24,8 @@ export class AppExpensePage extends LitElement {
   private _value?: number;
   @state()
   private _message: string = '';
+  @state()
+  private _dao!: Dao;
 
   @query('#newvalue')
   inputValue!: HTMLInputElement;
@@ -40,6 +42,7 @@ export class AppExpensePage extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
+    this._dao = await IndexDbDAO.create();
     await this.handleGetCurrencies()
     await this.handleGetCategories();
     // todo: save default category into db
@@ -61,7 +64,7 @@ export class AppExpensePage extends LitElement {
 
   async addCurrency(e: CustomEvent) {
     try {
-      await dao.addCurrency(e.detail.currency);
+      await this._dao.addCurrency(e.detail.currency);
       this.handleGetCurrencies();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -74,7 +77,7 @@ export class AppExpensePage extends LitElement {
 
   async addCategory(e: CustomEvent) {
     try {
-      await dao.addCategory(e.detail.category);
+      await this._dao.addCategory(e.detail.category);
       this.handleGetCategories();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -93,7 +96,7 @@ export class AppExpensePage extends LitElement {
     }
     let expense = new Expense(this._currency.id, this._value, this._category.id)
     try {
-      await dao.addExpense(expense);
+      await this._dao.addExpense(expense);
     } catch (err: unknown) {
       if (err instanceof Error) {
         this._message = err.message;
@@ -127,12 +130,12 @@ export class AppExpensePage extends LitElement {
   }
 
   async handleGetCurrencies() {
-    this._listCurrencies = await dao.getAllCurrencies();
+    this._listCurrencies = await this._dao.getAllCurrencies();
   }
 
   async handleGetCategories() {
     // return new Promise<Category[]>((resolve, reject) => resolve(categories));
-    this._listCategories = await dao.getAllCategories();
+    this._listCategories = await this._dao.getAllCategories();
   }
 
   render() {

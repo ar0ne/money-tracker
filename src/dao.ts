@@ -1,14 +1,24 @@
 import { addData, initDB, getStoreData, Stores, deleteData} from './db';
-import { Category, Currency, Expense } from "./model";
+import { Category, Currency, Expense, ExpenseDTO } from "./model";
 
 
-export class Dao {
+export interface Dao {
+    getAllCurrencies(): Promise<Currency[]>;
+    getAllCategories(): Promise<Category[]>;
+    getAllExpenses(): Promise<ExpenseDTO[]>;
+    addCategory(category: Category): Promise<void>;
+    addCurrency(currency: Currency): Promise<void>;
+    addExpense(expense: Expense): Promise<void>;
+    removeExpense(id: string): Promise<void>;
+}
+
+export class IndexDbDAO implements Dao {
 
     constructor() {
     }
 
     public static create = async () => {
-        const dao = new Dao();
+        const dao = new IndexDbDAO();
         await initDB();
         return dao;
     }
@@ -66,7 +76,4 @@ export class Dao {
     }
 }
 
-const dao = await Dao.create();
-
-export { dao };
 

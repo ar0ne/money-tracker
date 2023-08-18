@@ -2,7 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
 import { ExpenseDTO } from '../model';
-import { dao } from '../dao';
+import { Dao, IndexDbDAO } from '../dao';
 
 @customElement('app-history')
 class AppHistory extends LitElement {
@@ -10,8 +10,9 @@ class AppHistory extends LitElement {
     css``
 
     @state()
+    private _dao!: Dao;
+    @state()
     private _today?: Date;
-
     @state()
     private _expenses: ExpenseDTO[] = [];
 
@@ -23,11 +24,12 @@ class AppHistory extends LitElement {
     async connectedCallback() {
         super.connectedCallback();
         // todo: load only X last or for this month?
+        this._dao = await IndexDbDAO.create();
         await this.handleHistory();
     }
 
     async handleHistory() {
-        let expenses = await dao.getAllExpenses();
+        let expenses = await this._dao.getAllExpenses();
         expenses.sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
         this._expenses = expenses.reverse();
     }
@@ -36,6 +38,11 @@ class AppHistory extends LitElement {
         let date = new Date();
         date.setTime(timestamp);
         return date.toLocaleDateString('en-GB');
+    }
+
+    async removeRecord(expense: ExpenseDTO) {
+        await this._dao.removeExpense(expense.id);
+        await this.handleHistory();
     }
 
     render() {
@@ -47,6 +54,7 @@ class AppHistory extends LitElement {
                     <li>
                     ${item.currency.sign} ${item.value} (${item.category.name})
                     ${this.formatDateTime(item.created)}
+                    <button @click=${() => this.removeRecord(item)}>X</button>
                     </li>
                 `
             )}
