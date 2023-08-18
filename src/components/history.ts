@@ -1,8 +1,11 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { ExpenseDTO } from '../model';
 import { Dao, IndexDbDAO } from '../dao';
+
+import { getStatistic, Statistic } from '../components/statistics';
 
 @customElement('app-history')
 class AppHistory extends LitElement {
@@ -15,6 +18,8 @@ class AppHistory extends LitElement {
     private _today?: Date;
     @state()
     private _expenses: ExpenseDTO[] = [];
+    @state()
+    private _statistic?: Statistic;
 
     constructor() {
         super();
@@ -32,6 +37,7 @@ class AppHistory extends LitElement {
         let expenses = await this._dao.getAllExpenses();
         expenses.sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
         this._expenses = expenses.reverse();
+        this._statistic = getStatistic(this._expenses);
     }
 
     public formatDateTime(timestamp: number) {
@@ -46,6 +52,27 @@ class AppHistory extends LitElement {
     }
 
     render() {
+
+        const statistic = html`
+            ${map(this._statistic, (stat) =>
+                html`
+                    <div>
+                        <span class="stat-category">${stat[0].name}</span> (
+                        ${repeat( stat[1], (item) => item[0].id, (item, index) =>
+                            html`
+                                <span class="stat-sign">${item[0].sign}</span>
+                                <span class="stat-value">${item[1]}</span>
+                                ${index + 1 !== stat[1].size ? '/': ''}
+                            `
+                        )}
+                    )</div>
+                `
+            )}
+        `;
+
+        const showStatistic = this._statistic
+            ? statistic
+            : '<p>No statistics.</p>';
 
         const listExpenses = html`
             <ul>
@@ -67,6 +94,7 @@ class AppHistory extends LitElement {
 
         return html`
             <h4>History</h4>
+            ${showStatistic}
             ${history}
         `;
     }
