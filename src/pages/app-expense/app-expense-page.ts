@@ -130,7 +130,7 @@ export class AppExpensePage extends LitElement {
     this.hideValue = !this.hideValue;
   }
 
-  _onExpenseValueChanged(e: Event) {
+  _onExpenseValueChanged(_e: Event) {
     if (this._value !== +this.inputValue.value){
       this._value = +this.inputValue.value;
       this.toggleDisableAddExpenseValue();

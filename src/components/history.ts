@@ -8,6 +8,8 @@ import { Dao, IndexDbDAO } from '../dao';
 import { getStatistic, Statistic } from '../components/statistics';
 
 @customElement('app-history')
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 class AppHistory extends LitElement {
     static styles =
     css``

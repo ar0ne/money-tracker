@@ -32,14 +32,14 @@ export const initDB = (): Promise<boolean|IDBDatabase> => {
       // no need to resolve here
     };
 
-    request.onsuccess = (e) => {
+    request.onsuccess = (_e) => {
       db = request.result;
       // get current version and store it
       version = db.version;
       resolve(request.result);
     };
 
-    request.onerror = (e) => {
+    request.onerror = (_e) => {
       resolve(false);
     };
   });
