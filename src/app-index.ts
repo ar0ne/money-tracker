@@ -40,6 +40,7 @@ export class AppIndex extends LitElement {
 
   render() {
     // router config can be round in src/router.ts
+    console.log(router.routes);
     return router.render();
   }
 }
