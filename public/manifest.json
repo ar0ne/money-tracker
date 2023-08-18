@@ -1,10 +1,10 @@
 {
-  "id": "/",
-  "scope": "./",
+  "id": "",
+  "scope": "/",
   "name": "PWA Starter",
   "display": "standalone",
   "start_url": "/index.html",
-  "short_name": "starter",
+  "short_name": "moneytracker",
   "theme_color": "#E1477E",
   "description": "A simple PWA for money tracking",
   "orientation": "any",
