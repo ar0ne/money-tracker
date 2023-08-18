@@ -1,7 +1,7 @@
 {
   "id": "",
   "scope": "/",
-  "name": "PWA Starter",
+  "name": "Money Tracker",
   "display": "standalone",
   "start_url": "/index.html",
   "short_name": "moneytracker",
