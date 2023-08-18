@@ -20,13 +20,13 @@ export const router = new Router({
 
     routes: [
       {
-        path: resolveRouterPath(''),
+        path: '/',
         title: 'Home',
         render: () => html`<app-home></app-home>`
       },
       {
-        path: resolveRouterPath('/expense'),
-        title: 'Add Expense',
+        path: '/expense',
+        title: 'Add Expenses',
         plugins: [
           lazy(() => import('./pages/app-expense/app-expense-page.js')),
         ],
