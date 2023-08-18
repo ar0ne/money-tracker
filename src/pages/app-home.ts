@@ -27,7 +27,7 @@ export class AppHome extends LitElement {
 
       <main>
         <div>
-          <sl-button href="${resolveRouterPath('expense')}" variant="primary">Add expense</sl-button>
+          <sl-button href="/expense" variant="primary">Add expense</sl-button>
         </div>
 
         <app-history></app-history>
