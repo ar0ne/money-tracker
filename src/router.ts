@@ -20,7 +20,7 @@ console.log("Base url: " + baseURL);
 export const router = new Router({
     routes: [
       {
-        path: resolveRouterPath(),
+        path: resolveRouterPath(''),
         title: 'Home',
         render: () => html`<app-home></app-home>`
       },
