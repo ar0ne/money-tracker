@@ -76,12 +76,11 @@
   ],
   "shortcuts": [
     {
-      "name": "Home",
-      "url": "/"
-    },
-    {
-      "name": "Expenses",
-      "url": "/expense"
+      "name": "Add Expense",
+      "short_name": "Expense",
+      "description": "Open the expense page",
+      "url": "/expense",
+      "icons": [{ "src": "assets/icons/192x192.png", "sizes": "192x192" }]
     }
   ]
 }
