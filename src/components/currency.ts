@@ -1,5 +1,5 @@
 import {LitElement, css, html} from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
+import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Currency} from '../model';
 
@@ -19,9 +19,9 @@ class AppCurrency extends LitElement {
     @property()
     currencies: Currency[] = [];
     @property()
-    hideAddCurrency = true;
-    @property()
     currency?: Currency;
+    @state()
+    private hideAddCurrency = true;
 
     selectCurrency(item: Currency) {
         this.currency = item;

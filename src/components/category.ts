@@ -1,5 +1,5 @@
 import {LitElement, css, html} from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
+import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Category} from "../model"
 
@@ -9,15 +9,13 @@ class AppCategory extends LitElement {
     css``
 
     @property()
-    private _category?: Category;
-
-    @property()
     categories: Category[] = [];
-    @property()
+    @state()
+    private _category?: Category;
+    @state()
     hideAddCategory = true;
-    @property()
+    @state()
     hideRenameCategory = true;
-
     @query('#newcategory')
     inputCategory!: HTMLInputElement;
 

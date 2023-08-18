@@ -12,29 +12,29 @@ export class AppExpensePage extends LitElement {
     styles,
   ]
 
-  @state()
-  private _listCategories: Category[] = [];
-  @state()
-  private _listCurrencies: Currency[] = [];
+  private MESSAGE_DURATION: number = 2000;
   @property()
   private _currency?: Currency;
   @property()
   private _category?: Category;
+  @query('#newvalue')
+  inputValue!: HTMLInputElement;
+  @state()
+  private _listCategories: Category[] = [];
+  @state()
+  private _listCurrencies: Currency[] = [];
   @state()
   private _value?: number;
   @state()
   private _message: string = '';
   @state()
   private _dao!: Dao;
-
-  @query('#newvalue')
-  inputValue!: HTMLInputElement;
-  @property()
-  hideValue = true;
-  @property()
-  disableAddExpense = true;
-  @property({type: Boolean})
-  hideMessage = true;
+  @state()
+  private hideValue = true;
+  @state()
+  private disableAddExpense = true;
+  @state()
+  private hideMessage = true;
 
   constructor() {
     super();
@@ -45,7 +45,7 @@ export class AppExpensePage extends LitElement {
     this._dao = await IndexDbDAO.create();
     await this.handleGetCurrencies()
     await this.handleGetCategories();
-    // todo: save default category into db
+    // todo: save default category into db instead
     this._currency = this._listCurrencies?.[0];
   }
 
@@ -69,11 +69,12 @@ export class AppExpensePage extends LitElement {
       this.handleGetCurrencies();
     } catch (err: unknown) {
       if (err instanceof Error) {
-        this._message = err.message;
+        this.displayMessage(err.message);
       } else {
-        this._message = 'Something went wrong';
+        this.displayMessage('Something went wrong');
       }
     }
+    this.displayMessage("Added!");
   }
 
   async addCategory(e: CustomEvent) {
@@ -82,11 +83,12 @@ export class AppExpensePage extends LitElement {
       this.handleGetCategories();
     } catch (err: unknown) {
       if (err instanceof Error) {
-        this._message = err.message;
+        this.displayMessage(err.message);
       } else {
-        this._message = 'Something went wrong';
+        this.displayMessage('Something went wrong');
       }
     }
+    this.displayMessage("Added!");
   }
 
   async renameCategory(e: CustomEvent) {
@@ -95,11 +97,12 @@ export class AppExpensePage extends LitElement {
       this.handleGetCategories();
     } catch (err: unknown) {
       if (err instanceof Error) {
-        this._message = err.message;
+        this.displayMessage(err.message);
       } else {
-        this._message = 'Something went wrong';
+        this.displayMessage('Something went wrong');
       }
     }
+    this.displayMessage("Edited!");
   }
 
   async addExpense() {
@@ -113,14 +116,13 @@ export class AppExpensePage extends LitElement {
       await this._dao.addExpense(expense);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        this._message = err.message;
+        this.displayMessage(err.message);
       } else {
-        this._message = 'Something went wrong';
+        this.displayMessage('Something went wrong');
       }
     }
     this.inputValue.value = '';
-    this._message = 'Added!';
-    this.displayMessage();
+    this.displayMessage('Added!');
   }
 
   selectCategory(e: CustomEvent) {
@@ -135,12 +137,13 @@ export class AppExpensePage extends LitElement {
     }
   }
 
-  displayMessage() {
+  displayMessage(message: string) {
+    this._message = message;
     this.hideMessage = false;
     setTimeout(() => {
         this.hideMessage = true;
         this._message = '';
-    }, 2000);
+    }, this.MESSAGE_DURATION);
   }
 
   async handleGetCurrencies() {
@@ -154,7 +157,7 @@ export class AppExpensePage extends LitElement {
 
   render() {
     const addExpenseValue = html`
-      <label for="newvalue">Total</label>
+      <label for="newvalue">${this._category?.name}:</label>
       <input id="newvalue"
         aria-label="New value"
         type="number"
@@ -198,5 +201,4 @@ export class AppExpensePage extends LitElement {
       </main>
     `;
   }
-
 }
