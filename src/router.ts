@@ -14,7 +14,8 @@ import { title } from '@thepassle/app-tools/router/plugins/title.js';
 
 import './pages/app-home.js';
 
-const baseURL: string = (import.meta as any).env.BASE_URL;
+// const baseURL: string = (import.meta as any).env.BASE_URL;
+const baseURL: string = "https://ar0ne.github.io/money-tracker/";
 
 export const router = new Router({
 
