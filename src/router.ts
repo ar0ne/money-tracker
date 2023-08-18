@@ -20,11 +20,6 @@ export const router = new Router({
 
     routes: [
       {
-        path: '/',
-        title: 'Home',
-        render: () => html`<app-home></app-home>`
-      },
-      {
         path: resolveRouterPath(),
         title: 'Home',
         render: () => html`<app-home></app-home>`
