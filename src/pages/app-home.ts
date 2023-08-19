@@ -19,17 +19,19 @@ export class AppHome extends LitElement {
 
   render() {
     return html`
-      <app-header></app-header>
+      <div class="container-fluid">
+        <app-header></app-header>
 
-      <main>
-        <div>
-          <a href="/expense">
-            <button>Add expense</button>
-          </a>
-        </div>
+        <main>
+          <div>
+            <a href="/expense">
+              <button>Add expense</button>
+            </a>
+          </div>
 
-        <app-history></app-history>
-      </main>
+          <app-history></app-history>
+        </main>
+      </div>
     `;
   }
 }
