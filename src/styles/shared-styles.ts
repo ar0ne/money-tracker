@@ -8,4 +8,9 @@ export const styles = css`
   }
   main {
   }
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
