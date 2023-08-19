@@ -1,4 +1,4 @@
-import { LitElement, css } from 'lit';
+import { LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
 import './pages/app-home';
