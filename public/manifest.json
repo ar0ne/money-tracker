@@ -59,17 +59,11 @@
       "ms_ac_template": "widget/ac.json",
       "data": "widget/data.json",
       "description": "A simple widget example from pwa-starter.",
-      "screenshots": [
-        {
-          "src": "assets/screenshots/widget-screen.png",
-          "sizes": "500x500",
-          "label": "Widget screenshot"
-        }
-      ],
+      "screenshots": [],
       "icons": [
         {
-          "src": "assets/icons/48x48.png",
-          "sizes": "48x48"
+          "src": "assets/icons/32x32.png",
+          "sizes": "32x32"
         }
       ]
     }
