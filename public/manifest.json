@@ -3,7 +3,7 @@
   "scope": "/",
   "name": "Money Tracker",
   "display": "standalone",
-  "start_url": "/",
+  "start_url": "https://ar0ne.github.io/money-tracker/",
   "short_name": "moneytracker",
   "theme_color": "#E1477E",
   "description": "A simple PWA for money tracking",
