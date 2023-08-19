@@ -1,9 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import '@shoelace-style/shoelace/dist/components/card/card.js';
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-
 import { styles } from '../styles/shared-styles';
 
 @customElement('app-home')
@@ -26,7 +23,9 @@ export class AppHome extends LitElement {
 
       <main>
         <div>
-          <sl-button href="/expense" variant="primary">Add expense</sl-button>
+          <a href="/expense">
+            <button>Add expense</button>
+          </a>
         </div>
 
         <app-history></app-history>
