@@ -23,13 +23,15 @@ export class AppHeader extends LitElement {
     return html`
       <header>
 
-        <div id="back-button-block">
+        <h1>${this.title}</h1>
+        <div>
           ${this.enableBack
-            ? html`<a href="${resolveRouterPath()}"><button>Back</button></a>`
+            ? html`<a href="${resolveRouterPath()}"><sl-button>Back</sl-button></a>`
             : null
           }
-          <h1>${this.title}</h1>
+
         </div>
+
       </header>
     `;
   }

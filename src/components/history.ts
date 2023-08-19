@@ -7,6 +7,12 @@ import { Dao, IndexDbDAO } from '../dao';
 
 import { getStatistic, Statistic } from '../components/statistics';
 
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/details/details.js';
+import '@shoelace-style/shoelace/dist/components/menu/menu.js';
+import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
+
 @customElement('app-history')
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -87,30 +93,34 @@ class AppHistory extends LitElement {
     }
 
     render() {
-        const statistic = html`
-            ${map(this._statistic, (stat) =>
-                html`
-                    <div class=stat-block>
-                        <span class="stat-category">${stat[0].name}</span> (
-                        ${repeat( stat[1], (item) => item[0].id, (item, index) =>
-                            html`
-                                ${!!item[1]
-                                    ? html`
-                                        <span class="stat-sign">${item[0].sign}</span>
-                                        <span class="stat-value">${item[1]}</span>
-                                        ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
-                                    `: ''
-                                }
-                            `
-                        )}
-                    )</div>
-                `
-            )}
+        const statisticForMonth = html`
+            <div>
+            <sl-menu>
+                ${!this._statistic?.size
+                    ? html`<sl-menu-item>No results</sl-menu-item>`
+                    : ''}
+                ${map(this._statistic, (stat) =>
+                    html`
+                    <sl-menu-item>
+                            <span class="stat-category">${stat[0].name}</span> (
+                            ${repeat( stat[1], (item) => item[0].id, (item, index) =>
+                                html`
+                                    ${!!item[1]
+                                        ? html`
+                                            <span class="stat-sign">${item[0].sign}</span>
+                                            <span class="stat-value">${item[1]}</span>
+                                            ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
+                                        `: ''
+                                    }
+                                `
+                            )}
+                        )
+                    </sl-menu-item>
+                    `
+                )}
+            </sl-menu>
+            </div>
         `;
-
-        const showStatistic = this._statistic
-            ? statistic
-            : '<p>No statistics.</p>';
 
         const listExpenses = html`
             <ul>
@@ -131,13 +141,18 @@ class AppHistory extends LitElement {
             : html`<p>No records yet.</p>`;
 
         return html`
-            <h4>Expenses for <i>${this.getCurrentMonthName()}</i></h4>
-            <button @click=${() => this.previousMonth()}>Previous</button>
-            ${this._dateChanged ? html`
-                <button @click=${() => this.resetHistory()}>Reset</button>
-            `: ''}
-            ${showStatistic}
-            ${history}
+            <div>
+                <sl-card>
+                    <sl-details summary="Expenses for ${this.getCurrentMonthName()}">
+                        <sl-button @click=${() => this.previousMonth()}>Previous</sl-button>
+                        ${this._dateChanged ? html`
+                            <sl-button @click=${() => this.resetHistory()}>Reset</sl-button>
+                        `: ''}
+                        ${statisticForMonth}
+                    </sl-details>
+                </sl-card>
+                ${history}
+            </div>
         `;
     }
 }
