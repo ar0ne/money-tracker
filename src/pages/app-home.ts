@@ -2,9 +2,6 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { styles } from '../styles/shared-styles';
 
-import '@shoelace-style/shoelace/dist/components/card/card.js';
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 
 @customElement('app-home')
 export class AppHome extends LitElement {

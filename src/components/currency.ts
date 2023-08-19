@@ -52,39 +52,41 @@ class AppCurrency extends LitElement {
         const listCurrencies = html`
             ${map(this.currencies, (item) =>
                 html`
-                    <button
+                    <sl-button
                         @click=${() => this.selectCurrency(item)}
                         class=${item === this.currency ? 'selected' : ''}
                     >
                     ${item.sign}
-                    </button>
+                    </sl-button>
                 `
             )}
-            <button
+            <sl-button
                 @click=${() => this.toggleAddNewCurrency()}
                 >
                 +
-            </button>
+            </sl-button>
         `;
 
         const addNewCurrency = html`
-            <p>
-                <h5>Add new currency</h5>
-                <label for="newcurrencyname">Name</label>
-                <input id="newcurrencyname"
-                    aria-label="Currency name"
+            <div>
+                <h3>Add new currency</h3>
+                <sl-input id="newcurrencyname"
+                    label="Currency name"
                     type="text"
-                >
-                <br>
-                <label for="newcurrencysign">Sign</label>
-                <input id="newcurrencysign"
-                    aria-label="Currency sign"
+                    clearable
+                    placeholder="US Dollar"
+                ></sl-input>
+                <br />
+                <sl-input id="newcurrencysign"
+                    label="Currency sign"
                     type="text"
-                >
-                <br>
-                <button @click=${this.addCurrency}>Add</button>
-                <button @click=${() => this.toggleAddNewCurrency()}>X</button>
-            </p>
+                    clearable
+                    placeholder="$"
+                ></sl-input>
+                <br />
+                <sl-button @click="${this.addCurrency}">Add</sl-button>
+                <sl-button @click="${() => this.toggleAddNewCurrency()}">X</sl-button>
+            </div>
         `;
 
         const listOrAddCurrency = this.hideAddCurrency

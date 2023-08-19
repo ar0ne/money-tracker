@@ -157,21 +157,20 @@ export class AppExpensePage extends LitElement {
 
   render() {
     const addExpenseValue = html`
-      <label for="newvalue">${this._category?.name}:</label>
-      <input id="newvalue"
-        aria-label="New value"
+      <sl-input id="newvalue"
+        label="${this._category?.name}:"
         type="number"
         @keyup=${this._onExpenseValueChanged}
-      >
-      <button
+      ></sl-input>
+      <sl-button
         @click=${() => this.addExpense()}
         class=${this.disableAddExpense ? 'disabled': ''}
         >
         Add
-      </button>
-      <button
+      </sl-button>
+      <sl-button
         @click=${() => this.cancelAddExpense()}
-      >Close</button>
+      >Close</sl-button>
     `;
 
     const addExpense = this.hideValue

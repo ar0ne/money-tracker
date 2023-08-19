@@ -73,13 +73,13 @@ class AppCategory extends LitElement {
                 ${map(this.categories, (category) =>
                     html`
                     <li>
-                        <input id="renamecategory_${category.id}" value="${category.name}" type="text" name="Rename item">
-                        <button @click=${() => this.renameCategory(category)}>Rename</button>
+                        <sl-input id="renamecategory_${category.id}" value="${category.name}" type="text" name="Rename item"></sl-input>
+                        <sl-button @click=${() => this.renameCategory(category)}>Rename</sl-button>
                     </li>
                     `
                 )}
                 </ul>
-                <button @click=${this.toggleAddCategory}>Cancel</button>
+                <sl-button @click=${this.toggleAddCategory}>Cancel</sl-button>
             </div>
         `;
 
@@ -88,10 +88,10 @@ class AppCategory extends LitElement {
                 <ul>
                 ${map(this.categories, (category) =>
                     html`
-                        <button
+                        <sl-button
                             @click=${() => this.selectCategory(category)}>
                         ${category.name}
-                        </button>
+                        </sl-button>
                         </br>
                     `
                 )}
@@ -102,22 +102,22 @@ class AppCategory extends LitElement {
         const addNewCategory = html`
             <div class="add-category">
                 <h5>New category</h5>
-                <input id="newcategory" aria-label="New item">
-                <button @click=${this.addCategory}>Add</button>
-                <button @click=${this.toggleAddCategory}>X</button>
+                <sl-input id="newcategory" label="New item">
+                <sl-button @click=${this.addCategory}>Add</sl-button>
+                <sl-button @click=${this.toggleAddCategory}>X</sl-button>
             </div>
         `;
 
         const categorySettings = html`
             <div class="settings-category">
-                <button
+                <sl-button
                     @click=${() => this.toggleAddCategory()}
                     >+
-                </button>
-                <button
+                </sl-button>
+                <sl-button
                     @click=${() => this.toggleRenameCategory()}
                     >Rename
-                </button>
+                </sl-button>
             </div>
         `;
 

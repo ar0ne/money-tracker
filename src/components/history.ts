@@ -4,14 +4,7 @@ import { map } from 'lit/directives/map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { ExpenseDTO } from '../model';
 import { Dao, IndexDbDAO } from '../dao';
-
 import { getStatistic, Statistic } from '../components/statistics';
-
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/card/card.js';
-import '@shoelace-style/shoelace/dist/components/details/details.js';
-import '@shoelace-style/shoelace/dist/components/menu/menu.js';
-import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 
 @customElement('app-history')
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -98,7 +91,8 @@ class AppHistory extends LitElement {
             <sl-menu>
                 ${!this._statistic?.size
                     ? html`<sl-menu-item>No results</sl-menu-item>`
-                    : ''}
+                    : ''
+                }
                 ${map(this._statistic, (stat) =>
                     html`
                     <sl-menu-item>
