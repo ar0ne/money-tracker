@@ -3,6 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { ExpenseDTO } from '../model';
+import { styles } from '../styles/shared-styles';
 import { Dao, IndexDbDAO } from '../dao';
 import { getStatistic, Statistic } from '../components/statistics';
 
@@ -10,8 +11,40 @@ import { getStatistic, Statistic } from '../components/statistics';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 class AppHistory extends LitElement {
-    static styles =
-    css``
+
+    static get styles() {
+        return [
+          styles,
+          css`
+            ul {
+                list-style-type: none;
+            }
+            .expense-list-item {
+                margin: auto;
+                width: 95%;
+                border: 3px solid grey;
+                padding: 10px;
+            }
+            .clearfix::after {
+                content: "";
+                clear: both;
+                display: table;
+            }
+            .btn-remove {
+                float: right;
+                padding: 1em;
+            }
+            #statistics,#history p {
+                width: 90%;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+
+        `
+        ]
+    }
 
     @state()
     private _dao!: Dao;
@@ -88,31 +121,31 @@ class AppHistory extends LitElement {
     render() {
         const statisticForMonth = html`
             <div>
-            <sl-menu>
-                ${!this._statistic?.size
-                    ? html`<sl-menu-item>No results</sl-menu-item>`
-                    : ''
-                }
-                ${map(this._statistic, (stat) =>
-                    html`
-                    <sl-menu-item>
-                            <span class="stat-category">${stat[0].name}</span> (
-                            ${repeat( stat[1], (item) => item[0].id, (item, index) =>
-                                html`
-                                    ${!!item[1]
-                                        ? html`
-                                            <span class="stat-sign">${item[0].sign}</span>
-                                            <span class="stat-value">${item[1]}</span>
-                                            ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
-                                        `: ''
-                                    }
-                                `
-                            )}
-                        )
-                    </sl-menu-item>
-                    `
-                )}
-            </sl-menu>
+                <sl-menu id="statistic-card">
+                    ${!this._statistic?.size
+                        ? html`<sl-menu-item>No results</sl-menu-item>`
+                        : ''
+                    }
+                    ${map(this._statistic, (stat) =>
+                        html`
+                        <sl-menu-item>
+                                <span class="stat-category">${stat[0].name}</span> (
+                                ${repeat( stat[1], (item) => item[0].id, (item, index) =>
+                                    html`
+                                        ${!!item[1]
+                                            ? html`
+                                                <span class="stat-sign">${item[0].sign}</span>
+                                                <span class="stat-value">${item[1]}</span>
+                                                ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
+                                            `: ''
+                                        }
+                                    `
+                                )}
+                            )
+                        </sl-menu-item>
+                        `
+                    )}
+                </sl-menu>
             </div>
         `;
 
@@ -121,9 +154,11 @@ class AppHistory extends LitElement {
             ${map(this._expenses, (item) =>
                 html`
                     <li>
-                    ${item.currency.sign} ${item.value} (${item.category.name})
-                    ${this.formatDateTime(item.created)}
-                    <button @click=${() => this.removeRecord(item)}>X</button>
+                        <div class="expense-list-item clearfix">
+                            <sl-button class="btn-remove" @click=${() => this.removeRecord(item)}>X</sl-button>
+                            <p>${this.formatDateTime(item.created)} <i>(${item.category.name})</i></p>
+                            ${item.currency.sign} ${item.value}
+                        </div>
                     </li>
                 `
             )}
@@ -135,17 +170,24 @@ class AppHistory extends LitElement {
             : html`<p>No records yet.</p>`;
 
         return html`
-            <div>
-                <sl-card>
+            <div class="container">
+                <div id="statistics">
                     <sl-details summary="Expenses for ${this.getCurrentMonthName()}">
                         <sl-button @click=${() => this.previousMonth()}>Previous</sl-button>
                         ${this._dateChanged ? html`
-                            <sl-button @click=${() => this.resetHistory()}>Reset</sl-button>
+                            <sl-button
+                                variant="warning" outline
+                                @click=${() => this.resetHistory()}
+                                >
+                                Reset
+                            </sl-button>
                         `: ''}
                         ${statisticForMonth}
                     </sl-details>
-                </sl-card>
-                ${history}
+                </div>
+                <div id="history">
+                    ${history}
+                </div>
             </div>
         `;
     }

@@ -54,13 +54,14 @@ class AppCurrency extends LitElement {
                 html`
                     <sl-button
                         @click=${() => this.selectCurrency(item)}
-                        class=${item === this.currency ? 'selected' : ''}
+                        variant=${item === this.currency ? 'success' : 'default'}
                     >
                     ${item.sign}
                     </sl-button>
                 `
             )}
             <sl-button
+                variant="success" outline
                 @click=${() => this.toggleAddNewCurrency()}
                 >
                 +

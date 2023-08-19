@@ -169,7 +169,7 @@ export class AppExpensePage extends LitElement {
         Add
       </sl-button>
       <sl-button
-        @click=${() => this.cancelAddExpense()}
+        @click=${this.cancelAddExpense}
       >Close</sl-button>
     `;
 
