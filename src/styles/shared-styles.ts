@@ -15,4 +15,13 @@ export const styles = css`
     justify-content: center;
     align-items: center;
   }
+  .disabled {
+    color: grey;
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: #ffffff;
+  }
+  .hide {
+    display: none;
+  }
 `;

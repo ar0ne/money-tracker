@@ -157,20 +157,27 @@ export class AppExpensePage extends LitElement {
 
   render() {
     const addExpenseValue = html`
-      <sl-input id="newvalue"
-        label="${this._category?.name}:"
-        type="number"
-        @keyup=${this._onExpenseValueChanged}
-      ></sl-input>
-      <sl-button
-        @click=${() => this.addExpense()}
-        class=${this.disableAddExpense ? 'disabled': ''}
-        >
-        Add
-      </sl-button>
-      <sl-button
-        @click=${this.cancelAddExpense}
-      >Close</sl-button>
+      <div>
+        <sl-card id="add-expense-card">
+          <sl-input id="newvalue"
+            label="${this._category?.name}:"
+            type="number"
+            @keyup=${this._onExpenseValueChanged}
+          ></sl-input>
+          <br/>
+          <sl-button
+            variant="success"
+            @click=${() => this.addExpense()}
+            class=${this.disableAddExpense ? 'disabled': ''}
+            >
+            Add
+          </sl-button>
+          <sl-button
+            variant="warning"
+            @click=${this.cancelAddExpense}
+          >Close</sl-button>
+        </sl-card>
+      </div>
     `;
 
     const addExpense = this.hideValue

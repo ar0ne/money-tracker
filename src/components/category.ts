@@ -12,6 +12,19 @@ class AppCategory extends LitElement {
           css`
             .list-category {
             }
+            .rename-category-item {
+                display: table;
+            }
+            .rename-category-input {
+                display: table-cell;
+                width: 100%;
+            }
+            .rename-category-input > sl-input {
+                width: 100%;
+                margin: 2px;
+                padding: 2px;
+                box-sizing: border-box;
+            }
           `
         ]
     }
@@ -75,15 +88,20 @@ class AppCategory extends LitElement {
     render() {
 
         const renameCategory = html`
-            <div class="rename-category">
+            <div class="rename-category-list">
                 <h5>Rename category</h5>
                 ${map(this.categories, (category) =>
                     html`
-                        <sl-input id="renamecategory_${category.id}" value="${category.name}" type="text" name="Rename item"></sl-input>
-                        <sl-button @click=${() => this.renameCategory(category)}>Rename</sl-button>
+                        <div class="rename-category-item">
+                            <div class="rename-category-input">
+                                <sl-input id="renamecategory_${category.id}" value="${category.name}" type="text" name="Rename item"></sl-input>
+                            </div>
+                            <sl-button variant="danger" outline @click=${() => this.renameCategory(category)}>Rename</sl-button>
+                        </div>
                     `
                 )}
-                <sl-button @click=${this.toggleAddCategory}>Cancel</sl-button>
+                </br>
+                <sl-button variant="warning" @click=${this.toggleAddCategory}>Cancel</sl-button>
             </div>
         `;
 
@@ -103,10 +121,10 @@ class AppCategory extends LitElement {
 
         const addNewCategory = html`
             <div class="add-category">
-                <h5>New category</h5>
-                <sl-input id="newcategory" label="New item"></sl-input>
+                <sl-input id="newcategory" label="New category"></sl-input>
+                <br/>
                 <sl-button variant="success" @click=${this.addCategory}>Add</sl-button>
-                <sl-button variant="primary" @click=${this.toggleAddCategory}>Cancel</sl-button>
+                <sl-button variant="warning" @click=${this.toggleAddCategory}>Cancel</sl-button>
             </div>
         `;
 

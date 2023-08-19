@@ -40,8 +40,6 @@ class AppHistory extends LitElement {
                 margin-left: auto;
                 margin-right: auto;
             }
-
-
         `
         ]
     }
