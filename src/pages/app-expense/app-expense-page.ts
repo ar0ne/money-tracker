@@ -202,6 +202,7 @@ export class AppExpensePage extends LitElement {
           .currencies=${this._listCurrencies}
           .currency=${this._currency}
           @currency-changed="${this.changeCurrency}"
+          @currency-adding="${() => this.hideValue = !this.hideValue}"
           @currency-added="${this.addCurrency}"
         ></app-currency>
         ${addExpense}

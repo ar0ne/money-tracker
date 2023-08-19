@@ -5,12 +5,6 @@ import {Currency} from '../model';
 
 @customElement('app-currency')
 class AppCurrency extends LitElement {
-    static styles =
-    css`
-        .selected {
-            color: red;
-        }
-    `
 
     @query('#newcurrencysign')
     inputCurrencySign!: HTMLInputElement;
@@ -41,11 +35,16 @@ class AppCurrency extends LitElement {
             detail: {currency: newCurrency},
         };
         this.dispatchEvent(new CustomEvent('currency-added', options));
-        this.toggleAddNewCurrency();
+        this.addingCurrency();
     }
 
     toggleAddNewCurrency() {
         this.hideAddCurrency = !this.hideAddCurrency;
+    }
+
+    addingCurrency() {
+        this.toggleAddNewCurrency();
+        this.dispatchEvent(new CustomEvent('currency-adding', {}));
     }
 
     render() {
@@ -63,7 +62,7 @@ class AppCurrency extends LitElement {
             )}
             <sl-button
                 variant="success"
-                @click=${() => this.toggleAddNewCurrency()}
+                @click=${this.addingCurrency}
                 >
                 +
             </sl-button>
@@ -87,7 +86,7 @@ class AppCurrency extends LitElement {
                 ></sl-input>
                 <br />
                 <sl-button variant="success" @click="${this.addCurrency}">Add</sl-button>
-                <sl-button variant="warning" @click="${() => this.toggleAddNewCurrency()}">X</sl-button>
+                <sl-button variant="warning" @click="${this.addingCurrency}">X</sl-button>
             </div>
         `;
 

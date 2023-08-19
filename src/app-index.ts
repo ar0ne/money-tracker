@@ -19,13 +19,6 @@ import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 
 @customElement('app-index')
 export class AppIndex extends LitElement {
-  static get styles() {
-    return css`
-      main {
-
-      }
-    `;
-  }
 
   constructor() {
     super();
