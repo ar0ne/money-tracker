@@ -180,6 +180,7 @@ export class AppExpensePage extends LitElement {
 
     return html`
       <app-header ?enableBack="${true}"></app-header>
+      <sl-divider></sl-divider>
       <main>
         <p class=${this.hideMessage ? "hide": ""}>${this._message}</p>
         <app-category

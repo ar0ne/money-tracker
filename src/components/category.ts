@@ -2,11 +2,19 @@ import {LitElement, css, html} from 'lit';
 import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Category} from "../model"
+import { styles } from '../styles/shared-styles';
 
 @customElement('app-category')
 class AppCategory extends LitElement {
-    static styles =
-    css``
+    static get styles() {
+        return [
+          styles,
+          css`
+            .list-category {
+            }
+          `
+        ]
+    }
 
     @property()
     categories: Category[] = [];
@@ -84,6 +92,7 @@ class AppCategory extends LitElement {
                 ${map(this.categories, (category) =>
                     html`
                         <sl-button
+                            class="center"
                             @click=${() => this.selectCategory(category)}
                         >${category.name}</sl-button>
                         </br>
@@ -121,7 +130,12 @@ class AppCategory extends LitElement {
             : addNewCategory
 
         const listOrSetupCategory = this.hideAddCategory && this.hideRenameCategory
-            ? html`${listCategories} ${categorySettings}`
+            ? html`
+                <div>
+                ${listCategories}
+                ${categorySettings}
+                </div>
+                `
             : setupCategory;
 
         return html`

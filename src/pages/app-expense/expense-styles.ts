@@ -12,8 +12,4 @@ export const styles = css`
     display: none;
   }
 
-  main {
-    margin-left: 25px;
-  }
-
 `;

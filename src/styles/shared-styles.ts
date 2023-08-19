@@ -7,6 +7,8 @@ export const styles = css`
     }
   }
   main {
+    margin-left: 2%;
+    margin-right: 2%;
   }
   .center {
     display: flex;
