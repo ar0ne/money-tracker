@@ -48,8 +48,7 @@ export class AppExpensePage extends LitElement {
     this._dao = await IndexDbDAO.create();
     await this.handleGetCurrencies()
     await this.handleGetCategories();
-    // todo: save default category into db instead
-    this._currency = this._listCurrencies?.[0];
+    await this.handleLoadSettings();
   }
 
   toggleDisableAddExpenseValue() {
@@ -62,8 +61,9 @@ export class AppExpensePage extends LitElement {
     this.hideValue = !this.hideValue;
   }
 
-  changeCurrency(e: CustomEvent) {
+  async changeCurrency(e: CustomEvent) {
     this._currency = e.detail.currency;
+    await this._dao.updateSettings({last_currency_id: this._currency?.id});
   }
 
   async addCurrency(e: CustomEvent) {
@@ -154,8 +154,15 @@ export class AppExpensePage extends LitElement {
   }
 
   async handleGetCategories() {
-    // return new Promise<Category[]>((resolve, reject) => resolve(categories));
     this._listCategories = await this._dao.getAllCategories();
+  }
+
+  async handleLoadSettings() {
+    const settings = await this._dao.getSettings();
+    if (!settings) {
+      await this._dao.addSettings({last_currency_id: this._listCurrencies?.[0]?.id});
+    }
+    this._currency = this._listCurrencies?.filter((cur) => cur.id == settings?.last_currency_id)[0];
   }
 
   render() {

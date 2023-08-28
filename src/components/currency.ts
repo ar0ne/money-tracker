@@ -72,14 +72,14 @@ class AppCurrency extends LitElement {
             <div>
                 <h3>Add new currency</h3>
                 <sl-input id="newcurrencyname"
-                    label="Currency name"
+                    label="Name"
                     type="text"
                     clearable
                     placeholder="US Dollar"
                 ></sl-input>
                 <br />
                 <sl-input id="newcurrencysign"
-                    label="Currency sign"
+                    label="Sign"
                     type="text"
                     clearable
                     placeholder="$"

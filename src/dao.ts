@@ -1,22 +1,27 @@
-import { addData, initDB, getStoreData, Stores, deleteData, updateData } from './db';
-import { Category, Currency, Expense, ExpenseDTO } from "./model";
+import { addData, initDB, getStoreData, Stores, deleteData, updateData, getStoreDataById } from './db';
+import { Category, Currency, Expense, ExpenseDTO, Settings } from "./model";
 
 
 export interface Dao {
     getAllCurrencies(): Promise<Currency[]>;
     getAllCategories(): Promise<Category[]>;
     getAllExpenses(from_date: Date | undefined, to_date: Date | undefined): Promise<ExpenseDTO[]>;
+    getSettings(): Promise<Settings| undefined>;
     addCategory(category: Category): Promise<void>;
     addCurrency(currency: Currency): Promise<void>;
     addExpense(expense: Expense): Promise<void>;
+    addSettings(settings: Settings): Promise<void>;
     removeExpense(id: string): Promise<void>;
     updateCategory(category: Category): Promise<void>;
+    updateSettings(settings: Settings): Promise<void>;
 }
 
 export class IndexDbDAO implements Dao {
 
     constructor() {
     }
+
+    public SETTINGS_ID: string = 'my-settings';
 
     public static create = async () => {
         const dao = new IndexDbDAO();
@@ -69,6 +74,10 @@ export class IndexDbDAO implements Dao {
         return results.sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
     }
 
+    public getSettings = async () => {
+        return await getStoreDataById<Settings>(Stores.Settings, this.SETTINGS_ID);
+    }
+
     public addCategory = async (category: Category) => {
         await addData(Stores.Categories, category);
     }
@@ -81,6 +90,10 @@ export class IndexDbDAO implements Dao {
         await addData(Stores.Expenses, expense);
     }
 
+    public addSettings = async (settings: Settings) => {
+        await addData(Stores.Settings, {id: this.SETTINGS_ID, last_currency_id: settings.last_currency_id});
+    }
+
     public removeExpense = async (id: string) => {
         await deleteData(Stores.Expenses, id);
     }
@@ -88,6 +101,11 @@ export class IndexDbDAO implements Dao {
     public updateCategory = async (category: Category) => {
         await updateData(Stores.Categories, category.id, category)
     }
+
+    public updateSettings = async (settings: Settings) => {
+        await updateData(Stores.Settings, this.SETTINGS_ID, settings)
+    }
+
 }
 
 

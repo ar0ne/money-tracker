@@ -41,3 +41,7 @@ export type ExpenseDTO = {
   value: number,
   category: Category
 }
+
+export type Settings = {
+  last_currency_id: string | undefined;
+}

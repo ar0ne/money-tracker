@@ -7,6 +7,7 @@ export enum Stores {
   Expenses = 'expenses',
   Currencies = 'currencies',
   Categories = 'categories',
+  Settings = 'settings',
 }
 
 export const initDB = (): Promise<boolean|IDBDatabase> => {
@@ -29,6 +30,10 @@ export const initDB = (): Promise<boolean|IDBDatabase> => {
         console.log('Creating currencies store');
         db.createObjectStore(Stores.Currencies, { keyPath: 'id' });
       }
+      if (!db.objectStoreNames.contains(Stores.Settings)) {
+        console.log('Creating settings store');
+        db.createObjectStore(Stores.Settings, { keyPath: 'id' });
+      }
       // no need to resolve here
     };
 
@@ -50,7 +55,6 @@ export const addData = <T>(storeName: string, data: T): Promise<T|string|null> =
     request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = () => {
-      console.log('request.onsuccess - addData', data);
       db = request.result;
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
@@ -74,7 +78,6 @@ export const deleteData = (storeName: string, key: string): Promise<boolean> => 
     request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = () => {
-      console.log('request.onsuccess - deleteData', key);
       db = request.result;
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
@@ -94,7 +97,6 @@ export const updateData = <T>(storeName: string, key: string, data: T): Promise<
     request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = () => {
-      console.log('request.onsuccess - updateData', key);
       db = request.result;
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
@@ -116,7 +118,6 @@ export const getStoreData = <T>(storeName: Stores): Promise<T[]> => {
     request = indexedDB.open(DB_NAME);
 
     request.onsuccess = () => {
-      console.log('request.onsuccess - getAllData');
       db = request.result;
       const tx = db.transaction(storeName, 'readonly');
       const store = tx.objectStore(storeName);
