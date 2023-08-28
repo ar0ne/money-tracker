@@ -28,9 +28,9 @@ export const router = new Router({
         path: '/expense',
         title: 'Add Expenses',
         plugins: [
-          lazy(() => import('./pages/app-expense/app-expense-page.js')),
+          lazy(() => import('./pages/app-expenses.js')),
         ],
-        render: () => html`<app-expense-page></app-expense-page>`
+        render: () => html`<app-expenses></app-expenses>`
       },
     ]
   });

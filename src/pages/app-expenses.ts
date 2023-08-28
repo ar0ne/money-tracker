@@ -1,15 +1,18 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement, state, property, query} from 'lit/decorators.js';
-import { Category, Currency, Expense } from '../../model'
-import { styles } from './expense-styles';
-import { styles as sharedStyles } from '../../styles/shared-styles'
-import { Dao, IndexDbDAO } from '../../dao';
+import { Category, Currency, Expense } from '../model'
+import { styles as sharedStyles } from '../styles/shared-styles'
+import { Dao, IndexDbDAO } from '../dao';
 
-@customElement('app-expense-page')
+@customElement('app-expenses')
 export class AppExpensePage extends LitElement {
   static styles = [
     sharedStyles,
-    styles,
+    css`
+      #add-expense-card {
+        width: 100%;
+      }
+    `,
   ]
 
   private MESSAGE_DURATION: number = 2000;
