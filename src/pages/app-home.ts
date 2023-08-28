@@ -9,10 +9,7 @@ export class AppHome extends LitElement {
   static get styles() {
     return [
       styles,
-      css`
-        .main-btn-block {
-        }
-      `
+      css``
     ];
   }
 
@@ -26,7 +23,7 @@ export class AppHome extends LitElement {
         <app-header></app-header>
         <main>
           <div class="main-btn-block center">
-            <sl-button href="/expense" variant="primary">Add expense</sl-button>
+            <sl-button href="/expense" variant="primary">New record</sl-button>
           </div>
           <sl-divider></sl-divider>
           <app-history></app-history>

@@ -16,7 +16,6 @@ import './pages/app-home.js';
 
 const baseURL: string = (import.meta as any).env.BASE_URL;
 
-console.log("Base url: " + baseURL);
 export const router = new Router({
     routes: [
       {

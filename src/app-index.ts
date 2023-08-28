@@ -5,6 +5,7 @@ import './pages/app-home';
 import './components/header';
 import './components/category';
 import './components/currency';
+import './components/statistic';
 import './components/history';
 import './styles/global.css';
 import { router } from './router';
@@ -39,7 +40,6 @@ export class AppIndex extends LitElement {
 
   render() {
     // router config can be round in src/router.ts
-    console.log(router.routes);
     return router.render();
   }
 }

@@ -26,12 +26,12 @@ export class IndexDbDAO implements Dao {
 
     public getAllCurrencies = async () => {
         let currencies: Currency[] = await getStoreData<Currency>(Stores.Currencies);
-        return currencies;
+        return currencies.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     public getAllCategories = async () => {
         let categories: Category[] = await getStoreData<Currency>(Stores.Categories);
-        return categories;
+        return categories.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     public getAllExpenses = async (from_date: Date | undefined, to_date: Date | undefined) => {
@@ -57,7 +57,7 @@ export class IndexDbDAO implements Dao {
         if (to_date) {
             result = expenses.filter((expense) => new Date(expense.created).getTime() < to_date.getTime());
         }
-        return result.map(item => {
+        let results = result.map(item => {
             return {
                 id: item.id,
                 created: item.created,
@@ -66,6 +66,7 @@ export class IndexDbDAO implements Dao {
                 category: categoryMap.get(item.category_id) as Category,
             }
         });
+        return results.sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
     }
 
     public addCategory = async (category: Category) => {
