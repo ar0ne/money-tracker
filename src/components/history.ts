@@ -18,10 +18,11 @@ class AppHistory extends LitElement {
           css`
             ul {
                 list-style-type: none;
+                padding-inline-start: 1%;
+                padding-inline-end: 1%;
             }
             .expense-list-item {
                 margin: auto;
-                width: 95%;
                 border: 3px solid grey;
                 padding: 10px;
             }

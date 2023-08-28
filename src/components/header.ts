@@ -14,9 +14,8 @@ export class AppHeader extends LitElement {
     return [
       styles,
       css`
-      header {
-        width: 90%;
-        margin-left: 5%;
+      header a {
+        margin-left: 2%;
       }
       header div {
         width: 100%;
@@ -33,7 +32,7 @@ export class AppHeader extends LitElement {
   render() {
     return html`
       <header>
-        <h1>${this.title}</h1>
+        <h1 class="center">${this.title}</h1>
         <div>
           ${this.enableBack
             ? html`
