@@ -6,9 +6,9 @@ import {Currency} from '../model';
 @customElement('app-currency')
 class AppCurrency extends LitElement {
 
-    @query('#newcurrencysign')
+    @query('#currencysign')
     inputCurrencySign!: HTMLInputElement;
-    @query('#newcurrencyname')
+    @query('#currencyname')
     inputCurrencyName!: HTMLInputElement;
     @property()
     currencies: Currency[] = [];
@@ -16,6 +16,8 @@ class AppCurrency extends LitElement {
     currency?: Currency;
     @state()
     private hideAddCurrency = true;
+    @state()
+    private hideEditCurrency = true;
 
     selectCurrency(item: Currency) {
         this.currency = item;
@@ -44,8 +46,39 @@ class AppCurrency extends LitElement {
         this.hideAddCurrency = !this.hideAddCurrency;
     }
 
+    toggleEditCurrency() {
+        this.hideEditCurrency = !this.hideEditCurrency;
+    }
+
+    editCurrency() {
+        let currencyName = this.inputCurrencyName.value;
+        let currencySign = this.inputCurrencySign.value;
+        if (!(currencyName && currencySign)) {
+            return;
+        }
+        if (currencyName == this.currency?.name && currencySign == this.currency?.sign) {
+            // no need to change anything
+            this.editingCurrency();
+            return;
+        }
+        let editedCurrency: Currency = Object.assign({}, this.currency);
+        editedCurrency.name = currencyName;
+        editedCurrency.sign = currencySign;
+        this.inputCurrencyName.value = this.inputCurrencySign.value = '';
+        const options = {
+            detail: {currency: editedCurrency},
+        };
+        this.dispatchEvent(new CustomEvent('currency-edited', options));
+        this.editingCurrency();
+    }
+
     addingCurrency() {
         this.toggleAddNewCurrency();
+        this.dispatchEvent(new CustomEvent('currency-adding', {}));
+    }
+
+    editingCurrency() {
+        this.toggleEditCurrency();
         this.dispatchEvent(new CustomEvent('currency-adding', {}));
     }
 
@@ -55,7 +88,7 @@ class AppCurrency extends LitElement {
                 html`
                     <sl-button
                         @click=${() => this.selectCurrency(item)}
-                        variant=${item === this.currency ? 'primary' : 'default'}
+                        variant=${item.id === this.currency?.id ? 'primary' : 'default'}
                         outline
                         >
                         ${item.sign}
@@ -68,12 +101,59 @@ class AppCurrency extends LitElement {
                 >
                 +
             </sl-button>
+            ${this.currency ?
+                html
+                `<sl-button
+                    variant="warning"
+                    @click=${this.editingCurrency}
+                    >
+                    !
+                </sl-button>
+                `
+                : ''
+            }
+        `;
+
+        const showEditCurrency = html`
+            <div class="edit-currency">
+                <h3>Edit currency</h3>
+                <sl-input id="currencyname"
+                    label="Name"
+                    type="text"
+                    clearable
+                    placeholder="US Dollar"
+                    value=${this.currency?.name}
+                    >
+                </sl-input>
+                <br />
+                <sl-input id="currencysign"
+                    label="Sign"
+                    type="text"
+                    clearable
+                    placeholder="$"
+                    value=${this.currency?.sign}
+                    >
+                </sl-input>
+                <br />
+                <sl-button
+                    variant="success"
+                    @click="${this.editCurrency}"
+                    >
+                    Save
+                </sl-button>
+                <sl-button
+                    variant="warning"
+                    @click="${this.editingCurrency}"
+                    >
+                    Cancel
+                </sl-button>
+            </div>
         `;
 
         const addNewCurrency = html`
             <div>
                 <h3>Add new currency</h3>
-                <sl-input id="newcurrencyname"
+                <sl-input id="currencyname"
                     label="Name"
                     type="text"
                     clearable
@@ -81,7 +161,7 @@ class AppCurrency extends LitElement {
                     >
                 </sl-input>
                 <br />
-                <sl-input id="newcurrencysign"
+                <sl-input id="currencysign"
                     label="Sign"
                     type="text"
                     clearable
@@ -104,7 +184,13 @@ class AppCurrency extends LitElement {
             </div>
         `;
 
-        return this.hideAddCurrency ? listCurrencies : addNewCurrency;
+        const setupCurrency = this.hideAddCurrency ? showEditCurrency : addNewCurrency;
+
+        const display = (this.hideAddCurrency && this.hideEditCurrency)
+            ? listCurrencies
+            : setupCurrency;
+
+        return display;
     }
 
 }

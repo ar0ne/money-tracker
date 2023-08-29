@@ -130,19 +130,19 @@ class AppStatistic extends LitElement {
                     ${map(this._statistic, (stat) =>
                         html`
                         <sl-menu-item>
-                            <span class="stat-category">${stat[0].name}</span> (
+                            <span class="stat-category">${stat[0].name} [
                             ${repeat( stat[1], (item) => item[0].id, (item, index) =>
                                 html`
-                                    ${!!item[1]
+                                    ${item[1]
                                         ? html`
                                             <span class="stat-sign">${item[0].sign}</span>
                                             <span class="stat-value">${item[1]}</span>
-                                            ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
+                                            ${item[1] && index + 1 !== stat[1].size ? ',': ''}
                                         `: ''
                                     }
                                 `
                             )}
-                            )
+                            ]</span>
                         </sl-menu-item>
                         `
                     )}

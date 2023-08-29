@@ -21,8 +21,8 @@ class AppHistory extends LitElement {
             }
             .expense-list-item {
                 margin: auto;
-                border: 3px solid grey;
-                padding: 10px;
+                border: 1px solid grey;
+                padding: 1em;
             }
             .clearfix::after {
                 content: "";

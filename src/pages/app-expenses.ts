@@ -56,10 +56,14 @@ export class AppExpensePage extends LitElement {
     this.disableAddExpense = !(this._value && this._currency && this._category);
   }
 
+  toggleHideValue() {
+    this.hideValue = !this.hideValue;
+  }
+
   cancelAddExpense() {
     this._value = this._category = undefined;
     this.inputValue.value = '';
-    this.hideValue = !this.hideValue;
+    this.toggleHideValue();
   }
 
   async changeCurrency(e: CustomEvent) {
@@ -79,6 +83,20 @@ export class AppExpensePage extends LitElement {
       }
     }
     this.displayMessage("Added!");
+  }
+
+  async editCurrency(e: CustomEvent) {
+    try {
+      await this._dao.updateCurrency(e.detail.currency);
+      this.handleGetCurrencies();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        this.displayMessage(err.message);
+      } else {
+        this.displayMessage('Something went wrong');
+      }
+    }
+    this.displayMessage("Saved!");
   }
 
   async addCategory(e: CustomEvent) {
@@ -131,7 +149,7 @@ export class AppExpensePage extends LitElement {
 
   selectCategory(e: CustomEvent) {
     this._category = e.detail.category;
-    this.hideValue = !this.hideValue;
+    this.toggleHideValue();
   }
 
   _onExpenseValueChanged(_e: Event) {
@@ -212,9 +230,10 @@ export class AppExpensePage extends LitElement {
           class=${!this._category ? "hide": ''}
           .currencies=${this._listCurrencies}
           .currency=${this._currency}
-          @currency-changed="${this.changeCurrency}"
-          @currency-adding="${() => this.hideValue = !this.hideValue}"
+          @currency-adding="${this.toggleHideValue}"
           @currency-added="${this.addCurrency}"
+          @currency-changed="${this.changeCurrency}"
+          @currency-edited="${this.editCurrency}"
         ></app-currency>
         ${addExpense}
       </main>

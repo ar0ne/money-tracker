@@ -14,6 +14,7 @@ export interface Dao {
     removeExpense(id: string): Promise<void>;
     updateCategory(category: Category): Promise<void>;
     updateSettings(settings: Settings): Promise<void>;
+    updateCurrency(currency: Currency): Promise<void>;
 }
 
 export class IndexDbDAO implements Dao {
@@ -100,6 +101,10 @@ export class IndexDbDAO implements Dao {
 
     public updateCategory = async (category: Category) => {
         await updateData(Stores.Categories, category.id, category)
+    }
+
+    public updateCurrency = async (currency: Currency) => {
+        await updateData(Stores.Currencies, currency.id, currency)
     }
 
     public updateSettings = async (settings: Settings) => {
