@@ -1,8 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state, property, query} from 'lit/decorators.js';
-import { Category, Currency, Expense } from '../model'
+import { Category, Currency, Expense } from '../domain/model'
 import { styles as sharedStyles } from '../styles/shared-styles'
-import { Dao, IndexDbDAO } from '../dao';
+import { Dao, IndexDbDAO } from '../domain/dao';
 
 @customElement('app-expenses')
 export class AppExpensePage extends LitElement {

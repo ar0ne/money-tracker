@@ -1,7 +1,7 @@
 import {LitElement, css, html} from 'lit';
 import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
-import {Category} from "../model"
+import {Category} from "../domain/model"
 import {styles} from '../styles/shared-styles';
 
 @customElement('app-category')

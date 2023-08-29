@@ -1,9 +1,9 @@
-import {Category, Currency} from "../model";
+import {Category, Currency} from "../domain/model";
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { ExpenseDTO } from '../model';
+import { ExpenseDTO } from '../domain/model';
 import { styles } from '../styles/shared-styles';
 
 type Statistic = Map<Category, Map<Currency, number>>;

@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
-import {Currency} from '../model';
+import {Currency} from '../domain/model';
 
 @customElement('app-currency')
 class AppCurrency extends LitElement {

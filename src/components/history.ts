@@ -1,9 +1,9 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
-import { ExpenseDTO } from '../model';
+import { ExpenseDTO } from '../domain/model';
 import { styles } from '../styles/shared-styles';
-import { Dao, IndexDbDAO } from '../dao';
+import { Dao, IndexDbDAO } from '../domain/dao';
 
 @customElement('app-history')
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
