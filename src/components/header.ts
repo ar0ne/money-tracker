@@ -14,19 +14,15 @@ export class AppHeader extends LitElement {
     return [
       styles,
       css`
-      header a {
-        margin-left: 2%;
-      }
-      header div {
-        width: 100%;
-        margin-bottom: 1rem;
-      }
+        header a {
+          margin-left: 2%;
+        }
+        header div {
+          width: 100%;
+          margin-bottom: 1rem;
+        }
       `
     ]
-  }
-
-  constructor() {
-    super();
   }
 
   render() {

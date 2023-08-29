@@ -13,10 +13,6 @@ export class AppHome extends LitElement {
     ];
   }
 
-  constructor() {
-    super();
-  }
-
   render() {
     return html`
       <div>

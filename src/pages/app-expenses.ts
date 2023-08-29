@@ -40,10 +40,6 @@ export class AppExpensePage extends LitElement {
   @state()
   private hideMessage = true;
 
-  constructor() {
-    super();
-  }
-
   async connectedCallback() {
     super.connectedCallback();
     this._dao = await IndexDbDAO.create();
@@ -196,7 +192,7 @@ export class AppExpensePage extends LitElement {
           <br/>
           <sl-button
             variant="success"
-            @click=${() => this.addExpense()}
+            @click=${this.addExpense}
             class=${this.disableAddExpense ? 'disabled': ''}
             >
             Add
@@ -208,11 +204,6 @@ export class AppExpensePage extends LitElement {
         </sl-card>
       </div>
     `;
-
-    const addExpense = this.hideValue
-      ? ""
-      : addExpenseValue;
-
 
     return html`
       <app-header ?enableBack="${true}"></app-header>
@@ -235,7 +226,7 @@ export class AppExpensePage extends LitElement {
           @currency-changed="${this.changeCurrency}"
           @currency-edited="${this.editCurrency}"
         ></app-currency>
-        ${addExpense}
+        ${this.hideValue ? "" : addExpenseValue}
       </main>
     `;
   }

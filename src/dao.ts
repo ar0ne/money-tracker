@@ -19,9 +19,6 @@ export interface Dao {
 
 export class IndexDbDAO implements Dao {
 
-    constructor() {
-    }
-
     public SETTINGS_ID: string = 'my-settings';
 
     public static create = async () => {

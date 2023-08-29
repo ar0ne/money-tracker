@@ -16,21 +16,20 @@ class AppStatistic extends LitElement {
 
     static get styles() {
         return [
-          styles,
-          css`
-            #statistics {
-                width: 90%;
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        `
+            styles,
+            css`
+                #statistics {
+                    width: 90%;
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+            `
         ]
     }
 
     @property()
     selectedDate!: Date;
-
     @property()
     _expenses: ExpenseDTO[] = [];
     get expenses(): ExpenseDTO[] {
@@ -48,10 +47,6 @@ class AppStatistic extends LitElement {
     private _statistic?: Statistic;
     @state()
     private _dateChanged: boolean = false;
-
-    constructor() {
-        super();
-    }
 
     reloadStatistic() {
         this._statistic = this.getStatistic(this.expenses);

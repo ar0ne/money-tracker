@@ -38,10 +38,6 @@ class AppCategory extends LitElement {
     @query('#newcategory')
     inputCategory!: HTMLInputElement;
 
-    constructor() {
-        super();
-    }
-
     selectCategory(item: Category) {
         this._category = item;
         const options = {

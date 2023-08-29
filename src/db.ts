@@ -134,7 +134,6 @@ export const getStoreDataById = <T>(storeName: Stores, id: string): Promise<T|un
       request = indexedDB.open(DB_NAME);
 
       request.onsuccess = () => {
-        console.log('request.onsuccess - getById');
         db = request.result;
         const tx = db.transaction(storeName, 'readonly');
         const store = tx.objectStore(storeName);
