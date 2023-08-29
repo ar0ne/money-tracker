@@ -26,10 +26,12 @@ class AppCurrency extends LitElement {
     }
 
     addCurrency() {
-        let newCurrency: Currency = new Currency(
-            this.inputCurrencyName.value,
-            this.inputCurrencySign.value,
-        )
+        let currencyName = this.inputCurrencyName.value;
+        let currencySign = this.inputCurrencySign.value;
+        if (!(currencyName && currencySign)) {
+            return;
+        }
+        let newCurrency: Currency = new Currency(currencyName, currencySign);
         this.inputCurrencyName.value = this.inputCurrencySign.value = '';
         const options = {
             detail: {currency: newCurrency},
@@ -55,8 +57,8 @@ class AppCurrency extends LitElement {
                         @click=${() => this.selectCurrency(item)}
                         variant=${item === this.currency ? 'primary' : 'default'}
                         outline
-                    >
-                    ${item.sign}
+                        >
+                        ${item.sign}
                     </sl-button>
                 `
             )}
@@ -76,27 +78,33 @@ class AppCurrency extends LitElement {
                     type="text"
                     clearable
                     placeholder="US Dollar"
-                ></sl-input>
+                    >
+                </sl-input>
                 <br />
                 <sl-input id="newcurrencysign"
                     label="Sign"
                     type="text"
                     clearable
                     placeholder="$"
-                ></sl-input>
+                    >
+                </sl-input>
                 <br />
-                <sl-button variant="success" @click="${this.addCurrency}">Add</sl-button>
-                <sl-button variant="warning" @click="${this.addingCurrency}">X</sl-button>
+                <sl-button
+                    variant="success"
+                    @click="${this.addCurrency}"
+                    >
+                    Add
+                </sl-button>
+                <sl-button
+                    variant="warning"
+                    @click="${this.addingCurrency}"
+                    >
+                    X
+                </sl-button>
             </div>
         `;
 
-        const listOrAddCurrency = this.hideAddCurrency
-            ? listCurrencies
-            : addNewCurrency;
-
-        return html`
-            ${listOrAddCurrency}
-        `;
+        return this.hideAddCurrency ? listCurrencies : addNewCurrency;
     }
 
 }

@@ -52,7 +52,7 @@ class AppCategory extends LitElement {
 
     addCategory() {
         let categoryName = this.inputCategory.value;
-        if (!!!categoryName) {
+        if (!categoryName) {
             return;
         }
         let newCategory = new Category(categoryName);
@@ -67,7 +67,7 @@ class AppCategory extends LitElement {
     renameCategory(category: Category) {
         const input = (this.shadowRoot?.getElementById("renamecategory_" + category.id) as HTMLInputElement);
         let newName = input.value;
-        if (!!!newName) {
+        if (!newName) {
             return;
         }
         category.name = newName;
@@ -88,7 +88,6 @@ class AppCategory extends LitElement {
     }
 
     render() {
-
         const renameCategory = html`
             <div class="rename-category-list">
                 <h5>Rename category</h5>
@@ -96,14 +95,32 @@ class AppCategory extends LitElement {
                     html`
                         <div class="rename-category-item">
                             <div class="rename-category-input">
-                                <sl-input id="renamecategory_${category.id}" value="${category.name}" type="text" name="Rename item"></sl-input>
+                                <sl-input
+                                    id="renamecategory_${category.id}"
+                                    value="${category.name}"
+                                    type="text"
+                                    name="Rename
+                                    item"
+                                    >
+                                </sl-input>
                             </div>
-                            <sl-button variant="danger" outline @click=${() => this.renameCategory(category)}>Rename</sl-button>
+                            <sl-button
+                                variant="danger"
+                                outline
+                                @click=${() => this.renameCategory(category)}
+                                >
+                                Rename
+                            </sl-button>
                         </div>
                     `
                 )}
                 </br>
-                <sl-button variant="warning" @click=${this.toggleRenameCategory}>Cancel</sl-button>
+                <sl-button
+                    variant="warning"
+                    @click=${this.toggleRenameCategory}
+                    >
+                    Cancel
+                </sl-button>
             </div>
         `;
 
@@ -114,7 +131,9 @@ class AppCategory extends LitElement {
                         <sl-button
                             class="center"
                             @click=${() => this.selectCategory(category)}
-                        >${category.name}</sl-button>
+                            >
+                            ${category.name}
+                        </sl-button>
                         </br>
                     `
                 )}
@@ -123,10 +142,24 @@ class AppCategory extends LitElement {
 
         const addNewCategory = html`
             <div class="add-category">
-                <sl-input id="newcategory" label="New category"></sl-input>
+                <sl-input
+                    id="newcategory"
+                    label="New category"
+                    >
+                </sl-input>
                 <br/>
-                <sl-button variant="success" @click=${this.addCategory}>Add</sl-button>
-                <sl-button variant="warning" @click=${this.toggleAddCategory}>Cancel</sl-button>
+                <sl-button
+                    variant="success"
+                    @click=${this.addCategory}
+                    >
+                    Add
+                </sl-button>
+                <sl-button
+                    variant="warning"
+                    @click=${this.toggleAddCategory}
+                    >
+                    Cancel
+                </sl-button>
             </div>
         `;
 
@@ -135,12 +168,14 @@ class AppCategory extends LitElement {
                 <sl-button
                     variant="success"
                     @click=${this.toggleAddCategory}
-                    >Add
+                    >
+                    Add
                 </sl-button>
                 <sl-button
                     variant="warning"
                     @click=${this.toggleRenameCategory}
-                    >Rename
+                    >
+                    Rename
                 </sl-button>
             </div>
         `;
@@ -149,18 +184,12 @@ class AppCategory extends LitElement {
             ? renameCategory
             : addNewCategory
 
-        const listOrSetupCategory = this.hideAddCategory && this.hideRenameCategory
+        return this.hideAddCategory && this.hideRenameCategory
             ? html`
-                <div>
                 ${listCategories}
                 ${categorySettings}
-                </div>
-                `
+            `
             : setupCategory;
-
-        return html`
-            ${listOrSetupCategory}
-        `;
     }
 }
 
