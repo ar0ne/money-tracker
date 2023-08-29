@@ -11,6 +11,7 @@ export class AppExpensePage extends LitElement {
     css`
       #add-expense-card {
         width: 100%;
+        padding-top: 1em;
       }
     `,
   ]
@@ -170,7 +171,7 @@ export class AppExpensePage extends LitElement {
       <div>
         <sl-card id="add-expense-card">
           <sl-input id="newvalue"
-            label="${this._category?.name}:"
+            label="Category: ${this._category?.name}"
             type="number"
             @keyup=${this._onExpenseValueChanged}
           ></sl-input>

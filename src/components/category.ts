@@ -2,30 +2,28 @@ import {LitElement, css, html} from 'lit';
 import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Category} from "../model"
-import { styles } from '../styles/shared-styles';
+import {styles} from '../styles/shared-styles';
 
 @customElement('app-category')
 class AppCategory extends LitElement {
     static get styles() {
         return [
-          styles,
-          css`
-            .list-category {
-            }
-            .rename-category-item {
-                display: table;
-            }
-            .rename-category-input {
-                display: table-cell;
-                width: 100%;
-            }
-            .rename-category-input > sl-input {
-                width: 100%;
-                margin: 2px;
-                padding: 2px;
-                box-sizing: border-box;
-            }
-          `
+            styles,
+            css`
+                .rename-category-item {
+                    display: table;
+                }
+                .rename-category-input {
+                    display: table-cell;
+                    width: 100%;
+                }
+                .rename-category-input > sl-input {
+                    width: 100%;
+                    margin: 2px;
+                    padding: 2px;
+                    box-sizing: border-box;
+                }
+            `
         ]
     }
 
@@ -53,7 +51,11 @@ class AppCategory extends LitElement {
     }
 
     addCategory() {
-        let newCategory = new Category(this.inputCategory.value);
+        let categoryName = this.inputCategory.value;
+        if (!!!categoryName) {
+            return;
+        }
+        let newCategory = new Category(categoryName);
         this.inputCategory.value = '';
         const options = {
             detail: {category: newCategory},
@@ -62,13 +64,13 @@ class AppCategory extends LitElement {
         this.toggleAddCategory();
     }
 
-    removeCategory() {
-        // todo
-    }
-
     renameCategory(category: Category) {
         const input = (this.shadowRoot?.getElementById("renamecategory_" + category.id) as HTMLInputElement);
-        category.name = input.value;
+        let newName = input.value;
+        if (!!!newName) {
+            return;
+        }
+        category.name = newName;
         input.value = '';
         const options = {
             detail: {category: category},
@@ -101,7 +103,7 @@ class AppCategory extends LitElement {
                     `
                 )}
                 </br>
-                <sl-button variant="warning" @click=${this.toggleAddCategory}>Cancel</sl-button>
+                <sl-button variant="warning" @click=${this.toggleRenameCategory}>Cancel</sl-button>
             </div>
         `;
 
@@ -132,12 +134,12 @@ class AppCategory extends LitElement {
             <div class="settings-category">
                 <sl-button
                     variant="success"
-                    @click=${() => this.toggleAddCategory()}
+                    @click=${this.toggleAddCategory}
                     >Add
                 </sl-button>
                 <sl-button
                     variant="warning"
-                    @click=${() => this.toggleRenameCategory()}
+                    @click=${this.toggleRenameCategory}
                     >Rename
                 </sl-button>
             </div>
