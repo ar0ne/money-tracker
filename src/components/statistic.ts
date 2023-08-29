@@ -82,6 +82,24 @@ class AppStatistic extends LitElement {
         this.selectedDateUpdated(new Date());
     }
 
+    copyToClipbord() {
+        if (!this._statistic?.size) {
+            return
+        }
+        let json = new Map<string, Array<string>>();
+        this._statistic.forEach((v, k) => {
+            var cur = new Array<string>();
+            v.forEach((value, key) => {
+                if (value) {
+                    cur.push(key.sign + " " + value);
+                }
+            });
+            json.set(k.name, cur);
+        });
+        var jsonString = JSON.stringify(Object.fromEntries(json));
+        navigator.clipboard.writeText(jsonString);
+    }
+
     getStatistic(expenses: ExpenseDTO[]) {
         // show statistics only for used currencies and categories
         const currencies = [...new Set(expenses.map(item => item.currency))].sort((a, b) => a.name.localeCompare(b.name));
@@ -102,7 +120,9 @@ class AppStatistic extends LitElement {
     render() {
         const statisticForMonth = html`
             <div>
-                <sl-menu id="statistic-card">
+                <sl-menu
+                    id="statistic-card"
+                    >
                     ${!this._statistic?.size
                         ? html`<sl-menu-item>No results</sl-menu-item>`
                         : ''
@@ -110,18 +130,18 @@ class AppStatistic extends LitElement {
                     ${map(this._statistic, (stat) =>
                         html`
                         <sl-menu-item>
-                                <span class="stat-category">${stat[0].name}</span> (
-                                ${repeat( stat[1], (item) => item[0].id, (item, index) =>
-                                    html`
-                                        ${!!item[1]
-                                            ? html`
-                                                <span class="stat-sign">${item[0].sign}</span>
-                                                <span class="stat-value">${item[1]}</span>
-                                                ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
-                                            `: ''
-                                        }
-                                    `
-                                )}
+                            <span class="stat-category">${stat[0].name}</span> (
+                            ${repeat( stat[1], (item) => item[0].id, (item, index) =>
+                                html`
+                                    ${!!item[1]
+                                        ? html`
+                                            <span class="stat-sign">${item[0].sign}</span>
+                                            <span class="stat-value">${item[1]}</span>
+                                            ${!!item[1] && index + 1 !== stat[1].size ? ';': ''}
+                                        `: ''
+                                    }
+                                `
+                            )}
                             )
                         </sl-menu-item>
                         `
@@ -133,16 +153,33 @@ class AppStatistic extends LitElement {
         return html`
             <div class="container">
                 <div id="statistics">
-                    <sl-details summary="Expenses for ${this.getCurrentMonthName()}">
-                        <sl-button @click=${() => this.previousMonth()}>Previous</sl-button>
-                        ${this._dateChanged ? html`
+                    <sl-details
+                        summary="Expenses for ${this.getCurrentMonthName()}"
+                        >
+                        <sl-button
+                            @click=${this.previousMonth}
+                            >
+                            Previous
+                        </sl-button>
+                        ${this._dateChanged ?
+                            html`
                             <sl-button
-                                variant="warning" outline
+                                variant="warning"
+                                outline
                                 @click=${this.resetStatistic}
                                 >
                                 Reset
                             </sl-button>
-                        `: ''}
+                            `
+                        : ''}
+                        <sl-button
+                            variant="default"
+                            outline
+                            @click=${this.copyToClipbord}
+                            >
+                            Copy to clipboard
+                        </sl-button>
+
                         ${statisticForMonth}
                     </sl-details>
                 </div>
