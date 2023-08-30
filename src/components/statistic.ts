@@ -86,7 +86,7 @@ class AppStatistic extends LitElement {
             var cur = new Array<string>();
             v.forEach((value, key) => {
                 if (value) {
-                    cur.push(key.sign + " " + value);
+                    cur.push(key.sign + " " + value.toFixed(2));
                 }
             });
             json.set(k.name, cur);
@@ -131,7 +131,7 @@ class AppStatistic extends LitElement {
                                     ${item[1]
                                         ? html`
                                             <span class="stat-sign">${item[0].sign}</span>
-                                            <span class="stat-value">${item[1]}</span>
+                                            <span class="stat-value">${item[1].toFixed(2)}</span>
                                             ${item[1] && index + 1 !== stat[1].size ? ',': ''}
                                         `: ''
                                     }
