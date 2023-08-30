@@ -39,6 +39,7 @@ export class IndexDbDAO implements Dao {
 
     public getAllExpenses = async (from_date: Date | undefined, to_date: Date | undefined) => {
         // todo: limit data
+        console.log("getAllExpenses", from_date, to_date);
         const expenses = await getStoreData<Expense>(Stores.Expenses);
         const categories = await this.getAllCategories();
         const currencies = await this.getAllCurrencies();

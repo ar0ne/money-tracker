@@ -74,7 +74,7 @@ class AppHistory extends LitElement {
 
     getLastDayOfMonth(year: number, month: number) {
         // last minute of the month
-        return new Date(new Date(year, month + 1, 0).getTime() - 1);
+        return new Date(this.getFirstDayOfMonth(year, month + 1).getTime() - 1);
     }
 
     async handleHistory() {
@@ -87,7 +87,7 @@ class AppHistory extends LitElement {
     public formatDateTime(timestamp: number) {
         let date = new Date();
         date.setTime(timestamp);
-        return date.toLocaleDateString('en-GB');
+        return date.toLocaleString();
     }
 
     async removeRecord(expense: ExpenseDTO) {
