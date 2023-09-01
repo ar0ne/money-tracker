@@ -73,7 +73,7 @@ class AppHistory extends LitElement {
     }
 
     getLastDayOfMonth(year: number, month: number) {
-        // last minute of the month
+        // last second of current month
         return new Date(this.getFirstDayOfMonth(year, month + 1).getTime() - 1);
     }
 

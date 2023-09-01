@@ -44,22 +44,18 @@ export class IndexDbDAO implements Dao {
         const categories = await this.getAllCategories();
         const currencies = await this.getAllCurrencies();
         const categoryMap: Map<string, Category> = new Map(
-            categories.map(obj => {
-                return [obj.id, obj];
-            }),
+            categories.map(obj => [obj.id, obj])
         );
         const currencyMap: Map<string, Currency> = new Map(
-            currencies.map(obj => {
-                return [obj.id, obj];
-            }),
+            currencies.map(obj => [obj.id, obj])
         );
 
         let result = expenses;
         if (from_date) {
-            result = expenses.filter((expense) => from_date.getTime() > new Date(expense.created).getTime());
+            result = expenses.filter((expense) => from_date.getTime() <= expense.created);
         }
         if (to_date) {
-            result = expenses.filter((expense) => new Date(expense.created).getTime() < to_date.getTime());
+            result = result.filter((expense) => expense.created <= to_date.getTime());
         }
         let results = result.map(item => {
             return {
@@ -70,7 +66,7 @@ export class IndexDbDAO implements Dao {
                 category: categoryMap.get(item.category_id) as Category,
             }
         });
-        return results.sort((a,b) => new Date(a.created).getTime() - new Date(b.created).getTime());
+        return results.sort((a,b) => a.created - b.created);
     }
 
     public getSettings = async () => {
