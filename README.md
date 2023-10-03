@@ -7,3 +7,4 @@ Could be easily installed on your phone or used in web browser.
 
 Try it on [gh-page](https://ar0ne.github.io/money-tracker/)!
 
+![screen](public/assets/screenshots/screen.png)
