@@ -68,10 +68,7 @@ class AppStatistic extends LitElement {
 
     previousMonth() {
         this._dateChanged = true;
-        let previousMonth = new Date();
-        previousMonth.setDate(1);
-        previousMonth.setFullYear(this.selectedDate.getFullYear());
-        previousMonth.setMonth(this.selectedDate.getMonth() - 1);
+        let previousMonth = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth() - 1);
         this.selectedDateUpdated(previousMonth);
     }
 

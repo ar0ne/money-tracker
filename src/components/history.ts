@@ -78,7 +78,7 @@ class AppHistory extends LitElement {
     }
 
     async handleHistory() {
-        const from_date = this._currentDate;
+        const from_date = this.getFirstDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         const to_date = this.getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         let expenses = await this._dao.getAllExpenses(from_date, to_date);
         this._expenses = expenses.reverse();
