@@ -4,7 +4,7 @@ import { map } from 'lit/directives/map.js';
 import { ExpenseDTO } from '../domain/model';
 import { styles } from '../styles/shared-styles';
 import { Dao, IndexDbDAO } from '../domain/dao';
-import { getFirstDayOfMonth, getLastDayOfMonth } from '../utils';
+import { formatDateTime, getFirstDayOfMonth, getLastDayOfMonth, getMonthName } from '../utils';
 
 @customElement('app-history')
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -76,20 +76,12 @@ class AppHistory extends LitElement {
         this._expenses = expenses.reverse();
     }
 
-    public formatDateTime(timestamp: number) {
-        let date = new Date();
-        date.setTime(timestamp);
-        return date.toLocaleString();
-    }
-
     async removeRecord(expense: ExpenseDTO) {
         await this._dao.removeExpense(expense.id);
         await this.handleHistory();
     }
 
-    getCurrentMonthName() {
-        return this._currentDate.toLocaleString('default', { month: 'long' });
-    }
+    getCurrentMonthName = () => getMonthName(this._currentDate);
 
     render() {
         const listExpenses = html`
@@ -99,7 +91,7 @@ class AppHistory extends LitElement {
                     <li>
                         <div class="expense-list-item clearfix">
                             <sl-button class="btn-remove" @click=${() => this.removeRecord(item)}>X</sl-button>
-                            <p>${this.formatDateTime(item.created)} <i>(${item.category.name})</i></p>
+                            <p>${formatDateTime(item.created)} <i>(${item.category.name})</i></p>
                             ${item.currency.sign} ${item.value}
                         </div>
                     </li>
