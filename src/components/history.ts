@@ -86,13 +86,13 @@ class AppHistory extends LitElement {
     render() {
         const listExpenses = html`
             <ul>
-            ${map(this._expenses, (item) =>
+            ${map(this._expenses, (expense) =>
                 html`
                     <li>
                         <div class="expense-list-item clearfix">
-                            <sl-button class="btn-remove" @click=${() => this.removeRecord(item)}>X</sl-button>
-                            <p>${formatDateTime(item.created)} <i>(${item.category.name})</i></p>
-                            ${item.currency.sign} ${item.value}
+                            <sl-button class="btn-remove" title="Delete" @click=${() => this.removeRecord(expense)}>X</sl-button>
+                            <p>${formatDateTime(expense.created)} <i>(${expense.category.name})${expense.category.is_removed ? " [removed]": ""}</i></p>
+                            ${expense.currency.sign} ${expense.value}
                         </div>
                     </li>
                 `
