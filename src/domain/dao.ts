@@ -33,8 +33,12 @@ export class IndexDbDAO implements Dao {
         return currencies.sort((a, b) => a.name.localeCompare(b.name));
     }
 
-    public getAllCategories = async () => {
-        let categories: Category[] = await getStoreData<Currency>(Stores.Categories);
+    public getAllCategories = async (all: boolean = false) => {
+        let categories: Category[] = await getStoreData<Category>(Stores.Categories);
+        if (!all) {
+            // hide removed categories
+            categories = categories.filter((c) => !c.is_removed);
+        }
         return categories.sort((a, b) => a.name.localeCompare(b.name));
     }
 
@@ -42,7 +46,7 @@ export class IndexDbDAO implements Dao {
         // todo: limit data
         console.log("getAllExpenses", from_date, to_date);
         const expenses = await getStoreData<Expense>(Stores.Expenses);
-        const categories = await this.getAllCategories();
+        const categories = await this.getAllCategories(true);
         const currencies = await this.getAllCurrencies();
         const categoryMap: Map<string, Category> = new Map(
             categories.map(obj => [obj.id, obj])

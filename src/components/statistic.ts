@@ -5,6 +5,7 @@ import { map } from 'lit/directives/map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { ExpenseDTO } from '../domain/model';
 import { styles } from '../styles/shared-styles';
+import { getMonthName } from '../utils';
 
 type Statistic = Map<Category, Map<Currency, number>>;
 
@@ -26,6 +27,15 @@ class AppStatistic extends LitElement {
                 }
                 .stat-category {
                     margin-left: -1em;
+                }
+                .stat-list {
+                    display: inline-block;
+                }
+                .stat-list::before {
+                    content: ", ";
+                }
+                .stat-list:first-child::before {
+                    content: "";
                 }
             `
         ]
@@ -55,9 +65,7 @@ class AppStatistic extends LitElement {
         this._statistic = this.getStatistic(this.expenses);
     }
 
-    getCurrentMonthName() {
-        return this.selectedDate.toLocaleString('default', { month: 'long' });
-    }
+    getCurrentMonthName = () => getMonthName(this.selectedDate);
 
     selectedDateUpdated(newDate: Date) {
         const options = {
@@ -126,18 +134,20 @@ class AppStatistic extends LitElement {
                         html`
                         <sl-menu-item>
                             <span class="stat-category">${stat[0].name} [
-                            ${repeat( stat[1], (item) => item[0].id, (item, index) =>
+                            ${repeat( stat[1], (item) => item[0].id, (item, _) =>
                                 html`
                                     ${item[1]
                                         ? html`
-                                            <span class="stat-sign">${item[0].sign}</span>
-                                            <span class="stat-value">${item[1].toFixed(2)}</span>
-                                            ${item[1] && index + 1 !== stat[1].size ? ',': ''}
+                                        <span class="stat-list">
+                                            ${item[0].sign}
+                                            ${item[1].toFixed(2)}
+                                        </span>
                                         `: ''
                                     }
                                 `
                             )}
-                            ]</span>
+                            ]${stat[0].is_removed ? "(removed)" : ''}
+                            </span>
                         </sl-menu-item>
                         `
                     )}

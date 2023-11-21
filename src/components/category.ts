@@ -12,10 +12,11 @@ class AppCategory extends LitElement {
             css`
                 .rename-category-item {
                     display: table;
+                    width: 100%;
                 }
                 .rename-category-input {
                     display: table-cell;
-                    width: 100%;
+                    padding-right: 2%;
                 }
                 .rename-category-input > sl-input {
                     width: 100%;
@@ -72,21 +73,30 @@ class AppCategory extends LitElement {
             detail: {category: category},
         };
         this.dispatchEvent(new CustomEvent('category-renamed', options));
-        this.toggleRenameCategory();
+        this.toggleEditCategory();
+    }
+
+    removeCategory(category: Category) {
+        category.is_removed = true;
+        const options = {
+            detail: {category: category},
+        };
+        this.dispatchEvent(new CustomEvent('category-remove', options));
+        this.toggleEditCategory();
     }
 
     toggleAddCategory() {
         this.hideAddCategory = !this.hideAddCategory;
     }
 
-    toggleRenameCategory() {
+    toggleEditCategory() {
         this.hideRenameCategory = !this.hideRenameCategory;
     }
 
     render() {
-        const renameCategory = html`
+        const editCategory = html`
             <div class="rename-category-list">
-                <h5>Rename category</h5>
+                <h5>Edit category</h5>
                 ${map(this.categories, (category) =>
                     html`
                         <div class="rename-category-item">
@@ -107,13 +117,20 @@ class AppCategory extends LitElement {
                                 >
                                 Rename
                             </sl-button>
+                            <sl-button
+                                variant="warning"
+                                outline
+                                @click=${() => this.removeCategory(category)}
+                                >
+                                Delete
+                            </sl-button>
                         </div>
                     `
                 )}
                 </br>
                 <sl-button
                     variant="warning"
-                    @click=${this.toggleRenameCategory}
+                    @click=${this.toggleEditCategory}
                     >
                     Cancel
                 </sl-button>
@@ -169,15 +186,15 @@ class AppCategory extends LitElement {
                 </sl-button>
                 <sl-button
                     variant="warning"
-                    @click=${this.toggleRenameCategory}
+                    @click=${this.toggleEditCategory}
                     >
-                    Rename
+                    Edit
                 </sl-button>
             </div>
         `;
 
         const setupCategory = this.hideAddCategory
-            ? renameCategory
+            ? editCategory
             : addNewCategory
 
         return this.hideAddCategory && this.hideRenameCategory
