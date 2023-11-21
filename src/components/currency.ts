@@ -14,10 +14,14 @@ class AppCurrency extends LitElement {
     currencies: Currency[] = [];
     @property()
     currency?: Currency;
+    @property()
+    visibleCurrencies: Currency[] = [];
     @state()
     private hideAddCurrency = true;
     @state()
     private hideEditCurrency = true;
+    @state()
+    private hideAllCurrencies = true;
 
     selectCurrency(item: Currency) {
         this.currency = item;
@@ -82,9 +86,14 @@ class AppCurrency extends LitElement {
         this.dispatchEvent(new CustomEvent('currency-adding', {}));
     }
 
+    expandAllCurrencies() {
+        this.hideAllCurrencies = false;
+        this.dispatchEvent(new CustomEvent('currency-show-all', {}));
+    }
+
     render() {
         const listCurrencies = html`
-            ${map(this.currencies, (item) =>
+            ${map(this.visibleCurrencies, (item) =>
                 html`
                     <sl-button
                         @click=${() => this.selectCurrency(item)}
@@ -96,6 +105,18 @@ class AppCurrency extends LitElement {
                     </sl-button>
                 `
             )}
+            ${this.hideAllCurrencies ?
+                html
+                `<sl-button
+                    variant="neutral"
+                    title="All currencies"
+                    @click=${this.expandAllCurrencies}
+                    >
+                    ...
+                </sl-button>
+                `
+                : ''
+            }
             <sl-button
                 variant="success"
                 @click=${this.addingCurrency}

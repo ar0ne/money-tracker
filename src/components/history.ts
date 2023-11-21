@@ -4,6 +4,7 @@ import { map } from 'lit/directives/map.js';
 import { ExpenseDTO } from '../domain/model';
 import { styles } from '../styles/shared-styles';
 import { Dao, IndexDbDAO } from '../domain/dao';
+import { getFirstDayOfMonth, getLastDayOfMonth } from '../utils';
 
 @customElement('app-history')
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -53,7 +54,7 @@ class AppHistory extends LitElement {
     constructor() {
         super();
         const now = new Date();
-        this._currentDate = this.getFirstDayOfMonth(now.getFullYear(), now.getMonth());
+        this._currentDate = getFirstDayOfMonth(now.getFullYear(), now.getMonth());
     }
 
     async connectedCallback() {
@@ -68,18 +69,9 @@ class AppHistory extends LitElement {
         await this.handleHistory();
     }
 
-    getFirstDayOfMonth(year: number, month: number) {
-        return new Date(year, month, 1);
-    }
-
-    getLastDayOfMonth(year: number, month: number) {
-        // last second of current month
-        return new Date(this.getFirstDayOfMonth(year, month + 1).getTime() - 1);
-    }
-
     async handleHistory() {
-        const from_date = this.getFirstDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
-        const to_date = this.getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
+        const from_date = getFirstDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
+        const to_date = getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         let expenses = await this._dao.getAllExpenses(from_date, to_date);
         this._expenses = expenses.reverse();
     }

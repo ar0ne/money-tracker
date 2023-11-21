@@ -6,6 +6,7 @@ export interface Dao {
     getAllCurrencies(): Promise<Currency[]>;
     getAllCategories(): Promise<Category[]>;
     getAllExpenses(from_date: Date | undefined, to_date: Date | undefined): Promise<ExpenseDTO[]>;
+    getUsedCurrencies(from_date: Date | undefined, to_date: Date | undefined): Promise<Currency[]>;
     getSettings(): Promise<Settings| undefined>;
     addCategory(category: Category): Promise<void>;
     addCurrency(currency: Currency): Promise<void>;
@@ -67,6 +68,12 @@ export class IndexDbDAO implements Dao {
             }
         });
         return results.sort((a,b) => a.created - b.created);
+    }
+
+    public getUsedCurrencies = async (from_date: Date | undefined, to_date: Date | undefined) => {
+        const expenses = await this.getAllExpenses(from_date, to_date);
+        const currencies = new Set(expenses.map((ex) => ex.currency));
+        return Array.from(currencies).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     public getSettings = async () => {

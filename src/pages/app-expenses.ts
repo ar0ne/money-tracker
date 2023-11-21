@@ -3,6 +3,7 @@ import { customElement, state, property, query} from 'lit/decorators.js';
 import { Category, Currency, Expense } from '../domain/model'
 import { styles as sharedStyles } from '../styles/shared-styles'
 import { Dao, IndexDbDAO } from '../domain/dao';
+import { getFirstDayOfMonth, getLastDayOfMonth } from '../utils';
 
 @customElement('app-expenses')
 export class AppExpensePage extends LitElement {
@@ -28,6 +29,8 @@ export class AppExpensePage extends LitElement {
   @state()
   private _listCurrencies: Currency[] = [];
   @state()
+  private _visibleCurrencies: Currency[] = [];
+  @state()
   private _value?: number;
   @state()
   private _message: string = '';
@@ -46,6 +49,7 @@ export class AppExpensePage extends LitElement {
     await this.handleGetCurrencies()
     await this.handleGetCategories();
     await this.handleLoadSettings();
+    await this.handleGetUsedCurrencies();
   }
 
   toggleDisableAddExpenseValue() {
@@ -164,12 +168,25 @@ export class AppExpensePage extends LitElement {
     }, this.MESSAGE_DURATION);
   }
 
+  showAllCurrencies() {
+    this._visibleCurrencies = this._listCurrencies;
+  }
+
   async handleGetCurrencies() {
     this._listCurrencies = await this._dao.getAllCurrencies();
   }
 
   async handleGetCategories() {
     this._listCategories = await this._dao.getAllCategories();
+  }
+
+  async handleGetUsedCurrencies() {
+    let usedCurrencies = await this._dao.getUsedCurrencies(getFirstDayOfMonth(), getLastDayOfMonth());
+    // add default currency if it's not in the list yet
+    if (this._currency && !usedCurrencies.some(c => c.id === this._currency?.id)) {
+      usedCurrencies.push(this._currency);
+    }
+    this._visibleCurrencies = usedCurrencies;
   }
 
   async handleLoadSettings() {
@@ -221,10 +238,12 @@ export class AppExpensePage extends LitElement {
           class=${!this._category ? "hide": ''}
           .currencies=${this._listCurrencies}
           .currency=${this._currency}
+          .visibleCurrencies=${this._visibleCurrencies}
           @currency-adding="${this.toggleHideValue}"
           @currency-added="${this.addCurrency}"
           @currency-changed="${this.changeCurrency}"
           @currency-edited="${this.editCurrency}"
+          @currency-show-all="${this.showAllCurrencies}"
         ></app-currency>
         ${this.hideValue ? "" : addExpenseValue}
       </main>
