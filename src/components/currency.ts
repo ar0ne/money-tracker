@@ -90,6 +90,7 @@ class AppCurrency extends LitElement {
                         @click=${() => this.selectCurrency(item)}
                         variant=${item.id === this.currency?.id ? 'primary' : 'default'}
                         outline
+                        title=${item.name}
                         >
                         ${item.sign}
                     </sl-button>
