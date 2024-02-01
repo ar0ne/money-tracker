@@ -1,7 +1,7 @@
 
 
 export const getFirstDayOfMonth = (year?: number, month?: number): Date => {
-    if (!year || !month) {
+    if (year == undefined || month == undefined) {
         const now = new Date();
         year = now.getFullYear();
         month = now.getMonth();
@@ -11,7 +11,7 @@ export const getFirstDayOfMonth = (year?: number, month?: number): Date => {
 
 export const getLastDayOfMonth = (year?: number, month?: number): Date => {
     // last second of current month
-    if (!year || !month) {
+    if (year == undefined || month == undefined) {
         const now = new Date();
         year = now.getFullYear();
         month = now.getMonth();
