@@ -3,7 +3,10 @@ import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
 import { ExpenseDTO } from '../domain/model';
 import { styles } from '../styles/shared-styles';
-import { Dao, IndexDbDAO } from '../domain/dao';
+import { initDB } from '../domain/db';
+import { ExpenseDao } from '../domain/expense_dao';
+import { CategoryDao } from '../domain/category_dao';
+import { CurrencyDao } from '../domain/currency_dao';
 import { formatDateTime, getFirstDayOfMonth, getLastDayOfMonth, getMonthName } from '../utils';
 
 @customElement('app-history')
@@ -45,7 +48,11 @@ class AppHistory extends LitElement {
     }
 
     @state()
-    private _dao!: Dao;
+    private _expenseDao!: ExpenseDao;
+    @state()
+    private _currencyDao!: CurrencyDao;
+    @state()
+    private _categoryDao!: CategoryDao
     @state()
     private _expenses: ExpenseDTO[] = [];
     @state()
@@ -60,7 +67,10 @@ class AppHistory extends LitElement {
     async connectedCallback() {
         super.connectedCallback();
         // todo: load only X last or for this month?
-        this._dao = await IndexDbDAO.create();
+        await initDB();
+        this._expenseDao = new ExpenseDao();
+        this._categoryDao = new CategoryDao();
+        this._currencyDao = new CurrencyDao();
         await this.handleHistory();
     }
 
@@ -72,12 +82,32 @@ class AppHistory extends LitElement {
     async handleHistory() {
         const from_date = getFirstDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         const to_date = getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
-        let expenses = await this._dao.getAllExpenses(from_date, to_date);
-        this._expenses = expenses.reverse();
+        let expenses = await this._expenseDao.getAllInRange(from_date, to_date);
+        if (!expenses) {
+            return []
+        }
+        const categories = await this._categoryDao.getAll(true);
+        const currencies = await this._currencyDao.getAll();
+        const categoryMap: Map<string, Category> = new Map(
+            categories.map(obj => [obj.id, obj])
+        );
+        const currencyMap: Map<string, Currency> = new Map(
+            currencies.map(obj => [obj.id, obj])
+        );
+        let results = expenses.map(item => {
+            return {
+                id: item.id,
+                created: item.created,
+                currency: currencyMap.get(item.currency_id) as Currency,
+                value: item.value,
+                category: categoryMap.get(item.category_id) as Category,
+            }
+        });
+        this._expenses = results.reverse();
     }
 
     async removeRecord(expense: ExpenseDTO) {
-        await this._dao.removeExpense(expense.id);
+        await this._expenseDao.remove(expense.id);
         await this.handleHistory();
     }
 

@@ -2,7 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { customElement, state, property, query} from 'lit/decorators.js';
 import { Category, Currency, Expense } from '../domain/model'
 import { styles as sharedStyles } from '../styles/shared-styles'
-import { Dao, IndexDbDAO } from '../domain/dao';
+import { initDB } from '../domain/db';
+import { CategoryDao } from '../domain/category_dao';
+import { CurrencyDao } from '../domain/currency_dao';
+import { SettingsDao } from '../domain/settings_dao';
+import { ExpenseDao } from '../domain/expense_dao';
 import { getFirstDayOfMonth, getLastDayOfMonth } from '../utils';
 
 @customElement('app-expenses')
@@ -35,7 +39,13 @@ export class AppExpensePage extends LitElement {
   @state()
   private _message: string = '';
   @state()
-  private _dao!: Dao;
+  private _categoryDao!: CategoryDao;
+  @state()
+  private _currencyDao!: CurrencyDao;
+  @state()
+  private _settingsDao!: SettingsDao;
+  @state()
+  private _expenseDao!: ExpenseDao;
   @state()
   private hideValue = true;
   @state()
@@ -45,7 +55,11 @@ export class AppExpensePage extends LitElement {
 
   async connectedCallback() {
     super.connectedCallback();
-    this._dao = await IndexDbDAO.create();
+    await initDB();
+    this._currencyDao = new CurrencyDao();
+    this._categoryDao = new CategoryDao();
+    this._settingsDao = new SettingsDao();
+    this._expenseDao = new ExpenseDao();
     await this.handleGetCurrencies()
     await this.handleGetCategories();
     await this.handleLoadSettings();
@@ -68,12 +82,12 @@ export class AppExpensePage extends LitElement {
 
   async changeCurrency(e: CustomEvent) {
     this._currency = e.detail.currency;
-    await this._dao.updateSettings({last_currency_id: this._currency?.id});
+    await this._settingsDao.update({last_currency_id: this._currency?.id});
   }
 
   async addCurrency(e: CustomEvent) {
     try {
-      await this._dao.addCurrency(e.detail.currency);
+      await this._currencyDao.add(e.detail.currency);
       this.handleGetCurrencies();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -87,7 +101,7 @@ export class AppExpensePage extends LitElement {
 
   async editCurrency(e: CustomEvent) {
     try {
-      await this._dao.updateCurrency(e.detail.currency);
+      await this._currencyDao.update(e.detail.currency);
       this.handleGetCurrencies();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -101,7 +115,7 @@ export class AppExpensePage extends LitElement {
 
   async addCategory(e: CustomEvent) {
     try {
-      await this._dao.addCategory(e.detail.category);
+      await this._categoryDao.add(e.detail.category);
       this.handleGetCategories();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -115,7 +129,7 @@ export class AppExpensePage extends LitElement {
 
   async renameCategory(e: CustomEvent) {
     try {
-      await this._dao.updateCategory(e.detail.category);
+      await this._categoryDao.update(e.detail.category);
       this.handleGetCategories();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -129,7 +143,7 @@ export class AppExpensePage extends LitElement {
 
   async removeCategory(e: CustomEvent) {
     try {
-      await this._dao.updateCategory(e.detail.category);
+      await this._categoryDao.update(e.detail.category);
       this.handleGetCategories();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -149,7 +163,7 @@ export class AppExpensePage extends LitElement {
     }
     let expense = new Expense(this._currency.id, this._value, this._category.id)
     try {
-      await this._dao.addExpense(expense);
+      await this._expenseDao.add(expense);
     } catch (err: unknown) {
       if (err instanceof Error) {
         this.displayMessage(err.message);
@@ -187,15 +201,16 @@ export class AppExpensePage extends LitElement {
   }
 
   async handleGetCurrencies() {
-    this._listCurrencies = await this._dao.getAllCurrencies();
+    this._listCurrencies = await this._currencyDao.getAll();
   }
 
   async handleGetCategories() {
-    this._listCategories = await this._dao.getAllCategories();
+    this._listCategories = await this._categoryDao.getAll();
   }
 
   async handleGetUsedCurrencies() {
-    let usedCurrencies = await this._dao.getUsedCurrencies(getFirstDayOfMonth(), getLastDayOfMonth());
+    let expenses = await this._expenseDao.getAllInRange(getFirstDayOfMonth(), getLastDayOfMonth());
+    let usedCurrencies = await this._currencyDao.getUsed(expenses);
     // add default currency if it's not in the list yet
     if (this._currency && !usedCurrencies.some(c => c.id === this._currency?.id)) {
       usedCurrencies.push(this._currency);
@@ -204,9 +219,9 @@ export class AppExpensePage extends LitElement {
   }
 
   async handleLoadSettings() {
-    const settings = await this._dao.getSettings();
+    const settings = await this._settingsDao.getAll();
     if (!settings) {
-      await this._dao.addSettings({last_currency_id: this._listCurrencies?.[0]?.id});
+      await this._settingsDao.addSettings({last_currency_id: this._listCurrencies?.[0]?.id});
     }
     this._currency = this._listCurrencies?.filter((cur) => cur.id == settings?.last_currency_id)[0];
   }
