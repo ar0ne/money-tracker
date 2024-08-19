@@ -222,7 +222,7 @@ export class AppExpensePage extends LitElement {
   async handleLoadSettings() {
     const settings = await this._settingsDao.getAll();
     if (!settings) {
-      await this._settingsDao.addSettings({last_currency_id: this._listCurrencies?.[0]?.id});
+      await this._settingsDao.add({last_currency_id: this._listCurrencies?.[0]?.id});
     }
     this._currency = this._listCurrencies?.filter((cur) => cur.id == settings?.last_currency_id)[0];
   }
@@ -239,8 +239,8 @@ export class AppExpensePage extends LitElement {
           <br/>
           <sl-button
             variant="success"
+            ?disabled=${this.disableAddExpense}
             @click=${this.addExpense}
-            class=${this.disableAddExpense ? 'disabled': ''}
             >
             Add
           </sl-button>
