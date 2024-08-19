@@ -210,7 +210,8 @@ export class AppExpensePage extends LitElement {
 
   async handleGetUsedCurrencies() {
     let expenses = await this._expenseDao.getAllInRange(getFirstDayOfMonth(), getLastDayOfMonth());
-    let usedCurrencies = await this._currencyDao.getUsed(expenses);
+    let currency_ids = expenses.map(e => e.currency_id);
+    let usedCurrencies = await this._currencyDao.getByIds(currency_ids);
     // add default currency if it's not in the list yet
     if (this._currency && !usedCurrencies.some(c => c.id === this._currency?.id)) {
       usedCurrencies.push(this._currency);

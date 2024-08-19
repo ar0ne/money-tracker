@@ -10,6 +10,9 @@ export const styles = css`
     justify-content: center;
     align-items: center;
   }
+  .right {
+    float: right;
+  }
   .disabled {
     color: grey;
     cursor: not-allowed;

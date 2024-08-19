@@ -9,8 +9,9 @@ export class CurrencyDao {
         return currencies.sort((a, b) => a.name.localeCompare(b.name));
     }
 
-    public getUsed = async (expenses: ExpenseDTO[]) => {
-        const currencies = new Set(expenses.map((ex) => ex.currency));
+    public getByIds = async (currency_ids: String[]) => {
+        const all = await this.getAll();
+        let currencies = all.filter((c) => currency_ids.includes(c.id));
         return Array.from(currencies).sort((a, b) => a.name.localeCompare(b.name));
     }
 
