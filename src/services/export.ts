@@ -41,7 +41,6 @@ export class CSVExporter implements Exporter {
     }
 
     public export = async (): String => {
-        console.log("Export DB");
         let expenses = await this._expenseDao.getAll();
         if (!expenses) {
             return []
