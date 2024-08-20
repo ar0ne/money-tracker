@@ -19,7 +19,7 @@ export class AppHome extends LitElement {
         <main>
           <div class="main-btn-block">
             <span class="right">
-              <save-btn/>
+              <export-btn/>
             </span>
             <div class="center">
               <sl-button href="/expense" variant="primary">New record</sl-button>

@@ -1,7 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
-import { ExpenseDTO } from '../domain/model';
+import { ExpenseDTO, Category } from '../domain/model';
 import { styles } from '../styles/shared-styles';
 import { initDB } from '../domain/db';
 import { ExpenseDao } from '../domain/expense_dao';
@@ -56,6 +56,8 @@ class AppHistory extends LitElement {
     @state()
     private _expenses: ExpenseDTO[] = [];
     @state()
+    private _categories: Category[] = [];
+    @state()
     private _currentDate!: Date;  // 1st day of current month
 
     constructor() {
@@ -86,10 +88,10 @@ class AppHistory extends LitElement {
         if (!expenses) {
             return []
         }
-        const categories = await this._categoryDao.getAll(true);
+        this._categories = await this._categoryDao.getAll(true);
         const currencies = await this._currencyDao.getAll();
         const categoryMap: Map<string, Category> = new Map(
-            categories.map(obj => [obj.id, obj])
+            this._categories.map(obj => [obj.id, obj])
         );
         const currencyMap: Map<string, Currency> = new Map(
             currencies.map(obj => [obj.id, obj])
@@ -113,6 +115,17 @@ class AppHistory extends LitElement {
 
     getCurrentMonthName = () => getMonthName(this._currentDate);
 
+    getCategoryColor = (category: Category) => {
+        const pattern = "color-";
+        let index = this._categories.indexOf(category);
+        if (index == -1) {
+            index = 0;
+        } else if (this._categories.length > 10) {
+            index %= 10;
+        }
+        return pattern + index;
+    }
+
     render() {
         const listExpenses = html`
             <ul>
@@ -121,7 +134,10 @@ class AppHistory extends LitElement {
                     <li>
                         <div class="expense-list-item clearfix">
                             <sl-button class="btn-remove" title="Delete" @click=${() => this.removeRecord(expense)}>X</sl-button>
-                            <p>${formatDateTime(expense.created)} <i>(${expense.category.name})${expense.category.is_removed ? " [removed]": ""}</i></p>
+                            <i class="${this.getCategoryColor(expense.category)}">[${expense.category.name}]${expense.category.is_removed ? " [removed]": ""}</i>
+                            <p>
+                            ${formatDateTime(expense.created)} 
+                            </p>
                             ${expense.currency.sign} ${expense.value}
                         </div>
                     </li>

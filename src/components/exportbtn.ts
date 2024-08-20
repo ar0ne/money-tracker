@@ -3,8 +3,8 @@ import {customElement, property, state } from 'lit/decorators.js';
 import { CSVExporter } from "../services/export";
 
 
-@customElement('save-btn')
-export class SaveBtn extends LitElement {
+@customElement('export-btn')
+export class ExportBtn extends LitElement {
     static styles = css`
     `
     @property({type: Boolean})
@@ -40,11 +40,10 @@ export class SaveBtn extends LitElement {
         }
     }
 
-
     render() {
         return html`
             <button ?disabled=${this.disabled} @click=${this.onClick} download="database.csv">
-                <svg slot="svg" xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 -960 960 960" fill="currentColor">
+                <svg slot="svg" xmlns="http://www.w3.org/2000/svg" height="36" width="36" viewBox="0 -960 960 960" fill="currentColor">
                     <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
                 </svg>
             </button>
