@@ -1,7 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
-import { ExpenseDTO, Category } from '../domain/model';
+import { ExpenseDTO, Category, Currency } from '../domain/model';
 import { styles } from '../styles/shared-styles';
 import { initDB } from '../domain/db';
 import { ExpenseDao } from '../domain/expense_dao';
@@ -86,7 +86,7 @@ class AppHistory extends LitElement {
         const to_date = getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         let expenses = await this._expenseDao.getAllInRange(from_date, to_date);
         if (!expenses) {
-            return []
+            return; 
         }
         this._categories = await this._categoryDao.getAll(true);
         const currencies = await this._currencyDao.getAll();
@@ -115,7 +115,7 @@ class AppHistory extends LitElement {
 
     getCurrentMonthName = () => getMonthName(this._currentDate);
 
-    getCategoryColor = (category: Category) => {
+    getCategoryColor = (category: Category): String => {
         const pattern = "color-";
         let index = this._categories.indexOf(category);
         if (index == -1) {

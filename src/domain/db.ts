@@ -40,8 +40,8 @@ export const initDB = (): Promise<boolean|IDBDatabase> => {
       // no need to resolve here
     };
 
-    request.onsuccess = (_e) => {
-      var db = _e.target.result;
+    request.onsuccess = (event) => {
+      var db = (event.target as IDBOpenDBRequest).result; 
       // get current version and store it
       version = db.version;
       resolve(db);
@@ -58,7 +58,7 @@ export const addData = <T>(storeName: string, data: T): Promise<T|string|null> =
     request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = (event) => {
-      var db = event.target.result;
+      var db = (event.target as IDBOpenDBRequest).result; 
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
       store.add(data);
@@ -81,7 +81,7 @@ export const deleteData = (storeName: string, key: string): Promise<boolean> => 
     request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = (event) => {
-      db = event.target.result;
+      let db = (event.target as IDBOpenDBRequest).result;
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
       const res = store.delete(key);
@@ -100,7 +100,7 @@ export const updateData = <T>(storeName: string, key: string, data: T): Promise<
     request = indexedDB.open(DB_NAME, version);
 
     request.onsuccess = (event) => {
-      var db = event.target.result;
+      var db = (event.target as IDBOpenDBRequest).result; 
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
       const res = store.get(key);
@@ -121,7 +121,7 @@ export const getStoreData = <T>(storeName: Stores): Promise<T[]> => {
     request = indexedDB.open(DB_NAME);
 
     request.onsuccess = (event) => {
-      var db = event.target.result;
+      var db = (event.target as IDBOpenDBRequest).result; 
       const tx = db.transaction(storeName, 'readonly');
       const store = tx.objectStore(storeName);
       const res = store.getAll();
@@ -137,7 +137,7 @@ export const getStoreDataById = <T>(storeName: Stores, id: string): Promise<T|un
       request = indexedDB.open(DB_NAME);
 
       request.onsuccess = (event) => {
-        var db = event.target.result;
+        var db = (event.target as IDBOpenDBRequest).result; 
         const tx = db.transaction(storeName, 'readonly');
         const store = tx.objectStore(storeName);
         const res = store.get(id);

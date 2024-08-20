@@ -1,5 +1,5 @@
 import { getStoreData, Stores, addData, updateData } from "./db";
-import { Currency, ExpenseDTO } from "./model";
+import { Currency } from "./model";
 
 
 export class CurrencyDao {

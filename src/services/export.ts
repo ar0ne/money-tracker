@@ -1,11 +1,11 @@
 import { CurrencyDao } from "../domain/currency_dao";
 import { CategoryDao } from "../domain/category_dao";
 import { ExpenseDao } from "../domain/expense_dao";
-import { initDB } from "../domain/db";
+import { Currency, Category } from "../domain/model";
 
 
 export interface Exporter {
-    export(): String;
+    export(): Promise<string>;
 }
 
 function formatDateTime(timestamp: number): string {
@@ -20,7 +20,7 @@ function formatDateTime(timestamp: number): string {
         date.getHours(),
         date.getMinutes(),
         date.getSeconds()
-    ].map((n, i) => n.toString().padStart(2, "0")).join(":");
+    ].map((n, _) => n.toString().padStart(2, "0")).join(":");
     return datePart + "," + timePart;
 }
 
@@ -40,10 +40,10 @@ export class CSVExporter implements Exporter {
         return exporter;
     }
 
-    public export = async (): String => {
+    public export = async (): Promise<string> => {
         let expenses = await this._expenseDao.getAll();
         if (!expenses) {
-            return []
+            return "";
         }
         const categories = await this._categoryDao.getAll(true);
         const currencies = await this._currencyDao.getAll();

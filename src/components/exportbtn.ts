@@ -18,15 +18,16 @@ export class ExportBtn extends LitElement {
         this._exporter = await CSVExporter.create();
     }
 
-    onClick = async (e) => {
+    onClick = async () => {
         let result = await this._exporter.export();
         this.download(result, "export.csv", "text/csv");
     }
 
-    download(data, filename, type) {
+    download(data: string, filename: string, type: string) {
         var file = new Blob([data], {type: type});
-        if (window.navigator.msSaveOrOpenBlob) // IE10+
-            window.navigator.msSaveOrOpenBlob(file, filename);
+        const nav = (window.navigator as any);
+        if (nav.msSaveOrOpenBlob) // IE10+
+            nav.msSaveOrOpenBlob(file, filename);
         else { // Others
             var a = document.createElement("a"), url = URL.createObjectURL(file);
             a.href = url;
