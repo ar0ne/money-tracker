@@ -7,7 +7,7 @@ import { initDB } from '../domain/db';
 import { ExpenseDao } from '../domain/expense_dao';
 import { CategoryDao } from '../domain/category_dao';
 import { CurrencyDao } from '../domain/currency_dao';
-import { formatDateTime, getFirstDayOfMonth, getLastDayOfMonth, getMonthName } from '../utils';
+import { formatDateTime, getFirstDayOfMonth, getLastDayOfMonth, getMonthName, getColorClass } from '../utils';
 
 @customElement('app-history')
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -116,14 +116,8 @@ class AppHistory extends LitElement {
     getCurrentMonthName = () => getMonthName(this._currentDate);
 
     getCategoryColor = (category: Category): String => {
-        const pattern = "color-";
         let index = this._categories.indexOf(category);
-        if (index == -1) {
-            index = 0;
-        } else if (this._categories.length > 10) {
-            index %= 10;
-        }
-        return pattern + index;
+        return getColorClass(index);
     }
 
     render() {
@@ -134,7 +128,7 @@ class AppHistory extends LitElement {
                     <li>
                         <div class="expense-list-item clearfix">
                             <sl-button class="btn-remove" title="Delete" @click=${() => this.removeRecord(expense)}>X</sl-button>
-                            <i class="${this.getCategoryColor(expense.category)}">[${expense.category.name}]${expense.category.is_removed ? " [removed]": ""}</i>
+                            <i class="${this.getCategoryColor(expense.category)} ${expense.category.is_removed ? 'removed' : ''}">${expense.category.name}</i>
                             <p>
                             ${formatDateTime(expense.created)} 
                             </p>
@@ -155,6 +149,7 @@ class AppHistory extends LitElement {
                 <app-statistic
                     .selectedDate=${this._currentDate}
                     .expenses=${this._expenses}
+                    .categories=${this._categories}
                     @date-changed=${this.dateChanged}
                 ></app-statistic>
                 <div id="history">

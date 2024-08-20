@@ -19,11 +19,14 @@ export const styles = css`
     pointer-events: none;
     background-color: #ffffff;
   }
+  .removed {
+    text-decoration: line-through;
+  }
   .hide {
     display: none;
   }
   .color-0 {
-    background-color: #2E5C7D;
+    background-color: #D5DEE5;
   }
   .color-1 {
     background-color: #33658A;

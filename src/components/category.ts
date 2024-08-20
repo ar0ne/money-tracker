@@ -3,6 +3,7 @@ import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Category} from "../domain/model"
 import {styles} from '../styles/shared-styles';
+import {getColorClass} from '../utils';
 
 @customElement('app-category')
 class AppCategory extends LitElement {
@@ -93,6 +94,11 @@ class AppCategory extends LitElement {
         this.hideRenameCategory = !this.hideRenameCategory;
     }
 
+    getCategoryColorClass(category: Category): string {
+        let index = this.categories.indexOf(category);
+        return getColorClass(index);
+    }
+
     render() {
         const editCategory = html`
             <div class="rename-category-list">
@@ -145,7 +151,9 @@ class AppCategory extends LitElement {
                             class="center"
                             @click=${() => this.selectCategory(category)}
                             >
+                            <span class="${this.getCategoryColorClass(category)}">
                             ${category.name}
+                            </span>
                         </sl-button>
                         </br>
                     `

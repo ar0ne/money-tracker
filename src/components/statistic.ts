@@ -1,11 +1,10 @@
-import {Category, Currency} from "../domain/model";
+import { Category, Currency, ExpenseDTO } from "../domain/model";
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { ExpenseDTO } from '../domain/model';
 import { styles } from '../styles/shared-styles';
-import { getMonthName } from '../utils';
+import { getMonthName, getColorClass } from '../utils';
 
 type Statistic = Map<Category, Map<Currency, number>>;
 
@@ -31,10 +30,10 @@ class AppStatistic extends LitElement {
                 .stat-list {
                     display: inline-block;
                 }
-                .stat-list::before {
+                .stat-list::after {
                     content: ", ";
                 }
-                .stat-list:first-child::before {
+                .stat-list:last-child::after {
                     content: "";
                 }
             `
@@ -55,6 +54,8 @@ class AppStatistic extends LitElement {
         this._expenses = value;
         this.reloadStatistic();
     }
+    @property()
+    categories: Category[] = [];
 
     @state()
     private _statistic?: Statistic;
@@ -120,6 +121,11 @@ class AppStatistic extends LitElement {
         return statistic;
     }
 
+    getCategoryColorClass(category: Category): string {
+        let index = this.categories.indexOf(category);
+        return getColorClass(index);
+    }
+
     render() {
         const statisticForMonth = html`
             <div>
@@ -133,7 +139,8 @@ class AppStatistic extends LitElement {
                     ${map(this._statistic, (stat) =>
                         html`
                         <sl-menu-item>
-                            <span class="stat-category">${stat[0].name} [
+                            <span class="stat-category">
+                            <i class="${this.getCategoryColorClass(stat[0])} ${stat[0].is_removed ? 'removed' :''}">${stat[0].name}</i> :
                             ${repeat( stat[1], (item) => item[0].id, (item, _) =>
                                 html`
                                     ${item[1]
@@ -146,7 +153,6 @@ class AppStatistic extends LitElement {
                                     }
                                 `
                             )}
-                            ]${stat[0].is_removed ? "(removed)" : ''}
                             </span>
                         </sl-menu-item>
                         `

@@ -1,5 +1,3 @@
-
-
 export const getFirstDayOfMonth = (year?: number, month?: number): Date => {
     if (year == undefined || month == undefined) {
         const now = new Date();
@@ -27,4 +25,14 @@ export const formatDateTime = (timestamp: number): string => {
 
 export const getMonthName = (date: Date): string => {
     return date.toLocaleString('default', { month: 'long' });
+}
+
+export const getColorClass = (index: number): string => {
+    const pattern = "color-";
+    if (index == -1) {
+        index = 0;
+    } else if (index > 10) {
+        index %= 10;
+    }
+    return pattern + index;
 }
