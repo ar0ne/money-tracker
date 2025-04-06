@@ -1,7 +1,9 @@
 import {html, css, LitElement} from 'lit';
 import {customElement, property, state } from 'lit/decorators.js';
 import { CSVExporter } from "../services/export";
-
+import { ExpenseDao } from '../domain/expense_dao';
+import { CategoryDao } from '../domain/category_dao';
+import { CurrencyDao } from '../domain/currency_dao';
 
 @customElement('export-btn')
 export class ExportBtn extends LitElement {
@@ -15,7 +17,7 @@ export class ExportBtn extends LitElement {
 
     async connectedCallback() {
         super.connectedCallback();
-        this._exporter = await CSVExporter.create();
+        this._exporter = new CSVExporter(new ExpenseDao(), new CategoryDao(), new CurrencyDao());
     }
 
     onClick = async () => {
@@ -36,8 +38,8 @@ export class ExportBtn extends LitElement {
             a.click();
             setTimeout(function() {
                 document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);  
-            }, 0); 
+                window.URL.revokeObjectURL(url);
+            }, 0);
         }
     }
 

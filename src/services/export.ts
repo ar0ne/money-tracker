@@ -8,7 +8,7 @@ export interface Exporter {
     export(): Promise<string>;
 }
 
-function formatDateTime(timestamp: number): string {
+export function formatDateTime(timestamp: number): string {
     let date = new Date();
     date.setTime(timestamp);
     let datePart = [
@@ -25,24 +25,17 @@ function formatDateTime(timestamp: number): string {
 }
 
 export class CSVExporter implements Exporter {
-
-    private _currencyDao!: CurrencyDao;
-    private _categoryDao!: CategoryDao;
-    private _expenseDao!: ExpenseDao;
-
     readonly SPLITTER = ",";
 
-    public static async create() {
-        let exporter = new CSVExporter();
-        exporter._expenseDao = new ExpenseDao();
-        exporter._categoryDao = new CategoryDao();
-        exporter._currencyDao = new CurrencyDao();
-        return exporter;
-    }
+    constructor(
+        private readonly _expenseDao: ExpenseDao,
+        private readonly _categoryDao: CategoryDao,
+        private readonly _currencyDao: CurrencyDao
+    ) {}
 
     public export = async (): Promise<string> => {
         let expenses = await this._expenseDao.getAll();
-        if (!expenses) {
+        if (expenses.length === 0) {
             return "";
         }
         const categories = await this._categoryDao.getAll(true);
@@ -53,19 +46,19 @@ export class CSVExporter implements Exporter {
         const currencyMap: Map<string, Currency> = new Map(
             currencies.map(obj => [obj.id, obj])
         );
-        // datetime | category | value | currency 
+        // datetime | category | value | currency
         let headers = "date,time,category,value,currency";
         let values = expenses.map(item => {
-            return formatDateTime(item.created) + 
-                this.SPLITTER + 
-                (categoryMap.get(item.category_id) as Category).name + 
-                this.SPLITTER + 
-                item.value + 
-                this.SPLITTER + 
-                (currencyMap.get(item.currency_id) as Currency).name; 
+            return formatDateTime(item.created) +
+                this.SPLITTER +
+                (categoryMap.get(item.category_id) as Category).name +
+                this.SPLITTER +
+                item.value +
+                this.SPLITTER +
+                (currencyMap.get(item.currency_id) as Currency).name;
         }).join("\n");
 
-        let csv = headers + '\n' + values; 
+        let csv = headers + '\n' + values;
         return csv;
     }
 }
