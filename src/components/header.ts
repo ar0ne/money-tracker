@@ -6,7 +6,7 @@ import { styles } from '../styles/shared-styles';
 
 @customElement('app-header')
 export class AppHeader extends LitElement {
-  @property({ type: String }) title = 'Expense Tracker';
+  @property({ type: String }) title = 'Track spending';
 
   @property({ type: Boolean}) enableBack: boolean = false;
 
@@ -14,16 +14,22 @@ export class AppHeader extends LitElement {
     return [
       styles,
       css`
+        header {
+          margin: 0;
+          padding: 0;
+        }
         header a {
-          margin-left: 2%;
+          margin-left: 0;
         }
         header div {
           width: 100%;
-          margin-bottom: 1rem;
+          margin-bottom: 0;
         }
-        h1.center {
-          width: 100%;
-          text-align: center;
+        h1 {
+          margin: 1rem 0;
+          font-size: 1.25rem;
+          font-weight: 600;
+          text-align: left;
         }
       `
     ]
@@ -32,7 +38,7 @@ export class AppHeader extends LitElement {
   render() {
     return html`
       <header>
-        <h1 class="center">${this.title}</h1>
+        <h1>${this.title}</h1>
         <div>
           ${this.enableBack
             ? html`

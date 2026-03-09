@@ -18,19 +18,17 @@ export class AppHome extends LitElement {
     return [
       styles,
       css`
-        .main-btn-block {
-          position: relative;
+        .header-row {
           display: flex;
-          justify-content: center;
+          justify-content: space-between;
           align-items: center;
-          width: 100%;
+          margin: 0 2%;
+          min-height: 36px;
         }
-        .main-btn-block .right {
-          position: absolute;
-          right: 0;
-          top: 50%;
-          transform: translateY(-50%);
-          float: none;
+        .header-row .right {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
         }
         /* Import modal: outside transformed .right so position:fixed uses viewport; centered and responsive */
         .import-overlay {
@@ -151,14 +149,14 @@ export class AppHome extends LitElement {
   render() {
     return html`
       <div>
-        <app-header></app-header>
+        <div class="header-row">
+          <app-header></app-header>
+          <span class="right" @import-complete=${() => { this._historyRefreshTrigger++; }} @import-dialog-open=${this._onImportDialogOpen}>
+            <export-btn></export-btn>
+            <import-btn></import-btn>
+          </span>
+        </div>
         <main>
-          <div class="main-btn-block">
-            <span class="right" @import-complete=${() => { this._historyRefreshTrigger++; }} @import-dialog-open=${this._onImportDialogOpen}>
-              <export-btn></export-btn>
-              <import-btn></import-btn>
-            </span>
-          </div>
           <sl-divider></sl-divider>
           <app-history .refreshTrigger=${this._historyRefreshTrigger}></app-history>
         </main>

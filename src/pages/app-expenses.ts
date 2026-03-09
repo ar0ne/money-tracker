@@ -18,6 +18,9 @@ export class AppExpensePage extends LitElement {
         width: 100%;
         padding-top: 1em;
       }
+      .header-wrap {
+        margin: 0 2%;
+      }
     `,
   ]
 
@@ -256,7 +259,9 @@ export class AppExpensePage extends LitElement {
     `;
 
     return html`
-      <app-header ?enableBack="${true}"></app-header>
+      <div class="header-wrap">
+        <app-header ?enableBack="${true}"></app-header>
+      </div>
       <sl-divider></sl-divider>
       <main>
         <p class=${this.hideMessage ? "hide": ""}>${this._message}</p>
