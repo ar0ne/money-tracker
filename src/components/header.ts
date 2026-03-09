@@ -21,6 +21,10 @@ export class AppHeader extends LitElement {
           width: 100%;
           margin-bottom: 1rem;
         }
+        h1.center {
+          width: 100%;
+          text-align: center;
+        }
       `
     ]
   }

@@ -8,7 +8,22 @@ export class AppHome extends LitElement {
   static get styles() {
     return [
       styles,
-      css``
+      css`
+        .main-btn-block {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+        }
+        .main-btn-block .right {
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          float: none;
+        }
+      `
     ];
   }
 
