@@ -157,7 +157,6 @@ export class AppHome extends LitElement {
           </span>
         </div>
         <main>
-          <sl-divider></sl-divider>
           <app-history .refreshTrigger=${this._historyRefreshTrigger}></app-history>
         </main>
 

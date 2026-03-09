@@ -19,7 +19,7 @@ class AppStatistic extends LitElement {
             styles,
             css`
                 #statistics {
-                    width: 90%;
+                    width: 98%;
                     display: block;
                     margin-left: auto;
                     margin-right: auto;
