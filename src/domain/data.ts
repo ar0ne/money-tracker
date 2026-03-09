@@ -1,7 +1,7 @@
 import { Currency, Category } from "./model";
 
 export const DEFAULT_CURRENCIES = [
-    new Currency("US Dollar", "$"),
+    new Currency("US Dollar", "$", true),
     new Currency("Euro", "€")
 ];
 

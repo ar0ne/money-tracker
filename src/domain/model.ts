@@ -12,10 +12,11 @@ export class Category {
 
 export class Currency {
   id: string;
-  constructor(public name: string, public sign: string) {
+  constructor(public name: string, public sign: string, public isDefault: boolean = false) {
     this.id = uuidv4();
     this.name = name;
     this.sign = sign;
+    this.isDefault = isDefault;
   }
 }
 
