@@ -8,20 +8,23 @@ export interface Exporter {
     export(): Promise<string>;
 }
 
+/**
+ * Formats a Unix timestamp as "YYYY-MM-DD,HH:mm:ss" in UTC.
+ * Uses UTC so CSV export is portable and tests pass consistently regardless of machine timezone.
+ */
 export function formatDateTime(timestamp: number): string {
-    let date = new Date();
-    date.setTime(timestamp);
-    let datePart = [
-        date.getFullYear(),
-        date.getMonth() + 1,
-        date.getDate()
-    ].map((n, i) => n.toString().padStart(i === 0 ? 4 : 2, "0")).join("-");
-    let timePart = [
-        date.getHours(),
-        date.getMinutes(),
-        date.getSeconds()
-    ].map((n, _) => n.toString().padStart(2, "0")).join(":");
-    return datePart + "," + timePart;
+    const date = new Date(timestamp)
+    const datePart = [
+        date.getUTCFullYear(),
+        date.getUTCMonth() + 1,
+        date.getUTCDate()
+    ].map((n, i) => n.toString().padStart(i === 0 ? 4 : 2, "0")).join("-")
+    const timePart = [
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+    ].map((n) => n.toString().padStart(2, "0")).join(":")
+    return datePart + "," + timePart
 }
 
 export class CSVExporter implements Exporter {

@@ -26,11 +26,11 @@ const mockCurrencyDao = {
 }
 
 describe('formatDateTime', () => {
-    it('should format timestamp correctly', () => {
-        // Test with a specific timestamp (2024-01-01 13:34:56)
+    it('should format timestamp correctly in UTC', () => {
+        // 1704101696000 = 2024-01-01 09:34:56 UTC (timezone-independent)
         const timestamp = 1704101696000
         const result = formatDateTime(timestamp)
-        expect(result).toBe('2024-01-01,13:34:56')
+        expect(result).toBe('2024-01-01,09:34:56')
     })
 })
 
@@ -61,7 +61,7 @@ describe('CSVExporter', () => {
         // Setup mock data
         const mockExpenses = [{
             id: '1',
-            created: 1704101696000, // 2024-01-01 13:34:56
+            created: 1704101696000, // 2024-01-01 09:34:56 UTC
             category_id: 'cat1',
             value: 100.50,
             currency_id: 'eur'
@@ -87,9 +87,9 @@ describe('CSVExporter', () => {
         // Execute
         const result = await exporter.export()
 
-        // Verify
+        // Verify (times in UTC)
         const expectedCSV = `date,time,category,value,currency
-2024-01-01,13:34:56,Groceries,100.5,EUR`
+2024-01-01,09:34:56,Groceries,100.5,EUR`
 
         expect(result).toBe(expectedCSV)
         expect(mockExpenseDao.getAll).toHaveBeenCalled()
@@ -102,14 +102,14 @@ describe('CSVExporter', () => {
         const mockExpenses = [
             {
                 id: '1',
-                created: 1704101696000, // 2024-01-01 13:34:56
+                created: 1704101696000, // 2024-01-01 09:34:56 UTC
                 category_id: 'cat1',
                 value: 100.50,
                 currency_id: 'eur'
             },
             {
                 id: '2',
-                created: 1704188096000, // 2024-01-02 13:34:56
+                created: 1704188096000, // 2024-01-02 09:34:56 UTC
                 category_id: 'cat2',
                 value: 200.75,
                 currency_id: 'usd'
@@ -150,10 +150,10 @@ describe('CSVExporter', () => {
         // Execute
         const result = await exporter.export()
 
-        // Verify
+        // Verify (times in UTC)
         const expectedCSV = `date,time,category,value,currency
-2024-01-01,13:34:56,Groceries,100.5,EUR
-2024-01-02,13:34:56,Transport,200.75,USD`
+2024-01-01,09:34:56,Groceries,100.5,EUR
+2024-01-02,09:34:56,Transport,200.75,USD`
 
         expect(result).toBe(expectedCSV)
     })
