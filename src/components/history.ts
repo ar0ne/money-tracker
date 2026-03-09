@@ -60,6 +60,9 @@ class AppHistory extends LitElement {
     @state()
     private _currentDate!: Date;  // 1st day of current month
 
+    @state()
+    private _expenseToRemove: ExpenseDTO | null = null;
+
     /** Increment to force reload (e.g. after import). */
     @property({ type: Number })
     refreshTrigger = 0;
@@ -97,7 +100,7 @@ class AppHistory extends LitElement {
         const to_date = getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         let expenses = await this._expenseDao.getAllInRange(from_date, to_date);
         if (!expenses) {
-            return; 
+            return;
         }
         this._categories = await this._categoryDao.getAll(true);
         const currencies = await this._currencyDao.getAll();
@@ -119,8 +122,18 @@ class AppHistory extends LitElement {
         this._expenses = results.reverse();
     }
 
-    async removeRecord(expense: ExpenseDTO) {
-        await this._expenseDao.remove(expense.id);
+    openRemoveConfirm(expense: ExpenseDTO) {
+        this._expenseToRemove = expense;
+    }
+
+    cancelRemove() {
+        this._expenseToRemove = null;
+    }
+
+    async confirmRemove() {
+        if (!this._expenseToRemove) return;
+        await this._expenseDao.remove(this._expenseToRemove.id);
+        this._expenseToRemove = null;
         await this.handleHistory();
     }
 
@@ -138,10 +151,10 @@ class AppHistory extends LitElement {
                 html`
                     <li>
                         <div class="expense-list-item clearfix">
-                            <sl-button class="btn-remove" title="Delete" @click=${() => this.removeRecord(expense)}>X</sl-button>
+                            <sl-button class="btn-remove" title="Delete" @click=${() => this.openRemoveConfirm(expense)}>X</sl-button>
                             <i class="${this.getCategoryColor(expense.category)} ${expense.category.is_removed ? 'removed' : ''}">${expense.category.name}</i>
                             <p>
-                            ${formatDateTime(expense.created)} 
+                            ${formatDateTime(expense.created)}
                             </p>
                             ${expense.currency.sign} ${expense.value}
                         </div>
@@ -157,6 +170,21 @@ class AppHistory extends LitElement {
 
         return html`
             <div class="container">
+                <sl-dialog
+                    label="Remove expense"
+                    ?open=${!!this._expenseToRemove}
+                    @sl-after-hide=${() => this.cancelRemove()}
+                >
+                    ${this._expenseToRemove
+                        ? html`Are you sure you want to remove ${this._expenseToRemove.currency.sign} ${this._expenseToRemove.value} (${this._expenseToRemove.category.name})?`
+                        : ''}
+                    <sl-button slot="footer" variant="primary" @click=${() => this.confirmRemove()}>
+                        Remove
+                    </sl-button>
+                    <sl-button slot="footer" @click=${() => this.cancelRemove()}>
+                        Cancel
+                    </sl-button>
+                </sl-dialog>
                 <app-statistic
                     .selectedDate=${this._currentDate}
                     .expenses=${this._expenses}
