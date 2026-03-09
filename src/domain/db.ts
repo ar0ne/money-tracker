@@ -95,6 +95,23 @@ export const deleteData = (storeName: string, key: string): Promise<boolean> => 
   });
 };
 
+export const clearStore = (storeName: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    request = indexedDB.open(DB_NAME, version);
+
+    request.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      store.clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    };
+
+    request.onerror = () => reject(request.error);
+  });
+};
+
 export const updateData = <T>(storeName: string, key: string, data: T): Promise<T|string|null> => {
   return new Promise((resolve) => {
     request = indexedDB.open(DB_NAME, version);

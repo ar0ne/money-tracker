@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
 import { ExpenseDTO, Category, Currency } from '../domain/model';
 import { styles } from '../styles/shared-styles';
@@ -60,6 +60,10 @@ class AppHistory extends LitElement {
     @state()
     private _currentDate!: Date;  // 1st day of current month
 
+    /** Increment to force reload (e.g. after import). */
+    @property({ type: Number })
+    refreshTrigger = 0;
+
     constructor() {
         super();
         const now = new Date();
@@ -74,6 +78,13 @@ class AppHistory extends LitElement {
         this._categoryDao = new CategoryDao();
         this._currencyDao = new CurrencyDao();
         await this.handleHistory();
+    }
+
+    updated(changedProperties: Map<string, unknown>) {
+        super.updated?.(changedProperties);
+        if (changedProperties.has('refreshTrigger') && this._expenseDao) {
+            this.handleHistory();
+        }
     }
 
     async dateChanged(e: CustomEvent) {
