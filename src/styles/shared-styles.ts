@@ -2,8 +2,7 @@ import { css } from 'lit';
 
 export const styles = css`
   main {
-    margin-left: 2%;
-    margin-right: 2%;
+    margin: 0;
   }
   .center {
     display: flex;
