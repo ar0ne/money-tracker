@@ -24,9 +24,6 @@ class AppStatistic extends LitElement {
                     margin-left: auto;
                     margin-right: auto;
                 }
-                .stat-category {
-                    margin-left: -1em;
-                }
                 .stat-list {
                     display: inline-block;
                 }
