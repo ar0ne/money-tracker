@@ -11,6 +11,9 @@ export class AppHome extends LitElement {
   @state()
   private _importDialogOpen = false;
 
+  @state()
+  private _isScrolled = false;
+
   static get styles() {
     return [
       styles,
@@ -79,9 +82,58 @@ export class AppHome extends LitElement {
           color: #fff;
           border-color: #3b82f6;
         }
+        .fab {
+          position: fixed;
+          bottom: 16px;
+          right: 16px;
+          z-index: 1000;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.5rem;
+          font-size: 1rem;
+          font-weight: 500;
+          text-decoration: none;
+          color: #fff;
+          background: var(--sl-color-primary-600, #2563eb);
+          border: none;
+          border-radius: 28px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          cursor: pointer;
+          transition: border-radius 0.2s ease, padding 0.2s ease;
+        }
+        .fab:hover {
+          background: var(--sl-color-primary-700, #1d4ed8);
+          color: #fff;
+        }
+        .fab-compact {
+          padding: 0.875rem;
+          border-radius: 50%;
+        }
+        .fab sl-icon {
+          font-size: 1.25rem;
+        }
       `
     ];
   }
+
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('scroll', this._onScroll);
+    super.disconnectedCallback();
+  }
+
+  private _onScroll = () => {
+    const isScrolled = window.scrollY > 50;
+    if (isScrolled !== this._isScrolled) {
+      this._isScrolled = isScrolled;
+    }
+  };
 
   private _onImportDialogOpen = () => {
     this._importDialogOpen = true;
@@ -106,9 +158,6 @@ export class AppHome extends LitElement {
               <export-btn></export-btn>
               <import-btn></import-btn>
             </span>
-            <div class="center">
-              <sl-button href="/expense" variant="primary">New record</sl-button>
-            </div>
           </div>
           <sl-divider></sl-divider>
           <app-history .refreshTrigger=${this._historyRefreshTrigger}></app-history>
@@ -131,6 +180,11 @@ export class AppHome extends LitElement {
               </div>
             `
           : ''}
+
+        <a href="/expense" class="fab ${this._isScrolled ? 'fab-compact' : 'fab-extended'}" aria-label="${this._isScrolled ? 'Add' : 'Add new record'}">
+          <sl-icon name="plus"></sl-icon>
+          ${!this._isScrolled ? html`<span>Add</span>` : ''}
+        </a>
       </div>
     `;
   }
