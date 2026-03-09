@@ -26,7 +26,11 @@ class AppHistory extends LitElement {
             .expense-list-item {
                 margin: auto;
                 border: 1px solid grey;
-                padding: 1em;
+                padding: 0.5em;
+            }
+            .category {
+                font-size: 1.2em;
+                margin-right: 1.2em;
             }
             .clearfix::after {
                 content: "";
@@ -152,10 +156,9 @@ class AppHistory extends LitElement {
                     <li>
                         <div class="expense-list-item clearfix">
                             <sl-button class="btn-remove" title="Delete" @click=${() => this.openRemoveConfirm(expense)}>X</sl-button>
-                            <i class="${this.getCategoryColor(expense.category)} ${expense.category.is_removed ? 'removed' : ''}">${expense.category.name}</i>
-                            <p>
+                            <i class="category ${this.getCategoryColor(expense.category)} ${expense.category.is_removed ? 'removed' : ''}">${expense.category.name}</i>
                             ${formatDateTime(expense.created)}
-                            </p>
+                            <br/><br/>
                             ${expense.currency.sign} ${expense.value}
                         </div>
                     </li>
