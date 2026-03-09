@@ -25,6 +25,9 @@ class AppCategory extends LitElement {
                     padding: 2px;
                     box-sizing: border-box;
                 }
+                .list-category {
+                    margin: 2%;
+                }
             `
         ]
     }

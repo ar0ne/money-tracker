@@ -1,10 +1,22 @@
-import {LitElement, html} from 'lit';
+import {LitElement, css, html} from 'lit';
 import {customElement, property, query, state} from 'lit/decorators.js';
 import {map} from 'lit/directives/map.js';
 import {Currency} from '../domain/model';
+import { styles } from '../styles/shared-styles';
 
 @customElement('app-currency')
 class AppCurrency extends LitElement {
+
+    static get styles() {
+        return [
+            styles,
+            css`
+                .add-currency {
+                    margin: 2%;
+                }
+        `
+        ];
+    }
 
     @query('#currencysign')
     inputCurrencySign!: HTMLInputElement;
@@ -173,7 +185,7 @@ class AppCurrency extends LitElement {
         `;
 
         const addNewCurrency = html`
-            <div>
+            <div class="add-currency">
                 <h3>Add new currency</h3>
                 <sl-input id="currencyname"
                     label="Name"
