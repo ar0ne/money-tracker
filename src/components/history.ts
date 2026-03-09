@@ -30,7 +30,9 @@ class AppHistory extends LitElement {
             }
             .category {
                 font-size: 1.2em;
-                margin-right: 1.2em;
+            }
+            .expense-value {
+                margin: 1em 0 0 0;
             }
             .clearfix::after {
                 content: "";
@@ -40,6 +42,16 @@ class AppHistory extends LitElement {
             .btn-remove {
                 float: right;
                 padding: 1em;
+            }
+            .expense-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: 0.5em;
+            }
+            .datetime {
+                flex-shrink: 0;
+                font-variant-numeric: tabular-nums;
             }
             #statistics,#history p {
                 width: 90%;
@@ -156,10 +168,13 @@ class AppHistory extends LitElement {
                     <li>
                         <div class="expense-list-item clearfix">
                             <sl-button class="btn-remove" title="Delete" @click=${() => this.openRemoveConfirm(expense)}>X</sl-button>
-                            <i class="category ${this.getCategoryColor(expense.category)} ${expense.category.is_removed ? 'removed' : ''}">${expense.category.name}</i>
-                            ${formatDateTime(expense.created)}
-                            <br/><br/>
-                            ${expense.currency.sign} ${expense.value}
+                            <div class="expense-row">
+                                <i class="category ${this.getCategoryColor(expense.category)} ${expense.category.is_removed ? 'removed' : ''}">${expense.category.name}</i>
+                                <span class="datetime">${formatDateTime(expense.created)}</span>
+                            </div>
+                            <div class="expense-value">
+                                ${expense.currency.sign} ${expense.value}
+                            </div>
                         </div>
                     </li>
                 `
