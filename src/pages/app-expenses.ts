@@ -91,9 +91,17 @@ export class AppExpensePage extends LitElement {
   }
 
   async addCurrency(e: CustomEvent) {
+    const newCurrency = e.detail.currency as Currency;
     try {
-      await this._currencyDao.add(e.detail.currency);
-      this.handleGetCurrencies();
+      await this._currencyDao.add(newCurrency);
+      await this.handleGetCurrencies();
+      if (!this._visibleCurrencies.some((c) => c.id === newCurrency.id)) {
+        this._visibleCurrencies = [...this._visibleCurrencies, newCurrency].sort(
+          (a, b) => a.name.localeCompare(b.name)
+        );
+      }
+      this._currency = newCurrency;
+      await this._settingsDao.update({ last_currency_id: newCurrency.id });
     } catch (err: unknown) {
       if (err instanceof Error) {
         this.displayMessage(err.message);
@@ -101,21 +109,7 @@ export class AppExpensePage extends LitElement {
         this.displayMessage('Something went wrong');
       }
     }
-    this.displayMessage("Added!");
-  }
-
-  async editCurrency(e: CustomEvent) {
-    try {
-      await this._currencyDao.update(e.detail.currency);
-      this.handleGetCurrencies();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        this.displayMessage(err.message);
-      } else {
-        this.displayMessage('Something went wrong');
-      }
-    }
-    this.displayMessage("Saved!");
+    this.displayMessage('Added!');
   }
 
   async addCategory(e: CustomEvent) {
@@ -281,7 +275,6 @@ export class AppExpensePage extends LitElement {
           @currency-adding="${this.toggleHideValue}"
           @currency-added="${this.addCurrency}"
           @currency-changed="${this.changeCurrency}"
-          @currency-edited="${this.editCurrency}"
           @currency-show-all="${this.showAllCurrencies}"
         ></app-currency>
         ${this.hideValue ? "" : addExpenseValue}
