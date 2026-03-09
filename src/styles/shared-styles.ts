@@ -17,7 +17,7 @@ export const styles = css`
     color: grey;
     cursor: not-allowed;
     pointer-events: none;
-    background-color: #ffffff;
+    background-color: var(--sl-color-neutral-100, #ffffff);
   }
   .removed {
     text-decoration: line-through;

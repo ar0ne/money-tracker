@@ -25,11 +25,23 @@
 
   <link rel="manifest" href="/manifest.json" />
 
-  <link rel="stylesheet" media="(prefers-color-scheme:light)"
-    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/themes/light.css">
-  <link rel="stylesheet" media="(prefers-color-scheme:dark)"
-    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/themes/dark.css"
-    onload="document.documentElement.classList.add('sl-theme-dark');">
+  <!-- Load both Shoelace themes; toggle dark via sl-theme-dark class -->
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/dark.css">
+
+  <!-- Apply dark theme based on system preference; respond to changes at runtime -->
+  <script>
+    (function () {
+      const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      function applyTheme() {
+        document.documentElement.classList.toggle('sl-theme-dark', darkQuery.matches);
+      }
+      applyTheme();
+      darkQuery.addEventListener('change', applyTheme);
+    })();
+  </script>
 
   <script type="module" src="/src/app-index.ts"></script>
 
