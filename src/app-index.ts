@@ -8,6 +8,7 @@ import './components/currency';
 import './components/statistic';
 import './components/history';
 import './components/exportbtn';
+import './components/latest-entries';
 import './styles/global.css';
 import { router } from './router';
 

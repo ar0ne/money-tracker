@@ -52,6 +52,8 @@ export class AppExpensePage extends LitElement {
   private disableAddExpense = true;
   @state()
   private hideMessage = true;
+  @state()
+  private _expenseAddedCount = 0;
 
   async connectedCallback() {
     super.connectedCallback();
@@ -164,6 +166,7 @@ export class AppExpensePage extends LitElement {
     let expense = new Expense(this._currency.id, this._value, this._category.id)
     try {
       await this._expenseDao.add(expense);
+      this._expenseAddedCount++;
     } catch (err: unknown) {
       if (err instanceof Error) {
         this.displayMessage(err.message);
@@ -277,6 +280,7 @@ export class AppExpensePage extends LitElement {
           @currency-show-all="${this.showAllCurrencies}"
         ></app-currency>
         ${this.hideValue ? "" : addExpenseValue}
+        ${this.hideValue ? "" : html`<app-latest-entries .refreshTrigger=${this._expenseAddedCount}></app-latest-entries>`}
       </main>
     `;
   }

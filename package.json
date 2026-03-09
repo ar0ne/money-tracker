@@ -26,6 +26,7 @@
     "workbox-precaching": "^6.5.2"
   },
   "devDependencies": {
+    "happy-dom": "^15.11.7",
     "typescript": "^5.0.4",
     "vite": "^4.2.1",
     "vite-plugin-pwa": "^0.14.7",
