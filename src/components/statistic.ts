@@ -46,6 +46,10 @@ class AppStatistic extends LitElement {
                 .stat-list:last-child::after {
                     content: "";
                 }
+                .rate-warning {
+                    color: var(--sl-color-danger-600, #dc2626);
+                    margin-left: 0.15em;
+                }
             `
         ]
     }
@@ -66,6 +70,10 @@ class AppStatistic extends LitElement {
     }
     @property()
     categories: Category[] = [];
+    @property()
+    baseCurrency?: Currency;
+    @property()
+    ratesMap: Record<string, number> = {};
 
     @state()
     private _statistic?: Statistic;
@@ -136,7 +144,36 @@ class AppStatistic extends LitElement {
         return getColorClass(index);
     }
 
+    /**
+     * Sum all expenses converted to base currency using ratesMap.
+     * Rate is stored as 1 base = rate × other, so other -> base = value / rate.
+     * Returns { totalInBase, hasMissingRates }.
+     */
+    getTotalInBase(): { totalInBase: number; hasMissingRates: boolean } {
+        let totalInBase = 0;
+        let hasMissingRates = false;
+        const baseId = this.baseCurrency?.id?.toUpperCase();
+        for (const expense of this.expenses) {
+            const curId = expense.currency.id?.toUpperCase();
+            if (curId === baseId) {
+                totalInBase += expense.value;
+                continue;
+            }
+            const rate = this.ratesMap[curId ?? ''];
+            if (rate != null && rate > 0) {
+                totalInBase += expense.value / rate;
+            } else {
+                hasMissingRates = true;
+            }
+        }
+        return { totalInBase, hasMissingRates };
+    }
+
     render() {
+        const { totalInBase, hasMissingRates } = this.getTotalInBase();
+        const baseSign = this.baseCurrency?.sign ?? '$';
+        const monthName = this.getCurrentMonthName();
+
         const statisticForMonth = html`
             <div class="statistics-scroll-wrapper">
                 <sl-menu
@@ -174,9 +211,16 @@ class AppStatistic extends LitElement {
         return html`
             <div class="container">
                 <div id="statistics">
-                    <sl-details
-                        summary="Expenses for ${this.getCurrentMonthName()}"
-                        >
+                    <sl-details>
+                        <span slot="summary">
+                            Expenses for ${monthName}: ${baseSign} ${totalInBase.toFixed(2)}
+                            ${hasMissingRates
+                                ? html`
+                                    <sl-tooltip content="Some of the currency exchange rates are not available">
+                                        <span class="rate-warning" aria-label="Some exchange rates missing">!</span>
+                                    </sl-tooltip>`
+                                : ''}
+                        </span>
                         <sl-button
                             @click=${this.previousMonth}
                             >

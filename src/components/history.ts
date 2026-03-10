@@ -7,6 +7,8 @@ import { initDB } from '../domain/db';
 import { ExpenseDao } from '../domain/expense_dao';
 import { CategoryDao } from '../domain/category_dao';
 import { CurrencyDao } from '../domain/currency_dao';
+import { SettingsDao } from '../domain/settings_dao';
+import { ExchangeRateDao } from '../domain/exchange_rate_dao';
 import { formatDateTime, getFirstDayOfMonth, getLastDayOfMonth, getMonthName, getColorClass } from '../utils';
 
 @customElement('app-history')
@@ -68,13 +70,21 @@ class AppHistory extends LitElement {
     @state()
     private _currencyDao!: CurrencyDao;
     @state()
-    private _categoryDao!: CategoryDao
+    private _categoryDao!: CategoryDao;
+    @state()
+    private _settingsDao!: SettingsDao;
+    @state()
+    private _exchangeRateDao!: ExchangeRateDao;
     @state()
     private _expenses: ExpenseDTO[] = [];
     @state()
     private _categories: Category[] = [];
     @state()
     private _currentDate!: Date;  // 1st day of current month
+    @state()
+    private _baseCurrency: Currency | undefined = undefined;
+    @state()
+    private _ratesMap: Record<string, number> = {};
 
     @state()
     private _expenseToRemove: ExpenseDTO | null = null;
@@ -96,6 +106,8 @@ class AppHistory extends LitElement {
         this._expenseDao = new ExpenseDao();
         this._categoryDao = new CategoryDao();
         this._currencyDao = new CurrencyDao();
+        this._settingsDao = new SettingsDao();
+        this._exchangeRateDao = new ExchangeRateDao();
         await this.handleHistory();
     }
 
@@ -114,7 +126,7 @@ class AppHistory extends LitElement {
     async handleHistory() {
         const from_date = getFirstDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         const to_date = getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
-        let expenses = await this._expenseDao.getAllInRange(from_date, to_date);
+        const expenses = await this._expenseDao.getAllInRange(from_date, to_date);
         if (!expenses) {
             return;
         }
@@ -126,7 +138,14 @@ class AppHistory extends LitElement {
         const currencyMap: Map<string, Currency> = new Map(
             currencies.map(obj => [obj.id, obj])
         );
-        let results = expenses.map(item => {
+        // Load settings and exchange rates for statistic header (converted sum in base currency)
+        const settings = await this._settingsDao.getAll();
+        const baseCurrencyId = (settings?.default_currency_id ?? 'USD').toUpperCase();
+        const rates = await this._exchangeRateDao.getAll(baseCurrencyId);
+        this._baseCurrency = currencyMap.get(baseCurrencyId);
+        this._ratesMap = Object.fromEntries(rates.map((r) => [r.to_currency_id.toUpperCase(), r.rate]));
+
+        const results = expenses.map(item => {
             return {
                 id: item.id,
                 created: item.created,
@@ -207,6 +226,8 @@ class AppHistory extends LitElement {
                     .selectedDate=${this._currentDate}
                     .expenses=${this._expenses}
                     .categories=${this._categories}
+                    .baseCurrency=${this._baseCurrency}
+                    .ratesMap=${this._ratesMap}
                     @date-changed=${this.dateChanged}
                 ></app-statistic>
                 <div id="history">
