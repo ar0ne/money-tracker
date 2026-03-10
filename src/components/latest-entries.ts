@@ -103,7 +103,7 @@ export class AppLatestEntries extends LitElement {
     }
     return html`
       <sl-card class="latest-entries-card">
-        <h3 slot="header">Latest Spending</h3>
+        <h3 slot="header">Latest</h3>
         <ul>
           ${map(
             this._latestExpenses,

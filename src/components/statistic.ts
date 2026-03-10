@@ -233,7 +233,7 @@ class AppStatistic extends LitElement {
                                 outline
                                 @click=${this.resetStatistic}
                                 >
-                                Reset
+                                Today
                             </sl-button>
                             `
                         : ''}
