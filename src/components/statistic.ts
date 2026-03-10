@@ -24,6 +24,19 @@ class AppStatistic extends LitElement {
                     margin-left: auto;
                     margin-right: auto;
                 }
+                .statistics-scroll-wrapper {
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                }
+                #statistic-card {
+                    width: max-content;
+                    min-width: 100%;
+                }
+                .stat-category {
+                    white-space: nowrap;
+                    display: inline-block;
+                    min-width: min-content;
+                }
                 .stat-list {
                     display: inline-block;
                 }
@@ -125,7 +138,7 @@ class AppStatistic extends LitElement {
 
     render() {
         const statisticForMonth = html`
-            <div>
+            <div class="statistics-scroll-wrapper">
                 <sl-menu
                     id="statistic-card"
                     >
