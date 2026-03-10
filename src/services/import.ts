@@ -21,16 +21,6 @@ export interface ParseResult {
 
 const EXPECTED_HEADER = 'date,time,category,value,currency'
 
-
-const CURRENCY_SIGN_MAP: Record<string, string> = {
-  EUR: '€',
-  USD: '$',
-  GBP: '£',
-  JPY: '¥',
-  RUB: '₽',
-}
-
-
 export function parseDateTime(dateStr: string, timeStr: string): number {
   const [y, m, d] = dateStr.split('-').map(Number)
   const [h, min, s] = timeStr.split(':').map(Number)
@@ -46,7 +36,6 @@ export function parseDateTime(dateStr: string, timeStr: string): number {
   const date = new Date(Date.UTC(y, m - 1, d, h, min, s))
   return date.getTime()
 }
-
 
 export function parseCSV(csvText: string): ParseResult {
   const trimmed = csvText.trim()
@@ -100,15 +89,13 @@ export class CSVImporter {
     private readonly _currencyDao: CurrencyDao
   ) {}
 
-
   public import = async (csvText: string): Promise<void> => {
     const parsed = parseCSV(csvText)
 
-    // Clear only expenses and categories; currencies are preserved
     await clearStore(Stores.Expenses)
     await clearStore(Stores.Categories)
 
-    // Build category name -> id and currency name -> id maps
+    // Build category name -> Category
     const categoryByName = new Map<string, Category>()
     for (const name of parsed.categories) {
       const cat = new Category(name)
@@ -116,25 +103,20 @@ export class CSVImporter {
       categoryByName.set(name, cat)
     }
 
-    const existingCurrencies = await this._currencyDao.getAll()
-    const currencyByName = new Map<string, Currency>(
-      existingCurrencies.map((c) => [c.name, c])
-    )
-
-    // Add only currencies from CSV that don't exist yet
-    for (const name of parsed.currencies) {
-      if (!currencyByName.has(name)) {
-        const sign = CURRENCY_SIGN_MAP[name] ?? ''
-        const cur = new Currency(name, sign)
-        await this._currencyDao.add(cur)
-        currencyByName.set(name, cur)
+    // Build currency id (3-letter) -> Currency from static data; persist selected ids so they appear in picker
+    const currencyById = new Map<string, Currency>();
+    for (const id of parsed.currencies) {
+      const w = await this._currencyDao.getById(id);
+      if (w) {
+        const cur = new Currency(w.id, w.name, w.sign)
+        currencyById.set(w.id, cur);
       }
     }
 
     for (const row of parsed.rows) {
       const category = categoryByName.get(row.category)
-      const currency = currencyByName.get(row.currency)
-      if (!category || !currency) continue // defensive
+      const currency = currencyById.get(row.currency.toUpperCase())
+      if (!category || !currency) continue;
 
       const created = parseDateTime(row.date, row.time)
       const expense: Expense = {

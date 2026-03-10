@@ -1,4 +1,4 @@
-import { DEFAULT_CURRENCIES, DEFAULT_CATEGORIES } from "./data";
+import { DEFAULT_CATEGORIES } from "./data";
 
 let request: IDBOpenDBRequest;
 let version = 1;
@@ -6,7 +6,6 @@ const DB_NAME = 'expensesDB';
 
 export enum Stores {
   Expenses = 'expenses',
-  Currencies = 'currencies',
   Categories = 'categories',
   Settings = 'settings',
 }
@@ -27,11 +26,6 @@ export const initDB = (): Promise<boolean|IDBDatabase> => {
         console.log('Creating categories store');
         db.createObjectStore(Stores.Categories, { keyPath: 'id' });
         DEFAULT_CATEGORIES.forEach(category => addData(Stores.Categories, category));
-      }
-      if (!db.objectStoreNames.contains(Stores.Currencies)) {
-        console.log('Creating currencies store');
-        db.createObjectStore(Stores.Currencies, { keyPath: 'id' });
-        DEFAULT_CURRENCIES.forEach(currency => addData(Stores.Currencies, currency));
       }
       if (!db.objectStoreNames.contains(Stores.Settings)) {
         console.log('Creating settings store');

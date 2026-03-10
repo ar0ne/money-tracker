@@ -10,14 +10,13 @@ export class Category {
   }
 }
 
+/** id is the 3-letter ISO 4217 code (e.g. USD, EUR). */
 export class Currency {
-  id: string;
-  constructor(public name: string, public sign: string, public isDefault: boolean = false) {
-    this.id = uuidv4();
-    this.name = name;
-    this.sign = sign;
-    this.isDefault = isDefault;
-  }
+  constructor(
+    public id: string,
+    public name: string,
+    public sign: string
+  ) {}
 }
 
 

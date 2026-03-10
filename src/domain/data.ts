@@ -1,9 +1,5 @@
-import { Currency, Category } from "./model";
+import { Category } from "./model";
 
-export const DEFAULT_CURRENCIES = [
-    new Currency("US Dollar", "$", true),
-    new Currency("Euro", "€")
-];
 
 export const DEFAULT_CATEGORIES = [
     new Category("Entertaiment"),

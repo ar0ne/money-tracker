@@ -1,27 +1,19 @@
-import { getStoreData, Stores, addData, updateData } from "./db";
-import { Currency } from "./model";
+import { Currency } from "./model"
+import { getCurrencyById, getAllCurrencies } from "../data/currencies"
 
 
 export class CurrencyDao {
-    
-    public getAll = async () => {
-        let currencies: Currency[] = await getStoreData<Currency>(Stores.Currencies);
-        return currencies.sort((a, b) => a.name.localeCompare(b.name));
-    }
+  public getAll = async (): Promise<Currency[]> => {
+    return getAllCurrencies();
+  }
 
-    public getByIds = async (currency_ids: String[]) => {
-        const all = await this.getAll();
-        let currencies = all.filter((c) => currency_ids.includes(c.id));
-        return Array.from(currencies).sort((a, b) => a.name.localeCompare(b.name));
+  public getByIds = async (currency_ids: string[]): Promise<Currency[]> => {
+    const result: Currency[] = []
+    for (const id of currency_ids) {
+      const w = getCurrencyById(id)
+      if (w) result.push(w)
     }
-
-    public add = async (currency: Currency) => {
-        await addData(Stores.Currencies, currency);
-    }
-
-    public update = async (currency: Currency) => {
-        await updateData(Stores.Currencies, currency.id, currency);
-    }
+    return result.sort((a, b) => a.name.localeCompare(b.name))
+  }
 
 }
-

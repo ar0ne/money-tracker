@@ -93,7 +93,6 @@ export class AppExpensePage extends LitElement {
   async addCurrency(e: CustomEvent) {
     const newCurrency = e.detail.currency as Currency;
     try {
-      await this._currencyDao.add(newCurrency);
       await this.handleGetCurrencies();
       if (!this._visibleCurrencies.some((c) => c.id === newCurrency.id)) {
         this._visibleCurrencies = [...this._visibleCurrencies, newCurrency].sort(

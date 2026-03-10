@@ -40,8 +40,8 @@ class AppCurrency extends LitElement {
   private addSearchQuery = ''
 
   private get availableWorldCurrencies(): WorldCurrency[] {
-    const addedNames = new Set(this.currencies.map((c) => c.name))
-    return WORLD_CURRENCIES.filter((w) => !addedNames.has(w.name))
+    const addedIds = new Set(this.currencies.map((c) => c.id))
+    return WORLD_CURRENCIES.filter((w) => !addedIds.has(w.id))
   }
 
   private get filteredWorldCurrencies(): WorldCurrency[] {
@@ -61,7 +61,7 @@ class AppCurrency extends LitElement {
   }
 
   selectWorldCurrency(entry: WorldCurrency) {
-    const newCurrency = new Currency(entry.name, entry.sign)
+    const newCurrency = new Currency(entry.id, entry.name, entry.sign)
     this.dispatchEvent(
       new CustomEvent('currency-added', { detail: { currency: newCurrency } })
     )

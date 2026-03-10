@@ -4,18 +4,15 @@
  * Sign uses the currency symbol when one exists; otherwise the 3-letter code.
  */
 
-export interface WorldCurrency {
-  code: string
-  name: string
-  sign: string
-}
+import { Currency } from "../domain/model"
+
 
 function signFrom(code: string, symbol: string): string {
   const useSymbol =
     symbol.length <= 2 &&
     !/^[A-Za-z]{2,3}$/.test(symbol) &&
     !/^[A-Z]{2}$/.test(symbol)
-  return useSymbol ? symbol : code
+  return useSymbol ? symbol : code;
 }
 
 // Raw data: code -> { name, symbol } (symbol may be symbol or symbolNative from ISO sources).
@@ -176,10 +173,20 @@ const RAW: Record<string, { name: string; symbol: string }> = {
   ZWL: { name: 'Zimbabwean Dollar', symbol: 'ZWL' },
 }
 
-export const WORLD_CURRENCIES: WorldCurrency[] = Object.entries(RAW)
+export const WORLD_CURRENCIES: Currency[] = Object.entries(RAW)
   .map(([code, { name, symbol }]) => ({
+    id: code,
     code,
     name,
     sign: signFrom(code, symbol),
   }))
-  .sort((a, b) => a.name.localeCompare(b.name))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+export function getAllCurrencies(): Currency[] {
+  return WORLD_CURRENCIES.map(c => new Currency(c.id, c.name, c.sign));
+}
+
+export function getCurrencyById(id: string): Currency | undefined {
+  const upper = id.toUpperCase();
+  return WORLD_CURRENCIES.find((c) => c.id === upper);
+}

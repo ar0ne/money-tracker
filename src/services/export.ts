@@ -58,7 +58,7 @@ export class CSVExporter implements Exporter {
                 this.SPLITTER +
                 item.value +
                 this.SPLITTER +
-                (currencyMap.get(item.currency_id) as Currency).name;
+                (currencyMap.get(item.currency_id) as Currency).id;
         }).join("\n");
 
         let csv = headers + '\n' + values;
