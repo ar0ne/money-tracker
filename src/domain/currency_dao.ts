@@ -7,6 +7,10 @@ export class CurrencyDao {
     return getAllCurrencies();
   }
 
+  public getById = async (id: string): Promise<Currency | undefined> => {
+    return getCurrencyById(id);
+  }
+
   public getByIds = async (currency_ids: string[]): Promise<Currency[]> => {
     const result: Currency[] = []
     for (const id of currency_ids) {
