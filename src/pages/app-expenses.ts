@@ -186,6 +186,13 @@ export class AppExpensePage extends LitElement {
     }
   }
 
+  _onAddExpenseKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.addExpense();
+    }
+  }
+
   displayMessage(message: string) {
     this._message = message;
     this.hideMessage = false;
@@ -238,6 +245,7 @@ export class AppExpensePage extends LitElement {
             label="Category: ${this._category?.name}"
             type="number"
             @keyup=${this._onExpenseValueChanged}
+            @keydown=${this._onAddExpenseKeyDown}
           ></sl-input>
           <br/>
           <sl-button
