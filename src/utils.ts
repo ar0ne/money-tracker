@@ -17,6 +17,20 @@ export const getLastDayOfMonth = (year?: number, month?: number): Date => {
     return new Date(getFirstDayOfMonth(year, month + 1).getTime() - 1);
 }
 
+export const getFirstDayOfLastMonth = (): Date => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    return getFirstDayOfMonth(year, month - 1);
+}
+
+export const getLastDayOfLastMonth = (): Date => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    return getLastDayOfMonth(year, month - 1);
+}
+
 export const formatDateTime = (timestamp: number): string => {
     let date = new Date();
     date.setTime(timestamp);

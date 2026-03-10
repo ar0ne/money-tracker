@@ -152,6 +152,7 @@ export class AppHome extends LitElement {
         <div class="header-row">
           <app-header></app-header>
           <span class="right" @import-complete=${() => { this._historyRefreshTrigger++; }} @import-dialog-open=${this._onImportDialogOpen}>
+            <a href="/rates">Rates</a>
             <export-btn></export-btn>
             <import-btn></import-btn>
           </span>

@@ -31,6 +31,14 @@ export const router = new Router({
         ],
         render: () => html`<app-expenses></app-expenses>`
       },
+      {
+        path: '/rates',
+        title: 'Exchange Rates',
+        plugins: [
+          lazy(() => import('./pages/app-rates.js')),
+        ],
+        render: () => html`<app-rates></app-rates>`
+      },
     ]
   });
 

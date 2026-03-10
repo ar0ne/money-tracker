@@ -1,18 +1,19 @@
 import { DEFAULT_CATEGORIES } from "./data";
 
 let request: IDBOpenDBRequest;
-let version = 1;
+let version = 2;
 const DB_NAME = 'expensesDB';
 
 export enum Stores {
   Expenses = 'expenses',
   Categories = 'categories',
   Settings = 'settings',
+  ExchangeRates = 'exchange_rates',
 }
 
 export const initDB = (): Promise<boolean|IDBDatabase> => {
   return new Promise((resolve) => {
-    request = indexedDB.open(DB_NAME);
+    request = indexedDB.open(DB_NAME, version);
 
     // if the data object store doesn't exist, create it
     request.onupgradeneeded = () => {
@@ -30,6 +31,10 @@ export const initDB = (): Promise<boolean|IDBDatabase> => {
       if (!db.objectStoreNames.contains(Stores.Settings)) {
         console.log('Creating settings store');
         db.createObjectStore(Stores.Settings, { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains(Stores.ExchangeRates)) {
+        console.log('Creating exchange_rates store');
+        db.createObjectStore(Stores.ExchangeRates, { keyPath: 'id' });
       }
       // no need to resolve here
     };
@@ -122,6 +127,29 @@ export const updateData = <T>(storeName: string, key: string, data: T): Promise<
       };
       res.onerror = () => {
         resolve(null);
+      }
+    };
+  });
+};
+
+export const putData = <T extends { id: string }>(storeName: string, data: T): Promise<T|string|null> => {
+  return new Promise((resolve) => {
+    request = indexedDB.open(DB_NAME, version);
+
+    request.onsuccess = (event) => {
+      var db = (event.target as IDBOpenDBRequest).result;
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      store.put(data);
+      resolve(data);
+    };
+
+    request.onerror = () => {
+      const error = request.error?.message;
+      if (error) {
+        resolve(error);
+      } else {
+        resolve('Unknown error');
       }
     };
   });

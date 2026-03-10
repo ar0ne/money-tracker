@@ -44,6 +44,15 @@ export type ExpenseDTO = {
   category: Category
 }
 
+export interface ExchangeRate {
+  id: string;
+  from_currency_id: string;
+  to_currency_id: string;
+  rate: number;
+  updated: number;
+}
+
 export type Settings = {
   last_currency_id: string | undefined;
+  default_currency_id?: string;
 }

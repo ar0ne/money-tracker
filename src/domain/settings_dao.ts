@@ -11,7 +11,11 @@ export class SettingsDao {
     }
 
     public add = async (settings: Settings) => {
-        await addData(Stores.Settings, {id: this.SETTINGS_ID, last_currency_id: settings.last_currency_id});
+        await addData(Stores.Settings, {
+            id: this.SETTINGS_ID,
+            last_currency_id: settings.last_currency_id,
+            default_currency_id: settings.default_currency_id,
+        });
     }
 
     public update = async (settings: Settings) => {

@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
     getFirstDayOfMonth,
     getLastDayOfMonth,
+    getFirstDayOfLastMonth,
+    getLastDayOfLastMonth,
     formatDateTime,
     getMonthName,
     getColorClass
@@ -41,6 +43,55 @@ describe('Date Utility Functions', () => {
             const result = getLastDayOfMonth(2023, 5) // June 2023
             const expected = new Date(2023, 6, 0, 23, 59, 59, 999) // Last day of June
             expect(result.getTime()).toBe(expected.getTime())
+        })
+    })
+
+    describe('getFirstDayOfLastMonth', () => {
+        it('returns first day of previous calendar month', () => {
+            // March 10, 2025 -> Feb 1, 2025 00:00:00
+            vi.useFakeTimers({ now: new Date(2025, 2, 10).getTime() })
+            const result = getFirstDayOfLastMonth()
+            expect(result.getFullYear()).toBe(2025)
+            expect(result.getMonth()).toBe(1)
+            expect(result.getDate()).toBe(1)
+            expect(result.getHours()).toBe(0)
+            expect(result.getMinutes()).toBe(0)
+            expect(result.getSeconds()).toBe(0)
+            vi.useRealTimers()
+        })
+
+        it('handles year rollover (e.g. Jan 15 -> Dec 1 previous year)', () => {
+            vi.useFakeTimers({ now: new Date(2025, 0, 15).getTime() })
+            const result = getFirstDayOfLastMonth()
+            expect(result.getFullYear()).toBe(2024)
+            expect(result.getMonth()).toBe(11)
+            expect(result.getDate()).toBe(1)
+            vi.useRealTimers()
+        })
+    })
+
+    describe('getLastDayOfLastMonth', () => {
+        it('returns last second of previous calendar month', () => {
+            // March 10, 2025 -> Feb 28 23:59:59.999
+            vi.useFakeTimers({ now: new Date(2025, 2, 10).getTime() })
+            const result = getLastDayOfLastMonth()
+            expect(result.getFullYear()).toBe(2025)
+            expect(result.getMonth()).toBe(1)
+            expect(result.getDate()).toBe(28)
+            expect(result.getHours()).toBe(23)
+            expect(result.getMinutes()).toBe(59)
+            expect(result.getSeconds()).toBe(59)
+            expect(result.getMilliseconds()).toBe(999)
+            vi.useRealTimers()
+        })
+
+        it('handles year rollover', () => {
+            vi.useFakeTimers({ now: new Date(2025, 0, 15).getTime() })
+            const result = getLastDayOfLastMonth()
+            expect(result.getFullYear()).toBe(2024)
+            expect(result.getMonth()).toBe(11)
+            expect(result.getDate()).toBe(31)
+            vi.useRealTimers()
         })
     })
 

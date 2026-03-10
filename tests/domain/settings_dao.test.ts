@@ -64,10 +64,27 @@ describe('SettingsDao', () => {
             // Execute
             await settingsDao.add(newSettings)
 
-            // Verify
+            // Verify: default_currency_id included (undefined when not provided)
             expect(addData).toHaveBeenCalledWith(Stores.Settings, {
                 id: settingsDao.SETTINGS_ID,
-                last_currency_id: newSettings.last_currency_id
+                last_currency_id: newSettings.last_currency_id,
+                default_currency_id: undefined,
+            })
+        })
+
+        it('should persist default_currency_id when provided on add', async () => {
+            const newSettings: Settings = {
+                last_currency_id: 'currency-2',
+                default_currency_id: 'EUR',
+            }
+            vi.mocked(addData).mockResolvedValue(newSettings)
+
+            await settingsDao.add(newSettings)
+
+            expect(addData).toHaveBeenCalledWith(Stores.Settings, {
+                id: settingsDao.SETTINGS_ID,
+                last_currency_id: 'currency-2',
+                default_currency_id: 'EUR',
             })
         })
 
@@ -84,7 +101,8 @@ describe('SettingsDao', () => {
             // Verify
             expect(addData).toHaveBeenCalledWith(Stores.Settings, {
                 id: settingsDao.SETTINGS_ID,
-                last_currency_id: newSettings.last_currency_id
+                last_currency_id: newSettings.last_currency_id,
+                default_currency_id: undefined,
             })
         })
     })
@@ -101,6 +119,22 @@ describe('SettingsDao', () => {
             await settingsDao.update(updatedSettings)
 
             // Verify
+            expect(updateData).toHaveBeenCalledWith(
+                Stores.Settings,
+                settingsDao.SETTINGS_ID,
+                updatedSettings
+            )
+        })
+
+        it('should persist default_currency_id when provided on update', async () => {
+            const updatedSettings: Settings = {
+                last_currency_id: 'currency-3',
+                default_currency_id: 'GBP',
+            }
+            vi.mocked(updateData).mockResolvedValue(updatedSettings)
+
+            await settingsDao.update(updatedSettings)
+
             expect(updateData).toHaveBeenCalledWith(
                 Stores.Settings,
                 settingsDao.SETTINGS_ID,
