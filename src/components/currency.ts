@@ -3,7 +3,6 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { map } from 'lit/directives/map.js'
 import { Currency } from '../domain/model'
 import { styles } from '../styles/shared-styles'
-import { WORLD_CURRENCIES } from '../data/currencies'
 
 @customElement('app-currency')
 class AppCurrency extends LitElement {
@@ -39,7 +38,7 @@ class AppCurrency extends LitElement {
 
   private get availableWorldCurrencies(): Currency[] {
     const addedIds = new Set(this.visibleCurrencies.map((c) => c.id))
-    return WORLD_CURRENCIES.filter((w) => !addedIds.has(w.id))
+    return this.currencies.filter((c) => !addedIds.has(c.id))
   }
 
   private get filteredWorldCurrencies(): Currency[] {
