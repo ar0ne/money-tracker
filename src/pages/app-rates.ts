@@ -50,6 +50,9 @@ export class AppRatesPage extends LitElement {
 
   @state() private _baseCurrencyId: string = 'USD'
   @state() private _sortedCurrencies: Currency[] = []
+  @state() private _allCurrencies: Currency[] = []
+  @state() private _pendingBaseCurrencyId: string | null = null
+  @state() private _baseCurrencyDropdownOpen: boolean = false
   @state() private _rateInputs: Map<string, string> = new Map()
   @state() private _message: string = ''
   @state() private _hideMessage: boolean = true
@@ -80,6 +83,8 @@ export class AppRatesPage extends LitElement {
     ])
     const recentIds = new Set(expenses.map((e) => e.currency_id))
     const ratesByToId = new Map(rates.map((r) => [r.to_currency_id, r]))
+    const byName = (a: Currency, b: Currency) => a.name.localeCompare(b.name)
+    this._allCurrencies = [...currencies].sort(byName)
     this._sortedCurrencies = sortCurrenciesForRates(
       currencies,
       this._baseCurrencyId,
@@ -133,6 +138,39 @@ export class AppRatesPage extends LitElement {
     }, this.MESSAGE_DURATION)
   }
 
+  private onBaseCurrencySelect(e: CustomEvent) {
+    const item = (e as CustomEvent & { detail?: { item?: { value?: string } } }).detail?.item
+    const selectedId = item?.value
+    if (!selectedId) return
+    const dropdown = this.shadowRoot?.querySelector('sl-dropdown') as { hide?: () => void } | null
+    dropdown?.hide?.()
+    if (selectedId === this._baseCurrencyId) return
+    this._pendingBaseCurrencyId = selectedId
+  }
+
+  private cancelBaseCurrencyConfirm() {
+    this._pendingBaseCurrencyId = null
+    this._baseCurrencyDropdownOpen = false
+  }
+
+  private async confirmBaseCurrencyChange() {
+    if (!this._pendingBaseCurrencyId) return
+    try {
+      const settings = await this._settingsDao.getAll()
+      await this._settingsDao.update({
+        last_currency_id: settings?.last_currency_id,
+        default_currency_id: this._pendingBaseCurrencyId,
+      })
+      this._baseCurrencyId = this._pendingBaseCurrencyId
+      this._pendingBaseCurrencyId = null
+      this._baseCurrencyDropdownOpen = false
+      await this.loadData()
+      this.showMessage('Base currency updated')
+    } catch (err) {
+      this.showMessage(err instanceof Error ? err.message : 'Failed to update base currency')
+    }
+  }
+
   render() {
     return html`
       <div class="header-wrap">
@@ -141,7 +179,46 @@ export class AppRatesPage extends LitElement {
       <sl-divider></sl-divider>
       <main>
         <p class=${this._hideMessage ? 'hide' : ''}>${this._message}</p>
-        <p><strong>Base currency:</strong> ${this._baseCurrencyId}</p>
+        <p>
+          <strong>Base currency:</strong>
+          <sl-dropdown
+            ?open=${this._baseCurrencyDropdownOpen}
+            @sl-after-hide=${() => (this._baseCurrencyDropdownOpen = false)}
+          >
+            <sl-button
+              slot="trigger"
+              caret
+              @click=${() => (this._baseCurrencyDropdownOpen = !this._baseCurrencyDropdownOpen)}
+            >
+              ${this._baseCurrencyId}
+            </sl-button>
+            ${this._baseCurrencyDropdownOpen
+              ? html`
+                  <sl-menu @sl-select=${(e: CustomEvent) => this.onBaseCurrencySelect(e)}>
+                    ${this._allCurrencies.map(
+                      (c) => html` <sl-menu-item value=${c.id}>${c.id} - ${c.name}</sl-menu-item> `
+                    )}
+                  </sl-menu>
+                `
+              : ''}
+          </sl-dropdown>
+        </p>
+        <sl-dialog
+          label="Change base currency"
+          ?open=${!!this._pendingBaseCurrencyId}
+          @sl-after-hide=${() => this.cancelBaseCurrencyConfirm()}
+        >
+          ${this._pendingBaseCurrencyId
+            ? html`Change base currency to ${this._pendingBaseCurrencyId}? This will update rates
+              display.`
+            : ''}
+          <sl-button slot="footer" variant="primary" @click=${() => this.confirmBaseCurrencyChange()}>
+            Confirm
+          </sl-button>
+          <sl-button slot="footer" @click=${() => this.cancelBaseCurrencyConfirm()}>
+            Cancel
+          </sl-button>
+        </sl-dialog>
         <div class="rates-list">
           ${this._sortedCurrencies.map(
             (c) => html`
