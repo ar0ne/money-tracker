@@ -64,7 +64,7 @@ describe('CSVExporter', () => {
             created: 1704101696000, // 2024-01-01 09:34:56 UTC
             category_id: 'cat1',
             value: 100.50,
-            currency_id: 'eur'
+            currency_id: 'EUR'
         }]
 
         const mockCategories = [{
@@ -74,9 +74,9 @@ describe('CSVExporter', () => {
         }]
 
         const mockCurrencies = [{
-            id: 'eur',
-            name: 'EUR',
-            symbol: '€'
+            id: 'EUR',
+            name: 'Euro',
+            sign: '€'
         }]
 
         // Setup mocks
@@ -105,14 +105,14 @@ describe('CSVExporter', () => {
                 created: 1704101696000, // 2024-01-01 09:34:56 UTC
                 category_id: 'cat1',
                 value: 100.50,
-                currency_id: 'eur'
+                currency_id: 'EUR'
             },
             {
                 id: '2',
                 created: 1704188096000, // 2024-01-02 09:34:56 UTC
                 category_id: 'cat2',
                 value: 200.75,
-                currency_id: 'usd'
+                currency_id: 'USD'
             }
         ]
 
@@ -131,14 +131,14 @@ describe('CSVExporter', () => {
 
         const mockCurrencies = [
             {
-                id: 'eur',
-                name: 'EUR',
-                symbol: '€'
+                id: 'EUR',
+                name: 'Euro',
+                sign: '€'
             },
             {
-                id: 'usd',
-                name: 'USD',
-                symbol: '$'
+                id: 'USD',
+                name: 'US Dollar',
+                sign: '$'
             }
         ]
 

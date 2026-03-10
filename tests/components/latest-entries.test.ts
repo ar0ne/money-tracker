@@ -13,7 +13,7 @@ describe('getLatestExpenses', () => {
   const makeDTO = (id: string, created: number): ExpenseDTO => ({
     id,
     created,
-    currency: new Currency('USD', '$'),
+    currency: new Currency('USD', 'US Dollar', '$'),
     value: 100,
     category: new Category('Food'),
   });
@@ -112,7 +112,7 @@ describe('app-latest-entries', () => {
 
   it('renders "Latest Spending" heading and up to 3 entries when records exist', async () => {
     const cat = new Category('Food');
-    const cur = new Currency('USD', '$');
+    const cur = new Currency('USD', 'US Dollar', '$');
     const now = Date.now();
     mockGetAllInRange.mockResolvedValue([
       { id: 'e1', created: now - 2000, currency_id: cur.id, category_id: cat.id, value: 10 },
