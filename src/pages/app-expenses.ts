@@ -65,10 +65,10 @@ export class AppExpensePage extends LitElement {
     this._categoryDao = new CategoryDao();
     this._settingsDao = new SettingsDao();
     this._expenseDao = new ExpenseDao();
-    await this.handleGetCurrencies()
-    await this.handleGetCategories();
+    await this.handleGetCurrencies();
     await this.handleLoadSettings();
     await this.handleGetUsedCurrencies();
+    await this.handleGetCategories();
   }
 
   toggleDisableAddExpenseValue() {
@@ -93,7 +93,7 @@ export class AppExpensePage extends LitElement {
   async addCurrency(e: CustomEvent) {
     const newCurrency = e.detail.currency as Currency;
     try {
-      await this.handleGetCurrencies();
+      await this.handleGetUsedCurrencies();
       if (!this._visibleCurrencies.some((c) => c.id === newCurrency.id)) {
         this._visibleCurrencies = [...this._visibleCurrencies, newCurrency].sort(
           (a, b) => a.name.localeCompare(b.name)
@@ -195,7 +195,7 @@ export class AppExpensePage extends LitElement {
     }, this.MESSAGE_DURATION);
   }
 
-  showAllCurrencies() {
+  async showAllCurrencies() {
     this._visibleCurrencies = this._listCurrencies;
   }
 
@@ -208,14 +208,18 @@ export class AppExpensePage extends LitElement {
   }
 
   async handleGetUsedCurrencies() {
+    this._visibleCurrencies = await this.getUsedCurrencies();
+  }
+
+  async getUsedCurrencies() {
     let expenses = await this._expenseDao.getAllInRange(getFirstDayOfMonth(), getLastDayOfMonth());
-    let currency_ids = expenses.map(e => e.currency_id);
+    let currency_ids = [...new Set(expenses.map(e => e.currency_id))];
     let usedCurrencies = await this._currencyDao.getByIds(currency_ids);
     // add default currency if it's not in the list yet
     if (this._currency && !usedCurrencies.some(c => c.id === this._currency?.id)) {
       usedCurrencies.push(this._currency);
     }
-    this._visibleCurrencies = usedCurrencies;
+    return usedCurrencies;
   }
 
   async handleLoadSettings() {

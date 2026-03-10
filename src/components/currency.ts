@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { map } from 'lit/directives/map.js'
 import { Currency } from '../domain/model'
 import { styles } from '../styles/shared-styles'
-import { WORLD_CURRENCIES, type WorldCurrency } from '../data/currencies'
+import { WORLD_CURRENCIES } from '../data/currencies'
 
 @customElement('app-currency')
 class AppCurrency extends LitElement {
@@ -35,21 +35,19 @@ class AppCurrency extends LitElement {
   @state()
   private hideAddCurrency = true
   @state()
-  private hideAllCurrencies = true
-  @state()
   private addSearchQuery = ''
 
-  private get availableWorldCurrencies(): WorldCurrency[] {
-    const addedIds = new Set(this.currencies.map((c) => c.id))
+  private get availableWorldCurrencies(): Currency[] {
+    const addedIds = new Set(this.visibleCurrencies.map((c) => c.id))
     return WORLD_CURRENCIES.filter((w) => !addedIds.has(w.id))
   }
 
-  private get filteredWorldCurrencies(): WorldCurrency[] {
+  private get filteredWorldCurrencies(): Currency[] {
     const q = this.addSearchQuery.trim().toLowerCase()
     if (!q) return this.availableWorldCurrencies
     return this.availableWorldCurrencies.filter(
       (w) =>
-        w.name.toLowerCase().includes(q) || w.code.toLowerCase().includes(q)
+        w.name.toLowerCase().includes(q) || w.id.toLowerCase().includes(q)
     )
   }
 
@@ -60,7 +58,7 @@ class AppCurrency extends LitElement {
     )
   }
 
-  selectWorldCurrency(entry: WorldCurrency) {
+  selectWorldCurrency(entry: Currency) {
     const newCurrency = new Currency(entry.id, entry.name, entry.sign)
     this.dispatchEvent(
       new CustomEvent('currency-added', { detail: { currency: newCurrency } })
@@ -80,7 +78,6 @@ class AppCurrency extends LitElement {
   }
 
   expandAllCurrencies() {
-    this.hideAllCurrencies = false
     this.dispatchEvent(new CustomEvent('currency-show-all', {}))
   }
 
@@ -104,17 +101,6 @@ class AppCurrency extends LitElement {
           </sl-button>
         `
       )}
-      ${this.hideAllCurrencies
-        ? html`
-            <sl-button
-              variant="neutral"
-              title="All currencies"
-              @click=${this.expandAllCurrencies}
-            >
-              ...
-            </sl-button>
-          `
-        : ''}
       <sl-button variant="success" @click=${this.addingCurrency}> + </sl-button>
     `
 
