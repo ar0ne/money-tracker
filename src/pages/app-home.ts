@@ -30,6 +30,9 @@ export class AppHome extends LitElement {
           align-items: center;
           gap: 0.25rem;
         }
+        .rates-btn {
+          color: inherit;
+        }
         /* Import modal: outside transformed .right so position:fixed uses viewport; centered and responsive */
         .import-overlay {
           position: fixed;
@@ -152,7 +155,23 @@ export class AppHome extends LitElement {
         <div class="header-row">
           <app-header></app-header>
           <span class="right" @import-complete=${() => { this._historyRefreshTrigger++; }} @import-dialog-open=${this._onImportDialogOpen}>
-            <a href="/rates">Rates</a>
+          <button>
+            <a href="/rates" class="rates-btn" title="Rates" aria-label="Rates">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                width="36"
+                height="36">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </a>
+            </button>
             <export-btn></export-btn>
             <import-btn></import-btn>
           </span>
