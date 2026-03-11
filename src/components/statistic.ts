@@ -50,6 +50,27 @@ class AppStatistic extends LitElement {
                     color: var(--sl-color-danger-600, #dc2626);
                     margin-left: 0.15em;
                 }
+                .details-actions-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                    margin-bottom: 0.5rem;
+                }
+                .copy-icon-btn {
+                    flex-shrink: 0;
+                    padding: 0.25rem;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .copy-icon-btn:hover {
+                    opacity: 0.7;
+                }
             `
         ]
     }
@@ -223,29 +244,48 @@ class AppStatistic extends LitElement {
                                     </sl-tooltip>`
                                 : ''}
                         </span>
-                        <sl-button
-                            @click=${this.previousMonth}
+                        <div class="details-actions-row">
+                            <span>
+                                <sl-button
+                                    @click=${this.previousMonth}
+                                    >
+                                    Previous
+                                </sl-button>
+                                ${this._dateChanged ?
+                                    html`
+                                    <sl-button
+                                        variant="warning"
+                                        outline
+                                        @click=${this.resetStatistic}
+                                        >
+                                        Today
+                                    </sl-button>
+                                    `
+                                : ''}
+                            </span>
+                            <button
+                                class="copy-icon-btn"
+                                @click=${this.copyToClipbord}
+                                aria-label="Copy to clipboard"
+                                title="Copy to clipboard"
                             >
-                            Previous
-                        </sl-button>
-                        ${this._dateChanged ?
-                            html`
-                            <sl-button
-                                variant="warning"
-                                outline
-                                @click=${this.resetStatistic}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
                                 >
-                                Today
-                            </sl-button>
-                            `
-                        : ''}
-                        <sl-button
-                            variant="default"
-                            outline
-                            @click=${this.copyToClipbord}
-                            >
-                            Copy to clipboard
-                        </sl-button>
+                                    <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h3m9 -9v-5a2 2 0 0 0 -2 -2h-2" />
+                                    <path d="M13 17v-1a1 1 0 0 1 1 -1h1m3 0h1a1 1 0 0 1 1 1v1m0 3v1a1 1 0 0 1 -1 1h-1m-3 0h-1a1 1 0 0 1 -1 -1v-1" />
+                                    <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                                </svg>
+                            </button>
+                        </div>
 
                         ${statisticForMonth}
                     </sl-details>
