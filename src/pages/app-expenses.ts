@@ -153,6 +153,19 @@ export class AppExpensePage extends LitElement {
     this.displayMessage("Removed!");
   }
 
+  async categoryUpdated(e: CustomEvent) {
+    try {
+      await this._categoryDao.update(e.detail.category);
+      this.handleGetCategories();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        this.displayMessage(err.message);
+      } else {
+        this.displayMessage('Something went wrong');
+      }
+    }
+  }
+
   async addExpense() {
     if (!(this._value && this._currency && this._category)) {
       // do nothing
@@ -277,6 +290,7 @@ export class AppExpensePage extends LitElement {
           @category-added="${this.addCategory}"
           @category-renamed="${this.renameCategory}"
           @category-remove="${this.removeCategory}"
+          @category-updated="${this.categoryUpdated}"
         ></app-category>
         <app-currency
           class=${!this._category ? "hide": ''}

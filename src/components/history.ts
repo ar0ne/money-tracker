@@ -123,6 +123,11 @@ class AppHistory extends LitElement {
         await this.handleHistory();
     }
 
+    async categoryIncludeToggled(e: CustomEvent<{ category: Category }>) {
+        await this._categoryDao.update(e.detail.category);
+        this._categories = [...this._categories];
+    }
+
     async handleHistory() {
         const from_date = getFirstDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
         const to_date = getLastDayOfMonth(this._currentDate.getFullYear(), this._currentDate.getMonth());
@@ -229,6 +234,7 @@ class AppHistory extends LitElement {
                     .baseCurrency=${this._baseCurrency}
                     .ratesMap=${this._ratesMap}
                     @date-changed=${this.dateChanged}
+                    @category-include-toggled=${this.categoryIncludeToggled}
                 ></app-statistic>
                 <div id="history">
                     ${history}

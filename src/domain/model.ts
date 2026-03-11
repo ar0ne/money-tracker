@@ -3,10 +3,12 @@ import {v4 as uuidv4} from 'uuid';
 export class Category {
   id: string;
   is_removed: boolean;
+  is_in_summary: boolean;
   constructor(public name: string) {
     this.id = uuidv4();
     this.name = name;
     this.is_removed = false;
+    this.is_in_summary = true;
   }
 }
 

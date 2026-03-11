@@ -144,6 +144,7 @@ class AppStatistic extends LitElement {
         return getColorClass(index);
     }
 
+
     /**
      * Sum all expenses converted to base currency using ratesMap.
      * Rate is stored as 1 base = rate × other, so other -> base = value / rate.
@@ -154,6 +155,7 @@ class AppStatistic extends LitElement {
         let hasMissingRates = false;
         const baseId = this.baseCurrency?.id?.toUpperCase();
         for (const expense of this.expenses) {
+            if (expense.category.is_in_summary === false) continue;
             const curId = expense.currency.id?.toUpperCase();
             if (curId === baseId) {
                 totalInBase += expense.value;

@@ -40,6 +40,9 @@ class AppCategory extends LitElement {
     hideAddCategory = true;
     @state()
     hideRenameCategory = true;
+    /** Category pending deletion - when set, shows confirmation dialog. */
+    @state()
+    private _categoryToRemove: Category | null = null;
     @query('#newcategory')
     inputCategory!: HTMLInputElement;
 
@@ -80,13 +83,31 @@ class AppCategory extends LitElement {
         this.toggleEditCategory();
     }
 
-    removeCategory(category: Category) {
-        category.is_removed = true;
+    /** Opens confirmation dialog before deleting category. */
+    openDeleteConfirm(category: Category) {
+        this._categoryToRemove = category;
+    }
+
+    /** Cancels delete - closes dialog without removing. */
+    cancelDelete() {
+        this._categoryToRemove = null;
+    }
+
+    /** Confirms delete - removes category and closes dialog. */
+    confirmDelete() {
+        if (!this._categoryToRemove) return;
+        this._categoryToRemove.is_removed = true;
         const options = {
-            detail: {category: category},
+            detail: {category: this._categoryToRemove},
         };
         this.dispatchEvent(new CustomEvent('category-remove', options));
+        this._categoryToRemove = null;
         this.toggleEditCategory();
+    }
+
+    toggleInSummary(category: Category) {
+        category.is_in_summary = !(category.is_in_summary !== false);
+        this.dispatchEvent(new CustomEvent('category-updated', { detail: { category } }));
     }
 
     toggleAddCategory() {
@@ -119,6 +140,11 @@ class AppCategory extends LitElement {
                                     >
                                 </sl-input>
                             </div>
+                            <sl-checkbox
+                                ?checked=${category.is_in_summary !== false}
+                                @sl-change=${() => this.toggleInSummary(category)}
+                                title="Include in summary"
+                            >In summary</sl-checkbox>
                             <sl-button
                                 variant="danger"
                                 outline
@@ -129,20 +155,13 @@ class AppCategory extends LitElement {
                             <sl-button
                                 variant="warning"
                                 outline
-                                @click=${() => this.removeCategory(category)}
+                                @click=${() => this.openDeleteConfirm(category)}
                                 >
                                 Delete
                             </sl-button>
                         </div>
                     `
                 )}
-                </br>
-                <sl-button
-                    variant="warning"
-                    @click=${this.toggleEditCategory}
-                    >
-                    Cancel
-                </sl-button>
             </div>
         `;
 
@@ -208,12 +227,29 @@ class AppCategory extends LitElement {
             ? editCategory
             : addNewCategory
 
-        return this.hideAddCategory && this.hideRenameCategory
-            ? html`
-                ${listCategories}
-                ${categorySettings}
-            `
-            : setupCategory;
+        return html`
+            <sl-dialog
+                label="Delete category"
+                ?open=${!!this._categoryToRemove}
+                @sl-after-hide=${() => this.cancelDelete()}
+            >
+                ${this._categoryToRemove
+                    ? html`Are you sure you want to delete "${this._categoryToRemove.name}"?`
+                    : ''}
+                <sl-button slot="footer" variant="danger" @click=${() => this.confirmDelete()}>
+                    Delete
+                </sl-button>
+                <sl-button slot="footer" @click=${() => this.cancelDelete()}>
+                    Cancel
+                </sl-button>
+            </sl-dialog>
+            ${this.hideAddCategory && this.hideRenameCategory
+                ? html`
+                    ${listCategories}
+                    ${categorySettings}
+                `
+                : setupCategory}
+        `;
     }
 }
 
