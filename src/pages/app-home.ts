@@ -46,24 +46,6 @@ export class AppHome extends LitElement {
         .rates-btn {
           color: inherit;
         }
-        .filter-btn {
-          color: inherit;
-          background: none;
-          border: none;
-          padding: 0;
-          cursor: pointer;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .filter-btn.filter-btn-active {
-          color: var(--sl-color-primary-600, #2563eb);
-        }
-        .filter-btn svg {
-          width: 36px;
-          height: 36px;
-        }
-        /* Import modal: outside transformed .right so position:fixed uses viewport; centered and responsive */
         .import-overlay {
           position: fixed;
           inset: 0;
@@ -272,7 +254,17 @@ export class AppHome extends LitElement {
             aria-label="Filters"
             @click=${this._onFilterOpen}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="36"
+              height="36"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M4 7H20" />
               <path d="M7 12L17 12" />
               <path d="M11 17H13" />
