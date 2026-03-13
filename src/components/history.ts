@@ -96,6 +96,9 @@ class AppHistory extends LitElement {
     @property({ type: Number })
     refreshTrigger = 0;
 
+    @property({ type: Array })
+    enabledCategoryIds: string[] | null = null;
+
     constructor() {
         super();
         const now = new Date();
@@ -187,10 +190,20 @@ class AppHistory extends LitElement {
         return getColorClass(index);
     }
 
+    /** Expenses to display: filtered by enabledCategoryIds when set. */
+    private get _filteredExpenses(): ExpenseDTO[] {
+        if (this.enabledCategoryIds == null || this.enabledCategoryIds.length === 0) {
+            return this._expenses;
+        }
+        const set = new Set(this.enabledCategoryIds);
+        return this._expenses.filter((e) => set.has(e.category.id));
+    }
+
     render() {
+        const filtered = this._filteredExpenses;
         const listExpenses = html`
             <ul>
-            ${map(this._expenses, (expense) =>
+            ${map(filtered, (expense) =>
                 html`
                     <li>
                         <div class="expense-list-item clearfix">
@@ -227,7 +240,7 @@ class AppHistory extends LitElement {
             </ul>
         `;
 
-        const history = this._expenses?.length
+        const history = filtered?.length
             ? listExpenses
             : html`<p>No records yet.</p>`;
 
@@ -250,7 +263,7 @@ class AppHistory extends LitElement {
                 </sl-dialog>
                 <app-statistic
                     .selectedDate=${this._currentDate}
-                    .expenses=${this._expenses}
+                    .expenses=${filtered}
                     .categories=${this._categories}
                     .baseCurrency=${this._baseCurrency}
                     .ratesMap=${this._ratesMap}
