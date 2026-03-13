@@ -207,7 +207,7 @@ export class AppHome extends LitElement {
     this._filterOpen = true;
     await initDB();
     const categoryDao = new CategoryDao();
-    this._filterCategories = await categoryDao.getAll(true);
+    this._filterCategories = await categoryDao.getAll();
   };
 
   private _onFilterBack = () => {
