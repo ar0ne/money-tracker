@@ -19,7 +19,6 @@ class AppStatistic extends LitElement {
             styles,
             css`
                 #statistics {
-                    width: 98%;
                     display: block;
                     margin-left: auto;
                     margin-right: auto;
@@ -29,16 +28,16 @@ class AppStatistic extends LitElement {
                     overflow-y: hidden;
                 }
                 #statistic-card {
-                    width: max-content;
+                    display: inline-block;
                     min-width: 100%;
+                    margin-left: -1em;
                 }
                 .stat-category {
-                    white-space: nowrap;
-                    display: inline-block;
-                    min-width: min-content;
+                    flex-shrink: 0;
+                    white-space: normal;
                 }
                 .stat-list {
-                    display: inline-block;
+                    flex-shrink: 0;
                 }
                 .stat-list::after {
                     content: ", ";
