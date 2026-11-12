@@ -190,9 +190,12 @@ class AppHistory extends LitElement {
         return getColorClass(index);
     }
 
-    /** Expenses to display: filtered by enabledCategoryIds when set. */
+    /**
+     * Expenses to display: filtered by enabledCategoryIds when set.
+     * null means "no filter". An empty list means "show nothing".
+     */
     private get _filteredExpenses(): ExpenseDTO[] {
-        if (this.enabledCategoryIds == null || this.enabledCategoryIds.length === 0) {
+        if (this.enabledCategoryIds == null) {
             return this._expenses;
         }
         const set = new Set(this.enabledCategoryIds);

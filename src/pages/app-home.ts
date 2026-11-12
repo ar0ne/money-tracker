@@ -23,7 +23,9 @@ export class AppHome extends LitElement {
   private _filterOpen = false;
 
   @state()
-  private _enabledCategoryIds = new Set<string>();
+  // Categories the user unchecked in the filter. Empty set means "show all".
+  // We store the unchecked ones, so "nothing checked" and "all checked" are different states.
+  private _disabledCategoryIds = new Set<string>();
 
   @state()
   private _filterCategories: Category[] = [];
@@ -216,31 +218,28 @@ export class AppHome extends LitElement {
   };
 
   private _onFilterCategoryToggle = (categoryId: string) => {
-    const next = new Set(this._enabledCategoryIds);
-    const allIds = this._filterCategories.map((c) => c.id);
-    if (next.size === 0) {
-      // Currently "all enabled"; unchecking means show all except this one
-      allIds.forEach((id) => id !== categoryId && next.add(id));
-    } else {
-      if (next.has(categoryId)) {
-        next.delete(categoryId);
-        if (next.size === 0) next.clear();
-      } else {
-        next.add(categoryId);
-        if (next.size === this._filterCategories.length) next.clear();
-      }
-    }
-    this._enabledCategoryIds = next;
+    // Flip only this category. Other checkboxes never change.
+    // Unchecking the last one leaves nothing checked, so the history is empty.
+    const next = new Set(this._disabledCategoryIds);
+    if (next.has(categoryId)) next.delete(categoryId);
+    else next.add(categoryId);
+    this._disabledCategoryIds = next;
+  };
+
+  /** Ids to show in history, or null when no filter is set (show all). */
+  private _getEnabledCategoryIds = (): string[] | null => {
+    if (this._disabledCategoryIds.size === 0) return null;
+    return this._filterCategories
+      .map((c) => c.id)
+      .filter((id) => !this._disabledCategoryIds.has(id));
   };
 
   private _isCategoryEnabled = (categoryId: string): boolean => {
-    if (this._enabledCategoryIds.size === 0) return true;
-    return this._enabledCategoryIds.has(categoryId);
+    return !this._disabledCategoryIds.has(categoryId);
   };
 
   private _isFilterActive = (): boolean => {
-    if (this._filterCategories.length === 0) return false;
-    return this._enabledCategoryIds.size > 0 && this._enabledCategoryIds.size < this._filterCategories.length;
+    return this._disabledCategoryIds.size > 0;
   };
 
   render() {
@@ -295,7 +294,7 @@ export class AppHome extends LitElement {
         <main>
           <app-history
             .refreshTrigger=${this._historyRefreshTrigger}
-            .enabledCategoryIds=${this._enabledCategoryIds.size > 0 ? Array.from(this._enabledCategoryIds) : null}
+            .enabledCategoryIds=${this._getEnabledCategoryIds()}
           ></app-history>
         </main>
 
@@ -326,7 +325,7 @@ export class AppHome extends LitElement {
                   ${map(this._filterCategories, (cat) => html`
                     <div class="filter-category-item">
                       <sl-checkbox
-                        ?checked=${this._isCategoryEnabled(cat.id)}
+                        .checked=${this._isCategoryEnabled(cat.id)}
                         @sl-change=${() => this._onFilterCategoryToggle(cat.id)}
                       >${cat.name}</sl-checkbox>
                     </div>
