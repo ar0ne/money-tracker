@@ -14,17 +14,25 @@ import { title } from '@thepassle/app-tools/router/plugins/title.js';
 
 import './pages/app-home.js';
 
-const baseURL: string = (import.meta as any).env.BASE_URL;
+// The deploy build passes the base without a trailing slash ("/money-tracker").
+// Always add it, so that joined paths look like "/money-tracker/expense".
+const rawBaseURL: string = (import.meta as any).env.BASE_URL;
+const baseURL: string = rawBaseURL.endsWith('/') ? rawBaseURL : rawBaseURL + '/';
 
+// Routes must include the base path (e.g. "/money-tracker/" on GitHub Pages).
+// Otherwise the app navigates to "/expense" at the domain root.
+// That URL is outside of the app, so a reload there shows the GitHub 404 page.
 export const router = new Router({
+    // Unknown URLs inside the app fall back to the home page.
+    fallback: resolveRouterPath(),
     routes: [
       {
-        path: '/',
+        path: resolveRouterPath(),
         title: 'Home',
         render: () => html`<app-home></app-home>`
       },
       {
-        path: '/expense',
+        path: resolveRouterPath('expense'),
         title: 'Add Expenses',
         plugins: [
           lazy(() => import('./pages/app-expenses.js')),
@@ -32,7 +40,7 @@ export const router = new Router({
         render: () => html`<app-expenses></app-expenses>`
       },
       {
-        path: '/rates',
+        path: resolveRouterPath('rates'),
         title: 'Exchange Rates',
         plugins: [
           lazy(() => import('./pages/app-rates.js')),

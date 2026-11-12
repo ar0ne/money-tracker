@@ -110,7 +110,7 @@ describe('app-latest-entries', () => {
     expect(el.shadowRoot?.querySelector('sl-card')).toBeNull();
   });
 
-  it('renders "Latest Spending" heading and up to 3 entries when records exist', async () => {
+  it('renders "Latest" heading and up to 3 entries when records exist', async () => {
     const cat = new Category('Food');
     const cur = new Currency('USD', 'US Dollar', '$');
     const now = Date.now();
@@ -130,7 +130,7 @@ describe('app-latest-entries', () => {
     const card = el.shadowRoot?.querySelector('sl-card');
     expect(card).not.toBeNull();
     const heading = el.shadowRoot?.querySelector('h3');
-    expect(heading?.textContent?.trim()).toBe('Latest Spending');
+    expect(heading?.textContent?.trim()).toBe('Latest');
     const items = el.shadowRoot?.querySelectorAll('.expense-list-item');
     expect(items?.length).toBe(2);
   });

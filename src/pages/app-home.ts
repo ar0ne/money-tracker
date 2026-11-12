@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
 import { styles } from '../styles/shared-styles';
+import { resolveRouterPath } from '../router';
 import { initDB } from '../domain/db';
 import { CategoryDao } from '../domain/category_dao';
 import type { Category } from '../domain/model';
@@ -271,7 +272,7 @@ export class AppHome extends LitElement {
             </svg>
           </button>
           <button>
-            <a href="/rates" class="rates-btn" title="Rates" aria-label="Rates">
+            <a href="${resolveRouterPath('rates')}" class="rates-btn" title="Rates" aria-label="Rates">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -338,7 +339,7 @@ export class AppHome extends LitElement {
             `
           : ''}
 
-        <a href="/expense" class="fab ${this._isScrolled ? 'fab-compact' : 'fab-extended'}" aria-label="${this._isScrolled ? 'Add' : 'Add new record'}">
+        <a href="${resolveRouterPath('expense')}" class="fab ${this._isScrolled ? 'fab-compact' : 'fab-extended'}" aria-label="${this._isScrolled ? 'Add' : 'Add new record'}">
           <sl-icon name="plus"></sl-icon>
           ${!this._isScrolled ? html`<span>Add</span>` : ''}
         </a>

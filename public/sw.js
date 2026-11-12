@@ -58,3 +58,13 @@ const updateName = async (event) => {
 }
 
 workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
+
+// Serve the cached app shell for every page navigation inside the app scope.
+// Without this, reloading a deep link like "/expense" goes to the network.
+// GitHub Pages has no such file, so it answers with a 404 (and fails offline).
+// The URL is relative to this file, so it also works under "/money-tracker/".
+workbox.routing.registerRoute(
+    new workbox.routing.NavigationRoute(
+        workbox.precaching.createHandlerBoundToURL('index.html')
+    )
+);
